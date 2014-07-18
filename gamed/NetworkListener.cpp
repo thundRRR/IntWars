@@ -17,11 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "stdafx.h"
 #include "NetworkListener.h"
-#include "Log.h"
 
 uint32 GetNewNetID() {
-	static DWORD dwStart = 0x40000019;
-	DWORD dwRet = dwStart;
+	static uint32 dwStart = 0x40000019;
+	uint32 dwRet = dwStart;
 	dwStart++;
 	return dwRet;
 }
@@ -68,7 +67,7 @@ void NetworkListener::netLoop()
 		switch (event.type)
 		{
 			case ENET_EVENT_TYPE_CONNECT:
-				Logging->writeLine("A new client connected: %i.%i.%i.%i:%i \n", event.peer->address.host & 0xFF, (event.peer->address.host >> 8) & 0xFF, (event.peer->address.host >> 16) & 0xFF, (event.peer->address.host >> 24) & 0xFF, event.peer->address.port);
+				//Logging->writeLine("A new client connected: %i.%i.%i.%i:%i \n", event.peer->address.host & 0xFF, (event.peer->address.host >> 8) & 0xFF, (event.peer->address.host >> 16) & 0xFF, (event.peer->address.host >> 24) & 0xFF, event.peer->address.port);
 
 				/* Set some defaults */
 				event.peer->mtu = PEER_MTU;
@@ -92,7 +91,7 @@ void NetworkListener::netLoop()
 		break;
 
 		case ENET_EVENT_TYPE_DISCONNECT:
-			Logging->writeLine("Client disconnected: %i.%i.%i.%i:%i \n", event.peer->address.host & 0xFF, (event.peer->address.host >> 8) & 0xFF, (event.peer->address.host >> 16) & 0xFF, (event.peer->address.host >> 24) & 0xFF, event.peer->address.port);
+			//Logging->writeLine("Client disconnected: %i.%i.%i.%i:%i \n", event.peer->address.host & 0xFF, (event.peer->address.host >> 8) & 0xFF, (event.peer->address.host >> 16) & 0xFF, (event.peer->address.host >> 24) & 0xFF, event.peer->address.port);
 
 			/* Cleanup */
 			delete (ClientInfo*)event.peer->data;

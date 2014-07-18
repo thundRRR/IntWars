@@ -15,9 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "stdafx.h"
 #include "PacketHandler.h"
-
 
 PacketHandler::PacketHandler(ENetHost *server, BlowFish *blowfish)
 {
@@ -60,26 +58,26 @@ void PacketHandler::registerHandler(bool (PacketHandler::*handler)(HANDLE_ARGS),
 
 void PacketHandler::printPacket(uint8 *buf, uint32 len)
 {
-	PDEBUG_LOG(Logging,"   ");
+	//PDEBUG_LOG(Logging,"   ");
 	for(uint32 i = 0; i < len; i++)
 	{
-		PDEBUG_LOG(Logging,"%02X ", static_cast<uint8>(buf[i]));
-		if((i+1)%16 == 0)
-			PDEBUG_LOG(Logging,"\n   ");
+		//PDEBUG_LOG(Logging,"%02X ", static_cast<uint8>(buf[i]));
+		//if((i+1)%16 == 0)
+			//PDEBUG_LOG(Logging,"\n   ");
 	}
-	PDEBUG_LOG(Logging,"\n");
+	//PDEBUG_LOG(Logging,"\n");
 }
 
 void PacketHandler::printLine(uint8 *buf, uint32 len)
 {
-	for(uint32 i = 0; i < len; i++)
-		PDEBUG_LOG(Logging,"%02X ", static_cast<uint8>(buf[i]));
-	PDEBUG_LOG(Logging,"\n");
+	//for(uint32 i = 0; i < len; i++)
+		//PDEBUG_LOG(Logging,"%02X ", static_cast<uint8>(buf[i]));
+	//PDEBUG_LOG(Logging,"\n");
 }
 
 bool PacketHandler::sendPacket(ENetPeer *peer, uint8 *data, uint32 length, uint8 channelNo, uint32 flag)
 {
-	//PDEBUG_LOG_LINE(Logging," Sending packet:\n");
+	////PDEBUG_LOG_LINE(Logging," Sending packet:\n");
 	//if(length < 300)
 	//	printPacket(data, length);
 
@@ -89,7 +87,7 @@ bool PacketHandler::sendPacket(ENetPeer *peer, uint8 *data, uint32 length, uint8
 	ENetPacket *packet = enet_packet_create(data, length, flag);
 	if(enet_peer_send(peer, channelNo, packet) < 0)
 	{
-		PDEBUG_LOG_LINE(Logging,"Warning fail, send!");
+		//PDEBUG_LOG_LINE(Logging,"Warning fail, send!");
 		return false;
 	}
 	return true;
@@ -97,7 +95,7 @@ bool PacketHandler::sendPacket(ENetPeer *peer, uint8 *data, uint32 length, uint8
 
 bool PacketHandler::broadcastPacket(uint8 *data, uint32 length, uint8 channelNo, uint32 flag)
 {
-	//PDEBUG_LOG_LINE(Logging," Broadcast packet:\n");
+	////PDEBUG_LOG_LINE(Logging," Broadcast packet:\n");
 	//printPacket(data, length);
 
 	if(length >= 8)
@@ -126,7 +124,7 @@ bool PacketHandler::handlePacket(ENetPeer *peer, ENetPacket *packet, uint8 chann
 	}
 	else
 	{
-		PDEBUG_LOG_LINE(Logging,"Unknown packet: CMD %X(%i) CHANNEL %X(%i)\n", header->cmd, header->cmd,channelID,channelID);
+		//PDEBUG_LOG_LINE(Logging,"Unknown packet: CMD %X(%i) CHANNEL %X(%i)\n", header->cmd, header->cmd,channelID,channelID);
 		printPacket(packet->data, packet->dataLength);
 	}
 	return false;	

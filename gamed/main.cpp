@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "stdafx.h"
 #include "NetworkListener.h"
-#include "Log.h"
+//#include "Log.h"
 
 #define SERVER_HOST ENET_HOST_ANY 
 #define SERVER_PORT 5119
@@ -27,16 +27,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 int main(int argc, char ** argv) 
 {
-	Logging->writeLine("IntWars %s\n",SERVER_VERSION);
+	//Logging->writeLine("IntWars %s\n",SERVER_VERSION);
 	NetworkListener *listener = new NetworkListener();
 	ENetAddress address;
 	address.host = SERVER_HOST;
 	address.port = SERVER_PORT;
 
 	listener->initialize(&address, SERVER_KEY);
-	Logging->writeLine("Starting net loop\n");
+	//Logging->writeLine("Starting net loop\n");
 	listener->netLoop();
 	delete listener;
 
-	Logging->writeLine("Goodbye\n");
+	//Logging->writeLine("Goodbye\n");
 }

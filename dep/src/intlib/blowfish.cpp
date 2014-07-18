@@ -1,8 +1,5 @@
 #include <cstring>
-#include <exception>
 #include <blowfish.h>
-
-using std::exception;
 
 uint64 ntohll(uint64 a)
 {
@@ -302,8 +299,6 @@ unsigned char *BlowFish::getKey()
 //Constructor - Initialize the P and S boxes for a given Key
 BlowFish::BlowFish(unsigned char* ucKey, size_t keysize, const SBlock& roChain) : m_oChain0(roChain), m_oChain(roChain)
 {
-	if(keysize<1)
-		throw exception("Incorrect key length");
 	//Check the Key - the key length should be between 1 and 56 bytes
 	if(keysize>56)
 		keysize = 56;
@@ -488,9 +483,6 @@ inline void BlockToBytes(SBlock const& b, unsigned char* p)
 //Returns false if n is multiple of 8
 void BlowFish::Encrypt(unsigned char* buf, size_t n, int iMode)
 {
-	//Check the buffer's length - should be > 0 and multiple of 8
-	if((n==0)||(n%8!=0))
-		throw exception("Incorrect buffer length");
 	SBlock work;
 	if(iMode == CBC) //CBC mode, using the Chain
 	{
@@ -531,9 +523,6 @@ void BlowFish::Encrypt(unsigned char* buf, size_t n, int iMode)
 //Returns false if n is multiple of 8
 void BlowFish::Decrypt(unsigned char* buf, size_t n, int iMode)
 {
-	//Check the buffer's length - should be > 0 and multiple of 8
-	if((n==0)||(n%8!=0))
-		throw exception("Incorrect buffer length");
 	SBlock work;
 	if(iMode == CBC) //CBC mode, using the Chain
 	{
@@ -576,9 +565,6 @@ void BlowFish::Decrypt(unsigned char* buf, size_t n, int iMode)
 //Returns false if n is multiple of 8
 void BlowFish::Encrypt(const unsigned char* in, unsigned char* out, size_t n, int iMode)
 {
-	//Check the buffer's length - should be > 0 and multiple of 8
-	if((n==0)||(n%8!=0))
-		throw exception("Incorrect buffer length");
 	SBlock work;
 	if(iMode == CBC) //CBC mode, using the Chain
 	{
@@ -619,9 +605,6 @@ void BlowFish::Encrypt(const unsigned char* in, unsigned char* out, size_t n, in
 //Returns false if n is multiple of 8
 void BlowFish::Decrypt(const unsigned char* in, unsigned char* out, size_t n, int iMode)
 {
-	//Check the buffer's length - should be > 0 and multiple of 8
-	if((n==0)||(n%8!=0))
-		throw exception("Incorrect buffer length");
 	SBlock work;
 	if(iMode == CBC) //CBC mode, using the Chain
 	{

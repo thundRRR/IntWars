@@ -19,8 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define _PACKET_HANDLER_H
 #include <enet/enet.h>
 #include "common.h"
-#include "Log.h"
 #include "ChatBox.h"
+#include "stdafx.h"
 
 #include <intlib/base64.h>
 #include <intlib/blowfish.h>

@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "common.h"
 #include <time.h>
 #include <intlib/general.h>
+#include <cmath>
 
 #if defined( __GNUC__ )
 #pragma pack(1)
@@ -272,18 +273,18 @@ struct MovementAns {
     MovementVector *getVector(uint32 index) {
         if(index >= vectorNo / 2)
         { return NULL; }
-        MovementVector *vPoints = (MovementVector *)((DWORD)&moveData + maskCount());
+        MovementVector *vPoints = (MovementVector *)(&moveData + maskCount());
         return &vPoints[index];
     }
 
     int maskCount() {
         float fVal = vectorNo / 2;
-        return ceil((fVal - 1) / 4);
+        return std::ceil((fVal - 1) / 4);
     }
 
     static uint32 size(uint8 vectorNo) {
         float fVectors = vectorNo;
-        int maskCount = ceil((fVectors - 1) / 4);
+        int maskCount = std::ceil((fVectors - 1) / 4);
         return sizeof(MovementAns) + (vectorNo * sizeof(MovementVector)) + maskCount; //-1 since struct already has first moveData byte
     }
 
@@ -486,8 +487,8 @@ struct ChatMessage {
 };
 
 typedef struct _UpdateModel {
-    _UpdateModel(DWORD netID, const char *szModel) {
-        ZeroMemory(this, sizeof(_UpdateModel));
+    _UpdateModel(uint32 netID, const char *szModel) {
+        memset(this, 0, sizeof(_UpdateModel));
         header.cmd = (PacketCmd)0x96;
         header.netId = netID;
         id = netID & ~0x40000000;
@@ -496,10 +497,10 @@ typedef struct _UpdateModel {
         strncpy((char *)szName, szModel, 32);
     }
     PacketHeader header;
-    DWORD id;
-    BYTE bOk;
-    DWORD unk1;
-    BYTE szName[32];
+    uint32 id;
+    uint8 bOk;
+    uint32 unk1;
+    uint8 szName[32];
 } UpdateModel;
 typedef struct _StatePacket {
     _StatePacket(PacketCmd state) {
@@ -549,7 +550,7 @@ struct HeroSpawn {
 struct HeroSpawn2 {
     HeroSpawn2() {
         header.cmd = (PacketCmd)0xB9;
-        ZeroMemory(unk, 30);
+        memset(unk, 0, 30);
         unk[15] = 0x80;
         unk[16] = 0x3F;
         unk1 = 3;
@@ -564,10 +565,10 @@ struct HeroSpawn2 {
     uint8 unk[30];
     uint8 unk1;
     uint32 unk2;
-    DWORD f1;
-    DWORD f2;
-    DWORD f3;
-    DWORD f4;
+    uint32 f1;
+    uint32 f2;
+    uint32 f3;
+    uint32 f4;
 };
 struct HeroSpawn3 {
     HeroSpawn3() {
@@ -616,8 +617,8 @@ struct GameTimerUpdate {
     float fTime;
 };
 struct SpellSet {
-    SpellSet(DWORD netID, uint32 _spellID, uint32 _level) {
-        ZeroMemory(this, sizeof(SpellSet));
+    SpellSet(uint32 netID, uint32 _spellID, uint32 _level) {
+        memset(this, 0, sizeof(SpellSet));
         header.cmd = PacketCmd(0x5A);
         header.netId = netID;
         spellID = _spellID;

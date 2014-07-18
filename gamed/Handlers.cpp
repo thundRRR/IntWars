@@ -19,6 +19,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "PacketHandler.h"
 #include "NetworkListener.h"
 
+#include <vector>
+#include <string>
+
+using namespace std;
+
 bool PacketHandler::handleNull(HANDLE_ARGS) {
     return true;
 }
@@ -34,13 +39,13 @@ bool PacketHandler::handleKeyCheck(ENetPeer *peer, ENetPacket *packet) {
     {
     sprintf(&buffer[i*3], "%02X ", p[i]);
     }
-    PDEBUG_LOG_LINE(Logging," Enc id: %s\n", buffer);*/
+    PDEBUG_LOG_LINE(//Logging," Enc id: %s\n", buffer);*/
     if(userId == keyCheck->userId) {
-        PDEBUG_LOG_LINE(Logging, " User got the same key as i do, go on!\n");
+       // PDEBUG_LOG_LINE(//Logging, " User got the same key as i do, go on!\n");
         peerInfo(peer)->keyChecked = true;
         peerInfo(peer)->userId = userId;
     } else {
-        Logging->errorLine(" WRONG KEY, GTFO!!!\n");
+        //Logging->errorLine(" WRONG KEY, GTFO!!!\n");
         return false;
     }
     //Send response as this is correct (OFC DO SOME ID CHECKS HERE!!!)
@@ -61,7 +66,7 @@ bool PacketHandler::handleGameNumber(ENetPeer *peer, ENetPacket *packet) {
 
 bool PacketHandler::handleSynch(ENetPeer *peer, ENetPacket *packet) {
     SynchVersion *version = reinterpret_cast<SynchVersion *>(packet->data);
-    Logging->writeLine("Client version: %s\n", version->version);
+    //Logging->writeLine("Client version: %s\n", version->version);
     SynchVersionAns answer;
     answer.mapId = 1;
     answer.players[0].userId = peerInfo(peer)->userId;
@@ -109,7 +114,7 @@ bool PacketHandler::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     h3.header.netId = peerInfo(peer)->netId;
     sendPacket(peer, reinterpret_cast<uint8 *>(&h3), sizeof(HeroSpawn3), CHL_S2C);
     //Spawn Turrets
-    char *szTurrets[24] = {
+    vector<string> szTurrets = {
         "@@Turret_T1_R_03_A",
         "@@Turret_T1_R_02_A",
         "@@Turret_T1_C_07_A",
@@ -135,10 +140,10 @@ bool PacketHandler::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
         "@@Turret_T2_L_02_A",
         "@@Turret_T2_L_01_A"
     };
-    for(UINT i = 0; i < 24; i++) {
+    for(unsigned int i = 0; i < 24; i++) {
         TurretSpawn turretSpawn;
         turretSpawn.tID = i + 1;
-        strcpy((char *)turretSpawn.name, szTurrets[i]);
+        strcpy((char *)turretSpawn.name, szTurrets[i].c_str());
         sendPacket(peer, reinterpret_cast<uint8 *>(&turretSpawn), sizeof(TurretSpawn), CHL_S2C);
     }
     //Spawn Props
@@ -213,13 +218,13 @@ bool PacketHandler::handleStartGame(HANDLE_ARGS) {
 bool PacketHandler::handleAttentionPing(ENetPeer *peer, ENetPacket *packet) {
     AttentionPing *ping = reinterpret_cast<AttentionPing *>(packet->data);
     AttentionPingAns response(ping);
-    Logging->writeLine("Plong x: %f, y: %f, z: %f, type: %i\n", ping->x, ping->y, ping->z, ping->type);
+    //Logging->writeLine("Plong x: %f, y: %f, z: %f, type: %i\n", ping->x, ping->y, ping->z, ping->type);
     return broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(AttentionPing), 3);
 }
 
 bool PacketHandler::handleView(ENetPeer *peer, ENetPacket *packet) {
     ViewReq *request = reinterpret_cast<ViewReq *>(packet->data);
-    //Logging->writeLine("View (%i), x:%f, y:%f, zoom: %f\n", request->requestNo, request->x, request->y, request->zoom);
+    ////Logging->writeLine("View (%i), x:%f, y:%f, zoom: %f\n", request->requestNo, request->x, request->y, request->zoom);
     ViewAns answer;
     answer.requestNo = request->requestNo;
     sendPacket(peer, reinterpret_cast<uint8 *>(&answer), sizeof(ViewAns), CHL_S2C, UNRELIABLE);
@@ -231,7 +236,7 @@ bool PacketHandler::handleView(ENetPeer *peer, ENetPacket *packet) {
     return true;
 }
 
-inline void SetBitmaskValue(byte mask[], int pos, bool val) {
+inline void SetBitmaskValue(uint8 mask[], int pos, bool val) {
     if(pos < 0)
     { return; }
     if(val)
@@ -240,14 +245,14 @@ inline void SetBitmaskValue(byte mask[], int pos, bool val) {
     { mask[pos / 8] &= ~(1 << (pos % 8)); }
 }
 
-inline bool GetBitmaskValue(byte mask[], int pos) {
+inline bool GetBitmaskValue(uint8 mask[], int pos) {
     return pos >= 0 && ((1 << (pos % 8)) & mask[pos / 8]) != 0;
 }
 
 #include <vector>
 
-std::vector<MovementVector> readWaypoints(byte *buffer, int coordCount) {
-    UINT nPos = (coordCount + 5) / 8;
+std::vector<MovementVector> readWaypoints(uint8 *buffer, int coordCount) {
+    unsigned int nPos = (coordCount + 5) / 8;
     if(coordCount % 2)
     { nPos++; }
     int vectorCount = coordCount / 2;
@@ -279,14 +284,14 @@ bool PacketHandler::handleMove(ENetPeer *peer, ENetPacket *packet) {
     switch(request->type) {
         //TODO, Implement stop commands
         case STOP:
-            Logging->writeLine("Move stop\n");
+            //Logging->writeLine("Move stop\n");
             return true;
         case EMOTE:
-            Logging->writeLine("Emotion\n");
+            //Logging->writeLine("Emotion\n");
             return true;
     }
     std::vector<MovementVector> vMoves = readWaypoints(&request->moveData, request->vectorNo);
-    Logging->writeLine("Move to(normal): x:%f, y:%f, type: %i, vectorNo: %i\n", request->x, request->y, request->type, vMoves.size());
+    //Logging->writeLine("Move to(normal): x:%f, y:%f, type: %i, vectorNo: %i\n", request->x, request->y, request->type, vMoves.size());
     for(int i = 0; i < vMoves.size(); i++)
     { printf("     Vector %i, x: %f, y: %f\n", i, 2.0 * vMoves[i].x + MAP_WIDTH, 2.0 * vMoves[i].y + MAP_HEIGHT); }
     MovementAns *answer = MovementAns::create(request->vectorNo);
@@ -308,7 +313,7 @@ bool PacketHandler::handleLoadPing(ENetPeer *peer, ENetPacket *packet) {
     memcpy(&response, packet->data, sizeof(PingLoadInfo));
     response.header.cmd = PKT_S2C_Ping_Load_Info;
     response.userId = peerInfo(peer)->userId;
-    Logging->writeLine("loaded: %f, ping: %f, %f\n", loadInfo->loaded, loadInfo->ping, loadInfo->f3);
+    //Logging->writeLine("loaded: %f, ping: %f, %f\n", loadInfo->loaded, loadInfo->ping, loadInfo->f3);
     bool bRet = broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(PingLoadInfo), CHL_LOW_PRIORITY, UNRELIABLE);
     static bool bLoad = false;
     if(!bLoad) {
@@ -337,7 +342,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
             CharacterStats *stats = CharacterStats::create(blockNo, mask);
             stats->netId = peerInfo(peer)->netId;
             stats->setValue(blockNo, mask, value);
-            Logging->writeLine("Setting to %f in block: %i, field: %i\n", value, blockNo, fieldNo);
+            //Logging->writeLine("Setting to %f in block: %i, field: %i\n", value, blockNo, fieldNo);
             sendPacket(peer, reinterpret_cast<uint8 *>(stats), stats->getSize(), CHL_LOW_PRIORITY, 2);
             stats->destroy();
             return true;
@@ -348,7 +353,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
             CharacterStats *stats = CharacterStats::create(FM1_Gold, 0, 0, 0, 0);
             stats->netId = peerInfo(peer)->netId;
             stats->setValue(1, FM1_Gold, gold);
-            Logging->writeLine("Set gold to %f\n", gold);
+            //Logging->writeLine("Set gold to %f\n", gold);
             sendPacket(peer, reinterpret_cast<uint8 *>(stats), stats->getSize(), CHL_LOW_PRIORITY, 2);
             stats->destroy();
             return true;
@@ -362,7 +367,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
 
         charStats.statType = STI_Movement;
         charStats.statValue = data;
-        Logging->writeLine("set champ speed to %f\n", data);
+        //Logging->writeLine("set champ speed to %f\n", data);
         sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
         return true;
         }
@@ -373,7 +378,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
 
         charStats.statType = STI_Health;
         charStats.statValue = data;
-        Logging->writeLine("set champ health to %f\n", data);
+        //Logging->writeLine("set champ health to %f\n", data);
         sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
         return true;
         }
@@ -384,7 +389,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
 
         charStats.statType = STI_Exp;
         charStats.statValue = data;
-        Logging->writeLine("set champ exp to %f\n", data);
+        //Logging->writeLine("set champ exp to %f\n", data);
         sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
         return true;
         }
@@ -395,7 +400,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
 
         charStats.statType = STI_AbilityPower;
         charStats.statValue = data;
-        Logging->writeLine("set champ abilityPower to %f\n", data);
+        //Logging->writeLine("set champ abilityPower to %f\n", data);
         sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
         return true;
         }
@@ -406,7 +411,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
 
         charStats.statType = STI_AttackDamage;
         charStats.statValue = data;
-        Logging->writeLine("set champ attack damage to %f\n", data);
+        //Logging->writeLine("set champ attack damage to %f\n", data);
         sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
         return true;
         }
@@ -417,7 +422,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
 
         charStats.statType = STI_Mana;
         charStats.statValue = data;
-        Logging->writeLine("set champ mana to %f\n", data);
+        //Logging->writeLine("set champ mana to %f\n", data);
         sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
         return true;
         }
@@ -439,7 +444,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
             return sendPacket(peer, packet->data, packet->dataLength, CHL_COMMUNICATION);
             break;
         default:
-            Logging->errorLine("Unknown ChatMessageType\n");
+            //Logging->errorLine("Unknown ChatMessageType\n");
             return sendPacket(peer, packet->data, packet->dataLength, CHL_COMMUNICATION);
             break;
     }
@@ -473,19 +478,19 @@ bool PacketHandler::handleEmotion(HANDLE_ARGS) {
     switch(emotion->id) {
         case 0:
             //dance
-            Logging->writeLine("dance");
+            //Logging->writeLine("dance");
             break;
         case 1:
             //taunt
-            Logging->writeLine("taunt");
+            //Logging->writeLine("taunt");
             break;
         case 2:
             //laugh
-            Logging->writeLine("laugh");
+            //Logging->writeLine("laugh");
             break;
         case 3:
             //joke
-            Logging->writeLine("joke");
+            //Logging->writeLine("joke");
             break;
     }
     EmotionResponse response;
