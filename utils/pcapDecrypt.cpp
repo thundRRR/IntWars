@@ -114,6 +114,9 @@ int main(int argc, char **argv)
       //parse the IP header 
       struct ip *ip_hdr = (struct ip *)pkt_ptr; //point to an IP header structure 
       bool isFragment = false;
+      
+      unsigned char* ipSrc = &pkt_ptr[12];
+      unsigned char* ipDst = &pkt_ptr[16];
  
       packet_length = ntohs(ip_hdr->ip_len)-20-8; 
       pkt_ptr += 20+8;
@@ -165,7 +168,8 @@ int main(int argc, char **argv)
          } else {
             commandLength = finalLength;
          }
-      
+         
+         printf("%d.%d.%d.%d -> %d.%d.%d.%d\n", ipSrc[0], ipSrc[1], ipSrc[2], ipSrc[3], ipDst[0], ipDst[1], ipDst[2], ipDst[3]);
          printf("Size : %d\n", commandLength);
       
          b.Decrypt(pkt_ptr, commandLength);

@@ -25,9 +25,9 @@ enum GameCmd : uint8
 	PKT_S2C_MoveAns                 = 0x60,
 };
 
-//Currently attuned to Live 4.5.0.264
+//Currently attuned to Live 4.12.0.356
 enum PacketCmd : uint8
-{                                               //Channel //Type
+{                                            
 	PKT_KeyCheck = 0x00, 
 
 	PKT_S2C_EndSpawn = 0x11,
@@ -49,16 +49,16 @@ enum PacketCmd : uint8
 	PKT_S2C_GameTimer = 0xC0,
 	PKT_S2C_GameTimerUpdate = 0xC1,
 
-	PKT_C2S_StartGame = 0x51,
+	PKT_C2S_StartGame = 0x52,    // 4.12
 	PKT_S2C_SynchVersion = 0x54, // 4.12
 	PKT_C2S_ScoreBord = 0x55,
 	PKT_C2S_AttentionPing = 0x56,
-	PKT_S2C_StartGame = 0x5B,
+	PKT_S2C_StartGame = 0x5C,    // 4.12
 
 	PKT_S2C_StartSpawn = 0x62,
 	PKT_C2S_ClientReady = 0x64,
-	PKT_S2C_LoadHero = 0x66,    // 4.12
-	PKT_S2C_LoadName = 0x65,    // 4.12
+	PKT_S2C_LoadHero = 0x65,    // 4.12
+	PKT_S2C_LoadName = 0x66,    // 4.12
 	PKT_S2C_LoadScreenInfo = 0x67,
 	PKT_ChatBoxMessage = 0x68,
 	PKT_S2C_BuyItemAns = 0x6E,
@@ -82,7 +82,7 @@ enum PacketCmd : uint8
 	PKT_C2S_SynchVersion = 0xBD, // 4.12
 	PKT_C2S_CharLoaded = 0xBE,   // 4.12
 
-	PKT_S2C_CharStats = 0xC3,
+	PKT_S2C_CharStats = 0xC4,
 	PKT_S2C_FogUpdate2 = 0x23,
 	PKT_S2C_LevelPropSpawn = 0xD0,
 
