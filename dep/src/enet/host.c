@@ -36,7 +36,7 @@ enet_host_create (const ENetAddress * address, size_t peerCount, enet_uint32 inc
     host = (ENetHost *) enet_malloc (sizeof (ENetHost));
     if (host == NULL)
       return NULL;
-
+      
     host -> peers = (ENetPeer *) enet_malloc (peerCount * sizeof (ENetPeer));
     if (host -> peers == NULL)
     {
@@ -44,6 +44,7 @@ enet_host_create (const ENetAddress * address, size_t peerCount, enet_uint32 inc
 
        return NULL;
     }
+
     memset (host -> peers, 0, peerCount * sizeof (ENetPeer));
 
     host -> socket = enet_socket_create (ENET_SOCKET_TYPE_DATAGRAM);
@@ -75,11 +76,11 @@ enet_host_create (const ENetAddress * address, size_t peerCount, enet_uint32 inc
     host -> peerCount = peerCount;
     host -> commandCount = 0;
     host -> bufferCount = 0;
-    host -> checksum = NULL;
+//    host -> checksum = NULL;
     host -> receivedAddress.host = ENET_HOST_ANY;
     host -> receivedAddress.port = 0;
     host -> receivedDataLength = 0;
-     
+    host -> serviceTime = 0;
     host -> totalSentData = 0;
     host -> totalSentPackets = 0;
     host -> totalReceivedData = 0;
@@ -200,7 +201,7 @@ enet_host_connect (ENetHost * host, const ENetAddress * address, size_t channelC
         
     command.header.command = ENET_PROTOCOL_COMMAND_CONNECT | ENET_PROTOCOL_COMMAND_FLAG_ACKNOWLEDGE;
     command.header.channelID = 0xFF;
-    command.connect.outgoingPeerID = ENET_HOST_TO_NET_16 (currentPeer -> incomingPeerID);
+    command.connect.outgoingPeerID = 0x00e4;  //ENET_HOST_TO_NET_16 (currentPeer -> incomingPeerID);
     command.connect.mtu = ENET_HOST_TO_NET_16 (currentPeer -> mtu);
     command.connect.windowSize = ENET_HOST_TO_NET_32 (currentPeer -> windowSize);
     command.connect.channelCount = ENET_HOST_TO_NET_32 (channelCount);
@@ -211,7 +212,7 @@ enet_host_connect (ENetHost * host, const ENetAddress * address, size_t channelC
     command.connect.packetThrottleDeceleration = ENET_HOST_TO_NET_32 (currentPeer -> packetThrottleDeceleration);
     command.connect.sessionID = currentPeer -> sessionID;
     
-    //enet_peer_queue_outgoing_command (currentPeer, & command, NULL, 0, 0);
+    enet_peer_queue_outgoing_command (currentPeer, & command, NULL, 0, 0);
 
     return currentPeer;
 }
@@ -274,7 +275,7 @@ enet_host_bandwidth_limit (ENetHost * host, enet_uint32 incomingBandwidth, enet_
 void
 enet_host_bandwidth_throttle (ENetHost * host)
 {
-    enet_uint32 timeCurrent = enet_time_get (),
+    /*enet_uint32 timeCurrent = enet_time_get (),
            elapsedTime = timeCurrent - host -> bandwidthThrottleEpoch,
            peersTotal = 0,
            dataTotal = 0,
@@ -433,7 +434,7 @@ enet_host_bandwidth_throttle (ENetHost * host)
     {
         peer -> incomingDataTotal = 0;
         peer -> outgoingDataTotal = 0;
-    }
+    }*/
 }
     
 /** @} */

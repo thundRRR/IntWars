@@ -82,7 +82,7 @@ typedef struct _SynchVersionAns {
     _SynchVersionAns() {
         header.cmd = PKT_S2C_SynchVersion;
         ok = ok2 = 1;
-        memcpy(version, "Version 4.5.0.264 [PUBLIC]", 27);
+        memcpy(version, "Version 4.12.0.356 [PUBLIC]", 27);
         memcpy(gameMode, "CLASSIC", 8);
         memset(zero, 0, 2232);
         end1 = 0xE2E0;

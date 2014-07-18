@@ -28,67 +28,65 @@ enum GameCmd : uint8
 //Currently attuned to Live 4.5.0.264
 enum PacketCmd : uint8
 {                                               //Channel //Type
-	PKT_KeyCheck = 0x00, //0      //UPDATED  
+	PKT_KeyCheck = 0x00, 
 
-	PKT_S2C_EndSpawn = 0x11, //? //UPDATED
-	PKT_C2S_QueryStatusReq = 0x14, //1 //UPDATED
-	PKT_S2C_SkillUp = 0x15, //3 //UPDATED
-	PKT_C2S_Ping_Load_Info = 0x16, //1  //UPDATED
+	PKT_S2C_EndSpawn = 0x11,
+	PKT_C2S_QueryStatusReq = 0x14,
+	PKT_S2C_SkillUp = 0x15,
+	PKT_C2S_Ping_Load_Info = 0x16,
 
-	PKT_S2C_ViewAns = 0x2B, //3  //UPDATED
-	PKT_C2S_ViewReq = 0x2D, //1 //UPDATED
+	PKT_S2C_ViewAns = 0x2B,
+	PKT_C2S_ViewReq = 0x2D,
 
-	PKT_C2S_SkillUp = 0x38, //1 //UPDATED
-	PKT_S2C_AttentionPing = 0x3F, //3 //UPDATED
+	PKT_C2S_SkillUp = 0x38,
+	PKT_S2C_AttentionPing = 0x3F,
 
-	PKT_S2C_Emotion = 0x42, //3 UPDATED
-	PKT_C2S_Emotion = 0x47, //1 UPDATED
-	PKT_S2C_HeroSpawn = 0x4B, //3 UPDATED
-	PKT_S2C_Announce = 0x4C, //3
+	PKT_S2C_Emotion = 0x42,
+	PKT_C2S_Emotion = 0x47,
+	PKT_S2C_HeroSpawn = 0x4B,
+	PKT_S2C_Announce = 0x4C,
 	
 	PKT_S2C_GameTimer = 0xC0,
 	PKT_S2C_GameTimerUpdate = 0xC1,
 
-	PKT_C2S_StartGame = 0x51, //1 //UPDATED
-	PKT_S2C_SynchVersion = 0x53, //3 //UPDATED
-	PKT_C2S_ScoreBord = 0x55, //1 //UPDATED
-	PKT_C2S_AttentionPing = 0x56, //1 //UPDATED
-	PKT_S2C_StartGame = 0x5B, //? //UPDATED 
+	PKT_C2S_StartGame = 0x51,
+	PKT_S2C_SynchVersion = 0x54, // 4.12
+	PKT_C2S_ScoreBord = 0x55,
+	PKT_C2S_AttentionPing = 0x56,
+	PKT_S2C_StartGame = 0x5B,
 
-	PKT_S2C_StartSpawn = 0x61, //? //UPDATED
-	//PKT_C2S_OpenShop = 0x63, //1 - DEPRECATED
-	PKT_C2S_ClientReady = 0x64, //6 //UPDATED ?
-	PKT_S2C_LoadHero = 0x65, //6 //UPDATED
-	PKT_S2C_LoadName = 0x66, //6 //UPDATED
-	PKT_S2C_LoadScreenInfo = 0x67, //6 //UPDATED
-	PKT_ChatBoxMessage = 0x68, //5 //UPDATED
-	PKT_S2C_BuyItemAns = 0x6E, //3 //UPDATED
+	PKT_S2C_StartSpawn = 0x62,
+	PKT_C2S_ClientReady = 0x64,
+	PKT_S2C_LoadHero = 0x66,    // 4.12
+	PKT_S2C_LoadName = 0x65,    // 4.12
+	PKT_S2C_LoadScreenInfo = 0x67,
+	PKT_ChatBoxMessage = 0x68,
+	PKT_S2C_BuyItemAns = 0x6E,
 
-	PKT_C2S_MoveReq = 0x71, //1 //UPDATED
-	PKT_C2S_MoveConfirm = 0x76, //1 //UPDATED
+	PKT_C2S_MoveReq = 0x71,
+	PKT_C2S_MoveConfirm = 0x76,
 
-	PKT_C2S_LockCamera = 0x80, //1 //UPDATED
-	PKT_C2S_BuyItemReq = 0x81, //1 //UPDATED
-	PKT_S2C_QueryStatusAns = 0x87, //? //UPDATED
-	PKT_C2S_Exit = 0x8E, //1 //UPDATED
+	PKT_C2S_LockCamera = 0x80,
+	PKT_C2S_BuyItemReq = 0x81,
+	PKT_S2C_QueryStatusAns = 0x88, // 4.12
+	PKT_C2S_Exit = 0x8E,
 
-	PKT_World_SendGameNumber = 0x91, //3 //UPDATED
-	PKT_S2C_Ping_Load_Info = 0x94, //4 //UPDATED
-	PKT_S2C_TurretSpawn = 0x9C, //3 UPDATED
+	PKT_World_SendGameNumber = 0x91,
+	PKT_S2C_Ping_Load_Info = 0x95, // 4.12
+	PKT_S2C_TurretSpawn = 0x9D,    // 4.12
 
-	PKT_C2S_Surrender = 0xA3, //1 //UPDATED
-	//PKT_C2S_GameNumberReq = 0xA6, //1 //DEPRECATED
-	PKT_C2S_StatsConfirm = 0xA7, //1 UPDATED
-	PKT_C2S_Click = 0xAE, //1 //UPDATED
+	PKT_C2S_Surrender = 0xA3,
+	PKT_C2S_StatsConfirm = 0xA7, 
+	PKT_C2S_Click = 0xAE, 
 
-	PKT_C2S_SynchVersion = 0xBC, //1 //UPDATED
-	PKT_C2S_CharLoaded = 0xBD, //1 //UPDATED
+	PKT_C2S_SynchVersion = 0xBD, // 4.12
+	PKT_C2S_CharLoaded = 0xBE,   // 4.12
 
-	PKT_S2C_CharStats = 0xC3, //4 //UPDATED
-	PKT_S2C_FogUpdate2 = 0x23, //3 //UPDATED?
-	PKT_S2C_LevelPropSpawn = 0xD0, //3 UPDATED
+	PKT_S2C_CharStats = 0xC3,
+	PKT_S2C_FogUpdate2 = 0x23,
+	PKT_S2C_LevelPropSpawn = 0xD0,
 
-	PKT_Batch = 0xFF, //3
+	PKT_Batch = 0xFF
 };
 
 enum MoveType : uint8

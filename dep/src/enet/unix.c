@@ -39,6 +39,7 @@ static enet_uint32 timeBase = 0;
 int
 enet_initialize (void)
 {
+   enet_time_set(enet_time_get());
     return 0;
 }
 
