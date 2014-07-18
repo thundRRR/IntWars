@@ -489,7 +489,7 @@ struct ChatMessage {
 typedef struct _UpdateModel {
     _UpdateModel(uint32 netID, const char *szModel) {
         memset(this, 0, sizeof(_UpdateModel));
-        header.cmd = (PacketCmd)0x96;
+        header.cmd = (PacketCmd)0x97;
         header.netId = netID;
         id = netID & ~0x40000000;
         bOk = 1;
@@ -549,7 +549,7 @@ struct HeroSpawn {
 } ;
 struct HeroSpawn2 {
     HeroSpawn2() {
-        header.cmd = (PacketCmd)0xB9;
+        header.cmd = (PacketCmd)0xBA;
         memset(unk, 0, 30);
         unk[15] = 0x80;
         unk[16] = 0x3F;
@@ -572,7 +572,7 @@ struct HeroSpawn2 {
 };
 struct HeroSpawn3 {
     HeroSpawn3() {
-        header.cmd = (PacketCmd)0xAD;
+        header.cmd = (PacketCmd)0xAE;
         unk = 0;
         health = 1337;
         maxHealth = 666;

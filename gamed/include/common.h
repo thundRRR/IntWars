@@ -41,7 +41,7 @@ enum PacketCmd : uint8
 	PKT_C2S_SkillUp = 0x38, //1 //UPDATED
 	PKT_S2C_AttentionPing = 0x3F, //3 //UPDATED
 
-	PKT_S2C_Emotion = 0x41, //3 UPDATED
+	PKT_S2C_Emotion = 0x42, //3 UPDATED
 	PKT_C2S_Emotion = 0x47, //1 UPDATED
 	PKT_S2C_HeroSpawn = 0x4B, //3 UPDATED
 	PKT_S2C_Announce = 0x4C, //3
@@ -86,7 +86,7 @@ enum PacketCmd : uint8
 
 	PKT_S2C_CharStats = 0xC3, //4 //UPDATED
 	PKT_S2C_FogUpdate2 = 0x23, //3 //UPDATED?
-	PKT_S2C_LevelPropSpawn = 0xCF, //3 UPDATED
+	PKT_S2C_LevelPropSpawn = 0xD0, //3 UPDATED
 
 	PKT_Batch = 0xFF, //3
 };
