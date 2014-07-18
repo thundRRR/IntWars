@@ -204,7 +204,7 @@ bool PacketHandler::handleStartGame(HANDLE_ARGS) {
     test.unk1 = 2;
     //uint8 p[] = {0xC5, 0x19, 0x00, 0x00, 0x40, 0x00, 0x00, 0x50};
     //sendPacket(peer, reinterpret_cast<uint8*>(p), sizeof(p), 3);
-    sendPacket(peer, reinterpret_cast<uint8 *>(&test), sizeof(FogUpdate2), 3);
+    //sendPacket(peer, reinterpret_cast<uint8 *>(&test), sizeof(FogUpdate2), 3);
     //playing around 8-)
     /*
     CharacterStats movement;

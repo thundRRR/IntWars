@@ -88,7 +88,7 @@ void NetworkListener::netLoop()
 
 			/* Clean up the packet now that we're done using it. */
 			enet_packet_destroy (event.packet);
-		break;
+         break;
 
 		case ENET_EVENT_TYPE_DISCONNECT:
 			//Logging->writeLine("Client disconnected: %i.%i.%i.%i:%i \n", event.peer->address.host & 0xFF, (event.peer->address.host >> 8) & 0xFF, (event.peer->address.host >> 16) & 0xFF, (event.peer->address.host >> 24) & 0xFF, event.peer->address.port);

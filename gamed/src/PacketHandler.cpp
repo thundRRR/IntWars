@@ -116,6 +116,7 @@ bool PacketHandler::handlePacket(ENetPeer *peer, ENetPacket *packet, uint8 chann
 	}
 
 	PacketHeader *header = reinterpret_cast<PacketHeader*>(packet->data);	
+   printf("Handling OpCode %d\n", header->cmd);
 	bool (PacketHandler::*handler)(HANDLE_ARGS) = _handlerTable[header->cmd][channelID];
 	
 	if(handler)
