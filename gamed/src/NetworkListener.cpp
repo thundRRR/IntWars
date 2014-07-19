@@ -74,7 +74,7 @@ void NetworkListener::netLoop()
 
 				event.peer->data = new ClientInfo();
 				peerInfo(event.peer)->setName("Test");
-				peerInfo(event.peer)->setType("Teemo");
+				peerInfo(event.peer)->setType("Ezreal");
 				peerInfo(event.peer)->skinNo = 6;
 				peerInfo(event.peer)->netId = GetNewNetID();
 

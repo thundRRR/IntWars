@@ -60,7 +60,8 @@ class PacketHandler
 		bool handleSkillUp(HANDLE_ARGS);
 		bool handleEmotion(HANDLE_ARGS);
 		bool handleBuyItem(HANDLE_ARGS);
-
+      bool handleCastSpell(HANDLE_ARGS);
+      
 		//Tools
 		void printPacket(uint8 *buf, uint32 len);
 		void printLine(uint8 *buf, uint32 len);

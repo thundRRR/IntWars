@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "PacketHandler.h"
+#define min(a, b)       ((a) < (b) ? (a) : (b))
 
 PacketHandler::PacketHandler(ENetHost *server, BlowFish *blowfish)
 {
@@ -27,6 +28,7 @@ PacketHandler::PacketHandler(ENetHost *server, BlowFish *blowfish)
 	registerHandler(&PacketHandler::handleSpawn,           PKT_C2S_CharLoaded, CHL_C2S);
 	registerHandler(&PacketHandler::handleMap,             PKT_C2S_ClientReady, CHL_LOADING_SCREEN);
 	registerHandler(&PacketHandler::handleSynch,           PKT_C2S_SynchVersion, CHL_C2S);
+   registerHandler(&PacketHandler::handleCastSpell,       PKT_C2S_CastSpell, CHL_C2S);
 	//registerHandler(&PacketHandler::handleGameNumber,      PKT_C2S_GameNumberReq, CHL_C2S);
 	registerHandler(&PacketHandler::handleQueryStatus,     PKT_C2S_QueryStatusReq, CHL_C2S);
 	registerHandler(&PacketHandler::handleStartGame,       PKT_C2S_StartGame, CHL_C2S);
@@ -56,16 +58,48 @@ void PacketHandler::registerHandler(bool (PacketHandler::*handler)(HANDLE_ARGS),
 	_handlerTable[pktcmd][c] = handler;
 }
 
-void PacketHandler::printPacket(uint8 *buf, uint32 len)
+void PacketHandler::printPacket(uint8 *buffer, uint32 size)
 {
-	//PDEBUG_LOG(Logging,"   ");
-	for(uint32 i = 0; i < len; i++)
-	{
-		//PDEBUG_LOG(Logging,"%02X ", static_cast<uint8>(buf[i]));
-		//if((i+1)%16 == 0)
-			//PDEBUG_LOG(Logging,"\n   ");
-	}
-	//PDEBUG_LOG(Logging,"\n");
+
+   unsigned int i;
+   printf("Printing with size %u\n", size);
+   
+   for(i = 0; i < size; ++i) {
+      if(i != 0&& i%16 == 0) {
+         for(unsigned int j = i-16; j < i; ++j) {
+         
+            if(buffer[j] >= 32 && buffer[j] <= 126)
+               printf("%c", buffer[j]);
+            else
+               printf(".");
+         }
+         
+         puts("");
+      
+      }
+      
+      if(i%16 == 0) {
+         printf("%04d-%04d ", i, min(i+15, size-1));
+      }
+
+      printf("%02x ", buffer[i]);
+   }
+   
+   for(i = ((16-i%16)%16); i > 0; --i)
+      printf("   ");
+   
+   for(i = size- (size%16 == 0 ? 16 : size%16); i < size; ++i) {
+      if(buffer[i] >= 32 && buffer[i] <= 126)
+         printf("%c", buffer[i]);
+      else
+         printf(".");
+   }
+   
+   puts("\n");
+   for(i = 0; i < size; ++i) {
+      printf("\\x%02x", buffer[i]);
+   }
+   puts("\n");
 }
 
 void PacketHandler::printLine(uint8 *buf, uint32 len)

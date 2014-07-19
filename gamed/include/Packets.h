@@ -235,6 +235,52 @@ typedef struct _ViewReq {
     uint8 requestNo;
 } ViewReq;
 
+struct CastSpell {
+    PacketHeader header;
+    uint8 spellSlot;
+    float x, y;
+    float x2, y2;
+    uint32 targetNetId; // If 0, use coordinates, else use target net id
+};
+
+/**
+ * Change Target ??
+ */
+struct Unk {
+   Unk(uint32 netId, float x, float y) : unk1(0x0F), unk2(1), unk3(1), x(x), unk4(0), y(y), targetNetId(0) {
+      header.cmd = PKT_S2C_UNK;
+      header.netId = netId;
+   }
+
+   PacketHeader header;
+   uint8 unk1, unk2, unk3;
+
+   float x, unk4, y;
+   uint32 targetNetId;
+};
+
+struct MinionSpawn {
+
+   MinionSpawn(uint32 netId) : netId(netId), netId2(netId), netId3(netId), unk(0x00150017), unk2(0x03), unk3(0x53b83640), unk4(0xff), unk5(0x00000001), unk7(0), unk8(0x3efa47f477f56302) {
+      header.cmd = PKT_S2C_MinionSpawn;
+      header.netId = netId;
+      memcpy(unk6, "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00\x00\x05", 36);
+   }
+
+   PacketHeader header;
+   
+   uint32 unk;
+   uint8 unk2;
+   uint32 netId, netId2;
+   uint32 unk3;
+   uint8 unk4;
+   uint32 unk5;
+   uint8 unk6[36];
+   uint32 netId3;
+   uint8 unk7;
+   uint64 unk8;
+};
+
 struct MovementVector {
     short x;
     short y;
@@ -354,9 +400,16 @@ typedef struct _WorldSendGameNumber {
 
 struct CharacterStats {
 
-   CharacterStats(uint8 masterMask, uint32 netId, uint32 mask, float value) : updateNo(1), masterMask(masterMask), netId(netId), mask(mask), size(4), value(value) {
+   CharacterStats(uint8 masterMask, uint32 netId, uint32 mask, float value) : updateNo(1), masterMask(masterMask), netId(netId), mask(mask), size(4) {
       header.cmd = (GameCmd)PKT_S2C_CharStats;
       header.ticks = clock();
+      this->value.fValue = value;
+   }
+   
+   CharacterStats(uint8 masterMask, uint32 netId, uint32 mask, unsigned short value) : updateNo(1), masterMask(masterMask), netId(netId), mask(mask), size(2) {
+      header.cmd = (GameCmd)PKT_S2C_CharStats;
+      header.ticks = clock();
+      this->value.sValue = value;
    }
 
    GameHeader header;
@@ -365,7 +418,10 @@ struct CharacterStats {
    uint32 netId;
    uint32 mask;
    uint8 size;
-   float value;
+   union {
+      unsigned short sValue;
+      float fValue;
+   } value;
 };
 
 struct ChatMessage {

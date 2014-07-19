@@ -329,11 +329,22 @@ bool PacketHandler::handleQueryStatus(HANDLE_ARGS) {
     return sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(QueryStatus), CHL_S2C);
 }
 
+bool PacketHandler::handleCastSpell(HANDLE_ARGS) {
+    CastSpell *spell = reinterpret_cast<CastSpell *>(packet->data);
+    
+    printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %d\n", spell->spellSlot, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
+    
+    Unk unk(peerInfo(peer)->netId, spell->x, spell->y);
+    sendPacket(peer, reinterpret_cast<uint8 *>(&unk), sizeof(unk), CHL_S2C);
+    
+    return true;
+}
+
 bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
     ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
     //Lets do commands
     if(message->msg == '.') {
-        const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help" };
+        const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn" };
         //Set field
         if(strncmp(message->getMessage(), cmd[0], strlen(cmd[0])) == 0) {
             uint32 blockNo = atoi(&message->getMessage()[strlen(cmd[0]) + 1]);
@@ -365,6 +376,17 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
            sendPacket(peer,reinterpret_cast<uint8*>(&stats),sizeof(stats), CHL_LOW_PRIORITY, 2);
            return true;
         }
+        
+        //spawn
+        if(strncmp(message->getMessage(), cmd[10], strlen(cmd[10])) == 0)
+        {
+           MinionSpawn ms(GetNewNetID());
+           printf("Spawning %d\n", sizeof(ms));
+           printPacket((unsigned char*)&ms, sizeof(ms));
+           sendPacket(peer,reinterpret_cast<uint8*>(&ms),sizeof(ms),  CHL_S2C);
+           return true;
+        }
+        
          /*
         //health
         if(strncmp(message->getMessage(), cmd[3], strlen(cmd[3])) == 0)
@@ -454,11 +476,18 @@ bool PacketHandler::handleSkillUp(HANDLE_ARGS) {
     skillUpResponse.header.netId = peerInfo(peer)->netId;
     skillUpResponse.skill = skillUpPacket->skill;
     skillUpResponse.level = 0x01;
-    skillUpResponse.pointsLeft = 0;
+    skillUpResponse.pointsLeft = 1;
     
     printf("Upping skill %d\n", skillUpPacket->skill);
+    sendPacket(peer, reinterpret_cast<uint8 *>(&skillUpResponse), sizeof(skillUpResponse), CHL_GAMEPLAY);
     
-    return sendPacket(peer, reinterpret_cast<uint8 *>(&skillUpResponse), sizeof(skillUpResponse), CHL_GAMEPLAY);
+    CharacterStats stats(MM_One, peerInfo(peer)->netId, FM1_SPELL, (unsigned short)(0x108F)); // activate all the spells
+    sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats)-2, CHL_LOW_PRIORITY, 2);
+    
+    /*CharacterStats stats2(MM_One, peerInfo(peer)->netId, 0x40, 28.0f);
+    sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats2), CHL_LOW_PRIORITY, 2);*/
+    
+    return true;
 }
 
 bool PacketHandler::handleBuyItem(HANDLE_ARGS) {

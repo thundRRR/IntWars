@@ -73,18 +73,22 @@ enum PacketCmd : uint8
 
 	PKT_World_SendGameNumber = 0x92,
 	PKT_S2C_Ping_Load_Info = 0x95, // 4.12
+   PKT_C2S_CastSpell = 0x9A,      // 4.12
 	PKT_S2C_TurretSpawn = 0x9D,    // 4.12
 
 	PKT_C2S_Surrender = 0xA4,
 	PKT_C2S_StatsConfirm = 0xA8, 
 	PKT_C2S_Click = 0xAF, 
 
+   PKT_S2C_MinionSpawn = 0xBA,
 	PKT_C2S_SynchVersion = 0xBD, // 4.12
 	PKT_C2S_CharLoaded = 0xBE,   // 4.12
 
 	PKT_S2C_CharStats = 0xC4,
 	PKT_S2C_FogUpdate2 = 0x23,
 	PKT_S2C_LevelPropSpawn = 0xD0,
+   
+   PKT_S2C_UNK          = 0xFE, // Change target ??
 
 	PKT_Batch = 0xFF
 };
@@ -144,7 +148,8 @@ enum MasterMask : uint8
 enum FieldMaskOne : uint32
 {
 	FM1_Gold        = 0x00000001,
-   FM1_Gold_2      = 0x00000002
+   FM1_Gold_2      = 0x00000002,
+   FM1_SPELL       = 0x00000004 // Sending short 0x108[1248] activates spells 1/2/3/4
 };
 
 enum FieldMaskTwo : uint32
