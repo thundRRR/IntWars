@@ -32,7 +32,7 @@ enum PacketCmd : uint8
 
 	PKT_S2C_EndSpawn = 0x11,
 	PKT_C2S_QueryStatusReq = 0x14,
-	PKT_S2C_SkillUp = 0x16,   // 4.12
+	PKT_S2C_SkillUp = 0x15,   // 4.12
 	PKT_C2S_Ping_Load_Info = 0x16,
 
 	PKT_S2C_ViewAns = 0x2C,   // 4.12
@@ -134,16 +134,17 @@ enum Spell : uint32
 
 enum MasterMask : uint8
 {
-	MM_One          = 0x0001,
-	MM_Two          = 0x0002,
-	MM_Three        = 0x0004,
-	MM_Four         = 0x0008,
-	MM_Five         = 0x0010,
+	MM_One          = 0x01,
+	MM_Two          = 0x02,
+	MM_Three        = 0x04,
+	MM_Four         = 0x08,
+	MM_Five         = 0x10,
 };
 
 enum FieldMaskOne : uint32
 {
 	FM1_Gold        = 0x00000001,
+   FM1_Gold_2      = 0x00000002
 };
 
 enum FieldMaskTwo : uint32

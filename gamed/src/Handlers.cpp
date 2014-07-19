@@ -115,34 +115,34 @@ bool PacketHandler::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     sendPacket(peer, reinterpret_cast<uint8 *>(&h3), sizeof(HeroSpawn3), CHL_S2C);
     //Spawn Turrets
     vector<string> szTurrets = {
-        "@@Turret_T1_R_03_A",
-        "@@Turret_T1_R_02_A",
-        "@@Turret_T1_C_07_A",
-        "@@Turret_T2_R_03_A",
-        "@@Turret_T2_R_02_A",
-        "@@Turret_T2_R_01_A",
-        "@@Turret_T1_C_05_A",
-        "@@Turret_T1_C_04_A",
-        "@@Turret_T1_C_03_A",
-        "@@Turret_T1_C_01_A",
-        "@@Turret_T1_C_02_A",
-        "@@Turret_T2_C_05_A",
-        "@@Turret_T2_C_04_A",
-        "@@Turret_T2_C_03_A",
-        "@@Turret_T2_C_01_A",
-        "@@Turret_T2_C_02_A",
-        "@@Turret_OrderTurretShrine_A",
-        "@@Turret_ChaosTurretShrine_A",
-        "@@Turret_T1_L_03_A",
-        "@@Turret_T1_L_02_A",
-        "@@Turret_T1_C_06_A",
-        "@@Turret_T2_L_03_A",
-        "@@Turret_T2_L_02_A",
-        "@@Turret_T2_L_01_A"
+        "@Turret_T1_R_03_A",
+        "@Turret_T1_R_02_A",
+        "@Turret_T1_C_07_A",
+        "@Turret_T2_R_03_A",
+        "@Turret_T2_R_02_A",
+        "@Turret_T2_R_01_A",
+        "@Turret_T1_C_05_A",
+        "@Turret_T1_C_04_A",
+        "@Turret_T1_C_03_A",
+        "@Turret_T1_C_01_A",
+        "@Turret_T1_C_02_A",
+        "@Turret_T2_C_05_A",
+        "@Turret_T2_C_04_A",
+        "@Turret_T2_C_03_A",
+        "@Turret_T2_C_01_A",
+        "@Turret_T2_C_02_A",
+        "@Turret_OrderTurretShrine_A",
+        "@Turret_ChaosTurretShrine_A",
+        "@Turret_T1_L_03_A",
+        "@Turret_T1_L_02_A",
+        "@Turret_T1_C_06_A",
+        "@Turret_T2_L_03_A",
+        "@Turret_T2_L_02_A",
+        "@Turret_T2_L_01_A"
     };
     for(unsigned int i = 0; i < 24; i++) {
         TurretSpawn turretSpawn;
-        turretSpawn.tID = i + 1;
+        turretSpawn.tID = GetNewNetID();
         strcpy((char *)turretSpawn.name, szTurrets[i].c_str());
         sendPacket(peer, reinterpret_cast<uint8 *>(&turretSpawn), sizeof(TurretSpawn), CHL_S2C);
     }
@@ -195,24 +195,25 @@ bool PacketHandler::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
 }
 
 bool PacketHandler::handleStartGame(HANDLE_ARGS) {
-    StatePacket start(PKT_S2C_StartGame);
-    sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket), CHL_S2C);
-    FogUpdate2 test;
-    test.x = 0;
-    test.y = 0;
-    test.radius = 1;
-    test.unk1 = 2;
-    //uint8 p[] = {0xC5, 0x19, 0x00, 0x00, 0x40, 0x00, 0x00, 0x50};
-    //sendPacket(peer, reinterpret_cast<uint8*>(p), sizeof(p), 3);
-    //sendPacket(peer, reinterpret_cast<uint8 *>(&test), sizeof(FogUpdate2), 3);
-    //playing around 8-)
-    /*
-    CharacterStats movement;
-    movement.netId = peerInfo(peer)->netId;
-    movement.statType = STI_Movement;
-    movement.statValue = 800;
-    sendPacket(peer,reinterpret_cast<uint8*>(&movement),sizeof(movement), 4);*/
-    return true;
+   StatePacket start(PKT_S2C_StartGame);
+   sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket), CHL_S2C);
+   FogUpdate2 test;
+   test.x = 0;
+   test.y = 0;
+   test.radius = 1;
+   test.unk1 = 2;
+   //uint8 p[] = {0xC5, 0x19, 0x00, 0x00, 0x40, 0x00, 0x00, 0x50};
+   //sendPacket(peer, reinterpret_cast<uint8*>(p), sizeof(p), 3);
+   //sendPacket(peer, reinterpret_cast<uint8 *>(&test), sizeof(FogUpdate2), 3);
+   //playing around 8-)
+
+   /*CharacterStats stats(FM1_Gold, 0, 0, 0, 0);
+   stats->netId = peerInfo(peer)->netId;
+   stats->setValue(1, FM1_Gold, gold);*/
+   //Logging->writeLine("Set gold to %f\n", gold);
+   //sendPacket(peer, reinterpret_cast<uint8 *>(stats), stats->getSize(), CHL_LOW_PRIORITY, 2);
+   //stats->destroy();
+   return true;
 }
 
 bool PacketHandler::handleAttentionPing(ENetPeer *peer, ENetPacket *packet) {
@@ -339,38 +340,32 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
             uint32 fieldNo = atoi(&message->getMessage()[strlen(cmd[0]) + 3]);
             float value = (float)atoi(&message->getMessage()[strlen(cmd[0]) + 5]);
             uint32 mask = 1 << abs(((int)fieldNo - 1));
-            CharacterStats *stats = CharacterStats::create(blockNo, mask);
-            stats->netId = peerInfo(peer)->netId;
-            stats->setValue(blockNo, mask, value);
-            //Logging->writeLine("Setting to %f in block: %i, field: %i\n", value, blockNo, fieldNo);
-            sendPacket(peer, reinterpret_cast<uint8 *>(stats), stats->getSize(), CHL_LOW_PRIORITY, 2);
-            stats->destroy();
+            CharacterStats stats(blockNo, peerInfo(peer)->netId, mask, value);
+            sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats), CHL_LOW_PRIORITY, 2);
             return true;
         }
         // Set Gold
         if(strncmp(message->getMessage(), cmd[1], strlen(cmd[1])) == 0) {
             float gold = (float)atoi(&message->getMessage()[strlen(cmd[1]) + 1]);
-            CharacterStats *stats = CharacterStats::create(FM1_Gold, 0, 0, 0, 0);
-            stats->netId = peerInfo(peer)->netId;
-            stats->setValue(1, FM1_Gold, gold);
-            //Logging->writeLine("Set gold to %f\n", gold);
-            sendPacket(peer, reinterpret_cast<uint8 *>(stats), stats->getSize(), CHL_LOW_PRIORITY, 2);
-            stats->destroy();
+            CharacterStats stats(MM_One, peerInfo(peer)->netId, FM1_Gold, gold);
+            sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats), CHL_LOW_PRIORITY, 2);
+            CharacterStats stats2(MM_One, peerInfo(peer)->netId, FM1_Gold_2, gold);
+            sendPacket(peer, reinterpret_cast<uint8 *>(&stats2), sizeof(stats), CHL_LOW_PRIORITY, 2);
             return true;
         }
-        /*
-
+       
         //movement
         if(strncmp(message->getMessage(), cmd[2], strlen(cmd[2])) == 0)
         {
-        float data = (float)atoi(&message->getMessage()[strlen(cmd[2])+1]);
-
-        charStats.statType = STI_Movement;
-        charStats.statValue = data;
-        //Logging->writeLine("set champ speed to %f\n", data);
-        sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
-        return true;
+           float data = (float)atoi(&message->getMessage()[strlen(cmd[2])+1]);
+           
+           printf("Setting speed to %f\n", data);
+           
+           CharacterStats stats(MM_Four, peerInfo(peer)->netId, FM4_Speed, data);
+           sendPacket(peer,reinterpret_cast<uint8*>(&stats),sizeof(stats), CHL_LOW_PRIORITY, 2);
+           return true;
         }
+         /*
         //health
         if(strncmp(message->getMessage(), cmd[3], strlen(cmd[3])) == 0)
         {
@@ -454,10 +449,15 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
 bool PacketHandler::handleSkillUp(HANDLE_ARGS) {
     SkillUpPacket *skillUpPacket = reinterpret_cast<SkillUpPacket *>(packet->data);
     //!TODO Check if can up skill? :)
+    
     SkillUpResponse skillUpResponse;
+    skillUpResponse.header.netId = peerInfo(peer)->netId;
     skillUpResponse.skill = skillUpPacket->skill;
     skillUpResponse.level = 0x01;
-    skillUpResponse.pointsLeft = 5;
+    skillUpResponse.pointsLeft = 0;
+    
+    printf("Upping skill %d\n", skillUpPacket->skill);
+    
     return sendPacket(peer, reinterpret_cast<uint8 *>(&skillUpResponse), sizeof(skillUpResponse), CHL_GAMEPLAY);
 }
 
