@@ -20,8 +20,8 @@
 //defines for the packet type code in an ETHERNET header
 #define ETHER_TYPE_IP (0x0800)
 #define ETHER_TYPE_8021Q (0x8100)
-
-#define B64_KEY "3FAYg4Md9Qzl0O4qC7NZbQ=="
+#define B64_KEY "Z6zrBNmC42AhIC6UQR6KDg=="
+//#define B64_KEY "3FAYg4Md9Qzl0O4qC7NZbQ=="
 //#define B64_KEY "17BLOhi6KZsTtldTsizvHg=="
 #define PACKET_FILE "packets.txt"
 
@@ -78,6 +78,7 @@ int main(int argc, char **argv)
   //temporary packet buffers 
   struct pcap_pkthdr header; // The header that pcap gives us 
   const u_char *packet; // The actual packet 
+  struct timeval startTime = {0, 0};
   
   //check command line arguments 
   if (argc < 2) { 
@@ -111,6 +112,10 @@ int main(int argc, char **argv)
       // header contains information about the packet (e.g. timestamp) 
       pkt_ptr = (u_char *)(packet+14); //cast a pointer to the packet data 
       
+      if(startTime.tv_sec == 0 && startTime.tv_usec == 0) {
+         startTime = header.ts;
+      }
+      
       //parse the IP header 
       struct ip *ip_hdr = (struct ip *)pkt_ptr; //point to an IP header structure 
       bool isFragment = false;
@@ -120,6 +125,8 @@ int main(int argc, char **argv)
  
       packet_length = ntohs(ip_hdr->ip_len)-20-8; 
       pkt_ptr += 20+8;
+      
+      char channel = pkt_ptr[5];
       
       // Right now pkt_ptr points to enet header start.
       
@@ -161,6 +168,8 @@ int main(int argc, char **argv)
       
             if(pkt_ptr[0] == 0x07 || pkt_ptr[0] == 0x49)
                headerLength = 8;
+               
+            channel = pkt_ptr[1];
       
             commandLength = ntohs(*((unsigned short*)(pkt_ptr+headerLength-2)));
             pkt_ptr += headerLength;
@@ -169,8 +178,12 @@ int main(int argc, char **argv)
             commandLength = finalLength;
          }
          
+         struct timeval result;
+         timersub(&header.ts, &startTime, &result);
+         
+         printf("%ld.%06ld\n", result.tv_sec, result.tv_usec);
          printf("%d.%d.%d.%d -> %d.%d.%d.%d\n", ipSrc[0], ipSrc[1], ipSrc[2], ipSrc[3], ipDst[0], ipDst[1], ipDst[2], ipDst[3]);
-         printf("Size : %d\n", commandLength);
+         printf("Size : %d ; Channel : %d\n", commandLength, channel);
       
          b.Decrypt(pkt_ptr, commandLength);
          printPacket(pkt_ptr, commandLength);

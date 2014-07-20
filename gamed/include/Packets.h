@@ -260,11 +260,11 @@ struct Unk {
 };
 
 struct MinionSpawn {
-
-   MinionSpawn(uint32 netId) : netId(netId), netId2(netId), netId3(netId), unk(0x00150017), unk2(0x03), unk3(0x53b83640), unk4(0xff), unk5(0x00000001), unk7(0), unk8(0x3efa47f477f56302) {
+   
+   MinionSpawn(uint32 netId) : netId(netId), netId2(netId), netId3(netId), unk(0x00150017), unk2(0x03), unk3(0x53b83640), unk4(0xff), unk5_1(1), type(2), unk5_3(0), unk5_4(0), unk7(5), unk8(0x0ff84540f546f424) {
       header.cmd = PKT_S2C_MinionSpawn;
       header.netId = netId;
-      memcpy(unk6, "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00\x00\x05", 36);
+      memcpy(unk6, "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00\x00\x06", 36);
    }
 
    PacketHeader header;
@@ -274,7 +274,10 @@ struct MinionSpawn {
    uint32 netId, netId2;
    uint32 unk3;
    uint8 unk4;
-   uint32 unk5;
+   uint8 unk5_1;
+   uint8 type; // 0 - Melee minion, 1 - Caster minion, 2 - Cannon minion
+   uint8 unk5_3;
+   uint8 unk5_4;
    uint8 unk6[36];
    uint32 netId3;
    uint8 unk7;
