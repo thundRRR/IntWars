@@ -247,7 +247,7 @@ struct CastSpell {
  * Change Target ??
  */
 struct Unk {
-   Unk(uint32 netId, float x, float y) : unk1(0x0F), unk2(1), unk3(1), x(x), unk4(0), y(y), targetNetId(0) {
+   Unk(uint32 netId, float x, float y, uint32 targetNetId = 0) : unk1(0x0F), unk2(1), unk3(1), x(x), unk4(0), y(y), targetNetId(targetNetId) {
       header.cmd = PKT_S2C_UNK;
       header.netId = netId;
    }
@@ -259,12 +259,27 @@ struct Unk {
    uint32 targetNetId;
 };
 
-struct MinionSpawn {
+enum MinionSpawnPosition : uint32 {
+   SPAWN_BLUE_TOP = 0xeb364c40,
+   SPAWN_BLUE_BOT = 0x53b83640,
+   SPAWN_BLUE_MID = 0xb7717140,
+   SPAWN_RED_TOP  = 0xe647d540,
+   SPAWN_RED_BOT  = 0x5ec9af40,
+   SPAWN_RED_MID  = 0xba00e840
+};
 
-   MinionSpawn(uint32 netId) : netId(netId), netId2(netId), netId3(netId), unk(0x00150017), unk2(0x03), unk3(0x53b83640), unk4(0xff), unk5(0x00000001), unk7(0), unk8(0x3efa47f477f56302) {
+enum MinionSpawnType : uint32 {
+   MINION_TYPE_MELEE = 0x00,
+   MINION_TYPE_CASTER = 0x01,
+   MINION_TYPE_CANNON = 0x02
+};
+
+struct MinionSpawn {
+   
+   MinionSpawn(uint32 netId, uint32 position = SPAWN_BLUE_MID, uint8 type = MINION_TYPE_MELEE) : netId(netId), netId2(netId), netId3(netId), unk(0x00150017), unk2(0x03), position(position), unk4(0xff), unk5_1(1), type(type), unk5_3(0), unk5_4(1), unk7(5), unk8(0x0ff84540f546f424) {
       header.cmd = PKT_S2C_MinionSpawn;
       header.netId = netId;
-      memcpy(unk6, "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00\x00\x05", 36);
+      memcpy(unk6, "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00\x00\x06", 36);
    }
 
    PacketHeader header;
@@ -272,9 +287,12 @@ struct MinionSpawn {
    uint32 unk;
    uint8 unk2;
    uint32 netId, netId2;
-   uint32 unk3;
+   uint32 position;
    uint8 unk4;
-   uint32 unk5;
+   uint8 unk5_1;
+   uint8 type;
+   uint8 unk5_3;
+   uint8 unk5_4;
    uint8 unk6[36];
    uint32 netId3;
    uint8 unk7;
@@ -484,6 +502,24 @@ struct FogUpdate2 {
     uint8 unk1;
 };
 
+struct Click {
+
+   PacketHeader header;
+   uint32 zero;
+   uint32 targetNetId; // netId on which the player clicked
+
+};
+
+struct Unk2 {
+   Unk2(uint32 sourceNetId, uint32 targetNetId)  : targetNetId(targetNetId) {
+      header.cmd = PKT_S2C_Unk2;
+      header.netId = sourceNetId;
+   }
+
+   PacketHeader header;
+   uint32 targetNetId;
+};
+
 struct HeroSpawn {
     HeroSpawn() {
         header.cmd = PKT_S2C_HeroSpawn;
@@ -586,16 +622,19 @@ class LevelPropSpawn {
         LevelPropSpawn() {
             header.cmd = PKT_S2C_LevelPropSpawn;
             netId = 0;
-            memset(&unk, 0, 50 + 64 + 64); //Set name + type to zero
+            memset(unk3, 0, 41 + 64 + 64); //Set name + type to zero
         }
         void SetProp(char *szName, char *szType) {
             header.cmd = PKT_S2C_LevelPropSpawn;
             netId = 0;
             x = 0;
             y = 0;
-            memset(&unk, 0, 50);
-            memset(&name, 0, 64);
-            memset(&type, 0, 64);
+            z = 0;
+            unk1 = 0x00000040;
+            unk2 = 0;
+            memset(unk3, 0, 41);
+            memset(name, 0, 64);
+            memset(type, 0, 64);
             if(szName)
             { strcpy((char *)name, szName); }
             if(szType)
@@ -603,9 +642,12 @@ class LevelPropSpawn {
         }
         PacketHeader header;
         uint32 netId;
+        uint32 unk1;
+        uint8 unk2;
         float x;
         float y;
-        uint8 unk[50];
+        float z; // unsure
+        uint8 unk3[41];
         uint8 name[64];
         uint8 type[64];
 };
