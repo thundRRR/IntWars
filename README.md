@@ -1,4 +1,4 @@
-RipWars
+IntWars
 ==================
 About
 ------

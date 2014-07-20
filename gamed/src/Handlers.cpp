@@ -153,24 +153,28 @@ bool PacketHandler::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     lpSpawn.netId = GetNewNetID();
     lpSpawn.x = 12465;
     lpSpawn.y = 101;
+    lpSpawn.z = 14422.257f;
     sendPacket(peer, reinterpret_cast<uint8 *>(&lpSpawn), sizeof(LevelPropSpawn), CHL_S2C);
     lpSpawn.SetProp("LevelProp_Yonkey1", "Yonkey");
     lpSpawn.header.netId = 0;
     lpSpawn.netId = GetNewNetID();
     lpSpawn.x = -76;
     lpSpawn.y = 94;
+    lpSpawn.z = 1769.1589f;
     sendPacket(peer, reinterpret_cast<uint8 *>(&lpSpawn), sizeof(LevelPropSpawn), CHL_S2C);
     lpSpawn.SetProp("LevelProp_ShopMale", "ShopMale");
     lpSpawn.header.netId = 0;
     lpSpawn.netId = GetNewNetID();
     lpSpawn.x = 13374;
     lpSpawn.y = 194;
+    lpSpawn.z = 14245.673f;
     sendPacket(peer, reinterpret_cast<uint8 *>(&lpSpawn), sizeof(LevelPropSpawn), CHL_S2C);
     lpSpawn.SetProp("LevelProp_ShopMale1", "ShopMale");
     lpSpawn.header.netId = 0;
     lpSpawn.netId = GetNewNetID();
     lpSpawn.x = -99;
     lpSpawn.y = 191;
+    lpSpawn.z = 855.6632f;
     sendPacket(peer, reinterpret_cast<uint8 *>(&lpSpawn), sizeof(LevelPropSpawn), CHL_S2C);
     StatePacket end(PKT_S2C_EndSpawn);
     bool p3 = sendPacket(peer, reinterpret_cast<uint8 *>(&end), sizeof(StatePacket), CHL_S2C);
@@ -329,6 +333,13 @@ bool PacketHandler::handleQueryStatus(HANDLE_ARGS) {
     return sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(QueryStatus), CHL_S2C);
 }
 
+bool PacketHandler::handleClick(HANDLE_ARGS) {
+   Click *click = reinterpret_cast<Click *>(packet->data);
+   printf("Object %u clicked on %u\n", peerInfo(peer)->netId,click->targetNetId);
+   Unk response(peerInfo(peer)->netId, 0, 0, click->targetNetId);
+   return sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
+}
+
 bool PacketHandler::handleCastSpell(HANDLE_ARGS) {
     CastSpell *spell = reinterpret_cast<CastSpell *>(packet->data);
     
@@ -347,10 +358,11 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
         const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn" };
         //Set field
         if(strncmp(message->getMessage(), cmd[0], strlen(cmd[0])) == 0) {
-            uint32 blockNo = atoi(&message->getMessage()[strlen(cmd[0]) + 1]);
-            uint32 fieldNo = atoi(&message->getMessage()[strlen(cmd[0]) + 3]);
-            float value = (float)atoi(&message->getMessage()[strlen(cmd[0]) + 5]);
-            uint32 mask = 1 << abs(((int)fieldNo - 1));
+            uint32 blockNo, fieldNo;
+            float value;
+            sscanf(&message->getMessage()[strlen(cmd[0])+1], "%u %u %f", &blockNo, &fieldNo, &value);
+            blockNo = 1 << (blockNo - 1);
+            uint32 mask = 1 << (fieldNo - 1);
             CharacterStats stats(blockNo, peerInfo(peer)->netId, mask, value);
             sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats), CHL_LOW_PRIORITY, 2);
             return true;
@@ -360,8 +372,8 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
             float gold = (float)atoi(&message->getMessage()[strlen(cmd[1]) + 1]);
             CharacterStats stats(MM_One, peerInfo(peer)->netId, FM1_Gold, gold);
             sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats), CHL_LOW_PRIORITY, 2);
-            CharacterStats stats2(MM_One, peerInfo(peer)->netId, FM1_Gold_2, gold);
-            sendPacket(peer, reinterpret_cast<uint8 *>(&stats2), sizeof(stats), CHL_LOW_PRIORITY, 2);
+            /*CharacterStats stats2(MM_One, peerInfo(peer)->netId, FM1_Gold_2, gold);
+            sendPacket(peer, reinterpret_cast<uint8 *>(&stats2), sizeof(stats), CHL_LOW_PRIORITY, 2);*/
             return true;
         }
        
@@ -387,18 +399,22 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
            return true;
         }
         
-         /*
+         
         //health
         if(strncmp(message->getMessage(), cmd[3], strlen(cmd[3])) == 0)
         {
-        float data = (float)atoi(&message->getMessage()[strlen(cmd[3])+1]);
+           float data = (float)atoi(&message->getMessage()[strlen(cmd[3])+1]);
 
-        charStats.statType = STI_Health;
-        charStats.statValue = data;
-        //Logging->writeLine("set champ health to %f\n", data);
-        sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
-        return true;
+           CharacterStats stats2(MM_Four, peerInfo(peer)->netId, FM4_MaxHp, data);
+           sendPacket(peer,reinterpret_cast<uint8*>(&stats2),sizeof(stats2), CHL_LOW_PRIORITY, 2);
+
+           CharacterStats stats(MM_Four, peerInfo(peer)->netId, FM4_CurrentHp, data);
+           sendPacket(peer,reinterpret_cast<uint8*>(&stats),sizeof(stats), CHL_LOW_PRIORITY, 2);
+           
+           return true;
         }
+        
+        /*
         //experience
         if(strncmp(message->getMessage(), cmd[4], strlen(cmd[4])) == 0)
         {
