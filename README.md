@@ -2,10 +2,10 @@ RipWars
 ==================
 About
 ------
-Fork of the 2 year old (outdated project), IntWars. Emulates LoL server environment.
-This is a fork of [Elyotna's fork](https://github.com/Elyotna/IntWars). 
-If you want to contribute to the project, please fork the repo and upload any progress to GitHub.
-If you need help compiling the source on Windows, check here.
+Fork of the 2 year old (outdated project), IntWars. Emulates LoL server environment.  
+This is a fork of [Elyotna's fork](https://github.com/Elyotna/IntWars).   
+If you want to contribute to the project, please fork the repo and upload any progress to GitHub.  
+If you need help compiling the source on Windows, [check here](#notes-for-compiling-on-windows).
 
 Content:
 * Load Screen: http://puu.sh/8cbhW.jpg
@@ -41,7 +41,7 @@ GPLv3 as sharing is caring, and when ever you extend/use/modify/fix any of this 
 
 Contact
 -------
-For information relating to this fork, contact me on reddit: chutch1122
+For information relating to this fork, contact me on reddit: chutch1122  
 I'm working on setting up a website where we can organize this better.
 
 Notes for Compiling on Windows
@@ -50,7 +50,7 @@ Note: This is a very basic explanation. I am working on a more detailed explanat
 
 This project uses elements from C++11, like initialization lists. Visual Studio does not support initialization lists in the 2010 or 2012 versions. Therefore, I recommend installing/using CMake and MinGW's g++ compiler. Websites and download links for these are below.
 
-1). CMake - [Website](http://www.cmake.org/cmake/resources/software.html) | [Direct Download to Version 3.0.0](http://www.cmake.org/files/v3.0/cmake-3.0.0-win32-x86.exe)
+1). CMake - [Website](http://www.cmake.org/cmake/resources/software.html) | [Direct Download to Version 3.0.0](http://www.cmake.org/files/v3.0/cmake-3.0.0-win32-x86.exe)  
 2). MinGW - [Website](http://www.mingw.org/) | [Download MinGW Get Setup](http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download)
 
 
