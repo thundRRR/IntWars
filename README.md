@@ -2,7 +2,8 @@ RipWars
 ==================
 About
 ------
-Fork of the 2 years old outdated project, emulates LoL server environment
+Fork of the 2 year old (outdated project), IntWars. Emulates LoL server environment.
+This is a fork of [Elyotna's fork](https://github.com/Elyotna/IntWars). 
 
 Content:
 * Load Screen: http://puu.sh/8cbhW.jpg
@@ -11,19 +12,20 @@ Content:
 
 Instructions:
 * Run gamed.exe
-* Run the game with this command line: "League of Legends.exe" "8394" "LoLLauncher.exe" "C:/Riot Games/League of Legends/RADS/projects/lol_air_client/releases/0.0.1.79/deploy/LolClient.exe" "127.0.0.1 5119 17BLOhi6KZsTtldTsizvHg== 47917791"
+* Run StartClient.bat
+* If StartClient.bat does not work, run the game with this command: "League of Legends.exe" "8394" "LoLLauncher.exe" "C:/Riot Games/League of Legends/RADS/projects/lol_air_client/releases/0.0.1.79/deploy/LolClient.exe" "127.0.0.1 5119 17BLOhi6KZsTtldTsizvHg== 47917791"
 
-~~This is the development part of the [HeroWars](https://github.com/Intline9/HeroWars)  project. Here we can try everything out without worrying with the code base.~~
+Important rules
+---------
+* Use this style reference for all your code: http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml
+* Keep this project clean and simple
+* The project is using elements from the C++ 2011 standard. Make sure you set correct compiler flags!
 
 Old Members - No commit for 2 years
 -------
 * Intline9 - intline9(at)gmail(dot)com
 * Ltsstar
 
-Important rules
----------
-* Use this style reference for all your code: http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml
-* Keep this project clean and simple
 
 License
 -------
@@ -31,9 +33,7 @@ GPLv3 as sharing is caring, and when ever you extend/use/modify/fix any of this 
 
 Contributing
 ------------
-~~Want to join? Contact us and show us some work.~~
-
-Please fork and upload any progress.
+If you want to contribute to the project, please fork the repo and upload any progress to GitHub.
 
 Contact
 -------
@@ -44,7 +44,4 @@ or Bot of Legends forums (www.botoflegends.com/forum/)
 
 Notes
 -------
-I updated this project on my free time, so anyone who cares can fiddle with it at the latest game version.
-
-
-My reddit username is 'imSpudgy', the topic author who posted it to front page is fake, I did not announce this project anywhere.
+Spudgy (reddit: 'imSpudgy') updated this project on his free time, so anyone who cares can fiddle with it at the latest game version.
