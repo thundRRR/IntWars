@@ -18,17 +18,52 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _PACKETS_H
 #define _PACKETS_H
 
-#include <enet/enet.h>
-#include "common.h"
 #include <time.h>
-#include <intlib/general.h>
 #include <cmath>
+
+#include <intlib/general.h>
+#include <enet/enet.h>
+
+#include "common.h"
+#include "Buffer.h"
+#include "Client.h"
 
 #if defined( __GNUC__ )
 #pragma pack(1)
 #else
 #pragma pack(push,1)
 #endif
+
+class Packet {
+protected:
+   Buffer buffer;
+   
+public:
+   const Buffer& getBuffer() const { return buffer; }
+   Packet(uint8 cmd = 0) {
+      buffer << cmd;
+   }
+
+};
+
+class BasePacket : public Packet {
+   
+public:
+   BasePacket(uint8 cmd = 0, uint32 netId = 0) : Packet(cmd) {
+      buffer << netId;
+   }
+
+};
+
+class GamePacket : public BasePacket {
+   
+public:
+   GamePacket(uint8 cmd = 0, uint32 netId = 0, uint32 ticks = 0) : BasePacket(cmd, netId) {
+      buffer << ticks;
+   }
+
+};
+
 
 struct PacketHeader {
     PacketHeader() {
@@ -132,39 +167,37 @@ typedef struct _LoadScreenInfo {
     uint32 redPlayerNo;
 } LoadScreenInfo;
 
-typedef struct _LoadScreenPlayer {
-    static _LoadScreenPlayer *create(PacketCmd cmd, const int8 *str, uint32 size) {
-        //Builds packet buffer
-        uint32 totalSize = sizeof(_LoadScreenPlayer) + size + 1;
-        uint8 *buf = new uint8[totalSize];
-        memset(buf, 0, totalSize);
-        //Set defaults
-        _LoadScreenPlayer *packet = (_LoadScreenPlayer *)buf;
-        packet->cmd = cmd;
-        packet->length = size;
-        packet->userId = 0;
-        packet->skinId = 0;
-        memcpy(packet->getDescription(), str, packet->length);
-        return packet;
-    }
+class LoadScreenPlayerName : public Packet {
+public:
+   LoadScreenPlayerName(const ClientInfo& player) : Packet(PKT_S2C_LoadName) {
+      buffer << player.userId;
+      buffer << (uint32)0;
+      buffer << (uint32)player.getName().length();
+      buffer << player.getName();
+   }
 
-    static void destroy(_LoadScreenPlayer *packet) {
-        delete [](uint8 *)packet;
-    }
-
-    uint8 cmd;
+    /*uint8 cmd;
     uint64 userId;
     uint32 skinId;
     uint32 length;
-    uint8 description;
-    uint8 *getDescription() {
-        return &description;
-    }
+    uint8* description;*/
+};
 
-    uint32 getPacketLength() {
-        return sizeof(_LoadScreenPlayer) + length;
-    }
-} LoadScreenPlayer;
+class LoadScreenPlayerChampion : public Packet {
+public:
+   LoadScreenPlayerChampion(const ClientInfo& player) : Packet(PKT_S2C_LoadHero) {
+      buffer << player.userId;
+      buffer << player.skinNo;
+      buffer << (uint32)player.getName().length();
+      buffer << player.getName();
+   }
+
+    /*uint8 cmd;
+    uint64 userId;
+    uint32 skinId;
+    uint32 length;
+    uint8* description;*/
+};
 
 
 typedef struct _KeyCheck {
@@ -646,30 +679,21 @@ struct SpellSet {
     uint32 spellID;
     uint32 level;
 };
-class LevelPropSpawn {
+class LevelPropSpawn : public BasePacket {
     public:
-        LevelPropSpawn() {
-            header.cmd = PKT_S2C_LevelPropSpawn;
-            netId = 0;
-            memset(unk3, 0, 41 + 64 + 64); //Set name + type to zero
+        LevelPropSpawn(uint32 netId, const std::string& name, const std::string& type, float x, float y, float z) : BasePacket(PKT_S2C_LevelPropSpawn) {
+            buffer << netId;
+            buffer << (uint32)0x00000040; // unk
+            buffer << (uint8)0; // unk
+            buffer << x << z << y;
+            buffer.fill(0, 41); // unk
+            buffer << name;
+            buffer.fill(0, 64-name.length());
+            buffer << type;
+            buffer.fill(0, 64-type.length());
         }
-        void SetProp(char *szName, char *szType) {
-            header.cmd = PKT_S2C_LevelPropSpawn;
-            netId = 0;
-            x = 0;
-            y = 0;
-            z = 0;
-            unk1 = 0x00000040;
-            unk2 = 0;
-            memset(unk3, 0, 41);
-            memset(name, 0, 64);
-            memset(type, 0, 64);
-            if(szName)
-            { strcpy((char *)name, szName); }
-            if(szType)
-            { strcpy((char *)type, szType); }
-        }
-        PacketHeader header;
+        
+        /*PacketHeader header;
         uint32 netId;
         uint32 unk1;
         uint8 unk2;
@@ -678,7 +702,7 @@ class LevelPropSpawn {
         float z; // unsure
         uint8 unk3[41];
         uint8 name[64];
-        uint8 type[64];
+        uint8 type[64];*/
 };
 
 struct Announce {
@@ -693,19 +717,12 @@ typedef struct _SkillUpPacket {
     uint8 skill;
 } SkillUpPacket;
 
-typedef struct _SkillUpResponse {
-    _SkillUpResponse() {
-        header.cmd = PKT_S2C_SkillUp;
-        skill = 0;
-        level = 0;
-        pointsLeft = 0;
+class SkillUpResponse : public BasePacket {
+public:
+    SkillUpResponse(uint32 netId, uint8 skill, uint8 level, uint8 pointsLeft) : BasePacket(PKT_S2C_SkillUp, netId) {
+        buffer << skill << level << pointsLeft;
     }
-    PacketHeader header;
-    uint8 skill;
-    uint8 level; //?
-    uint8 pointsLeft;
-
-} SkillUpResponse;
+};
 
 typedef struct _BuyItemReq {
     PacketHeader header;

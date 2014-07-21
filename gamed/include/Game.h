@@ -12,7 +12,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-You should have received a copy of the GNU#define peerInfo(p) ((ClientInfo*)p->data) General Public License
+You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #ifndef _NETWORK_LISTENER_H
@@ -25,12 +25,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Map.h"
 #include "common.h"
 #include "Client.h"
+#include "Packets.h"
 
 #define HANDLE_ARGS ENetPeer *peer, ENetPacket *packet
 #define PEER_MTU 996
 #define RELIABLE ENET_PACKET_FLAG_RELIABLE
 #define UNRELIABLE 0
-
 
 #define peerInfo(p) ((ClientInfo*)p->data)
 
@@ -68,9 +68,10 @@ class Game
       bool handleClick(HANDLE_ARGS);
       
 		//Tools
-		void printPacket(uint8 *buf, uint32 len);
+		void printPacket(const uint8 *buf, uint32 len);
 		void printLine(uint8 *buf, uint32 len);
-		bool sendPacket(ENetPeer *peer, uint8 *data, uint32 length, uint8 channelNo, uint32 flag = RELIABLE);
+		bool sendPacket(ENetPeer *peer, const uint8 *data, uint32 length, uint8 channelNo, uint32 flag = RELIABLE);
+      bool sendPacket(ENetPeer *peer, const Packet& packet, uint8 channelNo, uint32 flag = RELIABLE);
 		bool broadcastPacket(uint8 *data, uint32 length, uint8 channelNo, uint32 flag = RELIABLE);
 
 	private:

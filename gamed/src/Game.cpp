@@ -15,10 +15,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#ifdef WIN32
+   #include <time.h>
+   #include <sys/timeb.h>
+   int gettimeofday (struct timeval *tp, void *tz)
+   {
+      struct _timeb timebuffer;
+      _ftime (&timebuffer);
+      tp->tv_sec = timebuffer.time;
+      tp->tv_usec = timebuffer.millitm * 1000;
+      return 0;
+   }
+#else
+   #include <sys/time.h>
+#endif
+
 #include "stdafx.h"
 #include "Game.h"
 
-#define REFRESH_RATE 10
+#define REFRESH_RATE 16
 
 uint32 GetNewNetID() {
 	static uint32 dwStart = 0x40000019;
@@ -65,40 +81,45 @@ bool Game::initialize(ENetAddress *address, const char *baseKey)
 void Game::netLoop()
 {
 	ENetEvent event;
+   struct timeval tStart, tEnd, tDiff;
 
-	while(enet_host_service(_server, & event, REFRESH_RATE) >= 0 && _isAlive)
+	while(true)
 	{
-		switch (event.type)
-		{
-			case ENET_EVENT_TYPE_CONNECT:
-				//Logging->writeLine("A new client connected: %i.%i.%i.%i:%i \n", event.peer->address.host & 0xFF, (event.peer->address.host >> 8) & 0xFF, (event.peer->address.host >> 16) & 0xFF, (event.peer->address.host >> 24) & 0xFF, event.peer->address.port);
+      gettimeofday(&tStart, 0);
+      while(enet_host_service(_server, & event, 1) > 0) {
+         switch (event.type)
+         {
+         case ENET_EVENT_TYPE_CONNECT:
+            //Logging->writeLine("A new client connected: %i.%i.%i.%i:%i \n", event.peer->address.host & 0xFF, (event.peer->address.host >> 8) & 0xFF, (event.peer->address.host >> 16) & 0xFF, (event.peer->address.host >> 24) & 0xFF, event.peer->address.port);
 
-				/* Set some defaults */
-				event.peer->mtu = PEER_MTU;
+            /* Set some defaults */
+            event.peer->mtu = PEER_MTU;
 
-				event.peer->data = new ClientInfo();
-				peerInfo(event.peer)->setName("Test");
-				peerInfo(event.peer)->setChampion(ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID()));
-				peerInfo(event.peer)->skinNo = 6;
+            event.peer->data = new ClientInfo();
+            peerInfo(event.peer)->setName("Test");
+            peerInfo(event.peer)->setChampion(ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID()));
+            peerInfo(event.peer)->skinNo = 6;
 
-			break;
+            break;
 
-		case ENET_EVENT_TYPE_RECEIVE:
-			if(!handlePacket(event.peer, event.packet,event.channelID))
-			{
-				//enet_peer_disconnect(event.peer, 0);
-			}
+         case ENET_EVENT_TYPE_RECEIVE:
+            if(!handlePacket(event.peer, event.packet,event.channelID))
+            {
+               //enet_peer_disconnect(event.peer, 0);
+            }
 
-			/* Clean up the packet now that we're done using it. */
-			enet_packet_destroy (event.packet);
-         break;
+            /* Clean up the packet now that we're done using it. */
+            enet_packet_destroy (event.packet);
+            break;
 
-		case ENET_EVENT_TYPE_DISCONNECT:
-			//Logging->writeLine("Client disconnected: %i.%i.%i.%i:%i \n", event.peer->address.host & 0xFF, (event.peer->address.host >> 8) & 0xFF, (event.peer->address.host >> 16) & 0xFF, (event.peer->address.host >> 24) & 0xFF, event.peer->address.port);
-
-			/* Cleanup */
-			delete (ClientInfo*)event.peer->data;
-		break;
-		}
-	}
+         case ENET_EVENT_TYPE_DISCONNECT:
+            delete (ClientInfo*)event.peer->data;
+            break;
+         }
+      }
+      map->update(REFRESH_RATE);
+      gettimeofday(&tEnd, 0);
+      timersub(&tEnd, &tStart, &tDiff);
+      usleep(REFRESH_RATE*1000000 - (tDiff.tv_sec*1000000+tDiff.tv_usec));
+   }
 }

@@ -47,19 +47,19 @@ struct ClientInfo
    
    Champion* getChampion() { return champion; }
    
-   const std::string& getName() { return name; }
+   const std::string& getName() const { return name; }
 
-	uint32 getTicks()
-	{
-		ticks++;
-		return ticks;
-	}
-	bool keyChecked;
-	uint64 userId;
-	uint32 ticks;
-	uint32 skinNo;
-	std::string name;
-	Champion* champion;
+   uint32 getTicks()
+   {
+      ticks++;
+      return ticks;
+   }
+   bool keyChecked;
+   uint64 userId;
+   uint32 ticks;
+   uint32 skinNo;
+   std::string name;
+   Champion* champion;
 
 };
 

@@ -2,10 +2,12 @@
 #define _UNIT_H
 
 #include "Object.h"
+#include "Stats.h"
 
 class Unit : public Object {
 
 protected:
+   Stats stats;
    virtual void update(unsigned int diff) { }
 
 public:

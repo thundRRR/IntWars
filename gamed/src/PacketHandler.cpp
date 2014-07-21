@@ -52,7 +52,7 @@ void Game::registerHandler(bool (Game::*handler)(HANDLE_ARGS), PacketCmd pktcmd,
 	_handlerTable[pktcmd][c] = handler;
 }
 
-void Game::printPacket(uint8 *buffer, uint32 size)
+void Game::printPacket(const uint8 *buffer, uint32 size)
 {
 
    unsigned int i;
@@ -103,11 +103,14 @@ void Game::printLine(uint8 *buf, uint32 len)
 	//PDEBUG_LOG(Logging,"\n");
 }
 
-bool Game::sendPacket(ENetPeer *peer, uint8 *data, uint32 length, uint8 channelNo, uint32 flag)
+bool Game::sendPacket(ENetPeer *peer, const uint8 *source, uint32 length, uint8 channelNo, uint32 flag)
 {
 	////PDEBUG_LOG_LINE(Logging," Sending packet:\n");
 	//if(length < 300)
 	//	printPacket(data, length);
+   
+   uint8* data = new uint8[length];
+   memcpy(data, source, length);
 
 	if(length >= 8)
 		_blowfish->Encrypt(data, length-(length%8)); //Encrypt everything minus the last bytes that overflow the 8 byte boundary
@@ -115,10 +118,17 @@ bool Game::sendPacket(ENetPeer *peer, uint8 *data, uint32 length, uint8 channelN
 	ENetPacket *packet = enet_packet_create(data, length, flag);
 	if(enet_peer_send(peer, channelNo, packet) < 0)
 	{
+      delete[] data;
 		//PDEBUG_LOG_LINE(Logging,"Warning fail, send!");
 		return false;
 	}
+   
+   delete[] data;
 	return true;
+}
+
+bool Game::sendPacket(ENetPeer *peer, const Packet& packet, uint8 channelNo, uint32 flag) {
+   return sendPacket(peer, (const uint8*)&packet.getBuffer().getBytes()[0], packet.getBuffer().size(), channelNo, flag);
 }
 
 bool Game::broadcastPacket(uint8 *data, uint32 length, uint8 channelNo, uint32 flag)
