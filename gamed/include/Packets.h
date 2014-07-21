@@ -172,8 +172,9 @@ public:
    LoadScreenPlayerName(const ClientInfo& player) : Packet(PKT_S2C_LoadName) {
       buffer << player.userId;
       buffer << (uint32)0;
-      buffer << (uint32)player.getName().length();
+      buffer << (uint32)player.getName().length()+1;
       buffer << player.getName();
+      buffer << (uint8)0;
    }
 
     /*uint8 cmd;
@@ -188,8 +189,9 @@ public:
    LoadScreenPlayerChampion(const ClientInfo& player) : Packet(PKT_S2C_LoadHero) {
       buffer << player.userId;
       buffer << player.skinNo;
-      buffer << (uint32)player.getName().length();
-      buffer << player.getName();
+      buffer << (uint32)player.getChampion()->getType().length()+1;
+      buffer << player.getChampion()->getType();
+      buffer << (uint8)0;
    }
 
     /*uint8 cmd;
@@ -283,6 +285,12 @@ struct CastSpellAns {
       header.netId = casterNetId;
       header.ticks = clock();
       memcpy(unk, "\x00\x66\x00\x44\x40\x7f\x01\xf6\x01\x00\x40\x00\x00\x00\x80\x3f", 16);
+      castTime = 0.25f;
+      unk3_2 = 0;
+      unk3_3 = 1.0f;
+      cooldown = 6.0f;
+      unk3_4 = 28.0f;
+      spellSlot = 0;
    }
    
    GameHeader header;

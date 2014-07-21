@@ -120,6 +120,6 @@ void Game::netLoop()
       map->update(REFRESH_RATE);
       gettimeofday(&tEnd, 0);
       timersub(&tEnd, &tStart, &tDiff);
-      usleep(REFRESH_RATE*1000000 - (tDiff.tv_sec*1000000+tDiff.tv_usec));
+      usleep(REFRESH_RATE*1000 - (tDiff.tv_sec*1000000+tDiff.tv_usec));
    }
 }

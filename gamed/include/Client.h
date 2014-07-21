@@ -45,7 +45,7 @@ struct ClientInfo
 		this->champion = champion; //ChampionFactory::getChampionFromType(type);
 	}
    
-   Champion* getChampion() { return champion; }
+   Champion* getChampion() const { return champion; }
    
    const std::string& getName() const { return name; }
 
