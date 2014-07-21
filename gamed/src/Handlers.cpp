@@ -283,6 +283,9 @@ bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
         answer->getVector(i)->x = vMoves[i].x;
         answer->getVector(i)->y = vMoves[i].y;
     }
+    
+    peerInfo(peer)->getChampion()->setPosition(vMoves[1].x, vMoves[1].y);
+    
     bool bRet = broadcastPacket(reinterpret_cast<uint8 *>(answer), answer->size(), 4);
     MovementAns::destroy(answer);
     return bRet;
@@ -319,12 +322,12 @@ bool Game::handleClick(HANDLE_ARGS) {
 bool Game::handleCastSpell(HANDLE_ARGS) {
     CastSpell *spell = reinterpret_cast<CastSpell *>(packet->data);
     
-    printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %d\n", spell->spellSlot, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
+    printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %08X\n", spell->spellSlot, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
     
     Unk unk(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, spell->targetNetId);
     sendPacket(peer, reinterpret_cast<uint8 *>(&unk), sizeof(unk), CHL_S2C);
     
-    CastSpellAns response(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y);
+    CastSpellAns response(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, peerInfo(peer)->getChampion()->getX(), peerInfo(peer)->getChampion()->getY());
     printPacket(reinterpret_cast<uint8 *>(&response), sizeof(response));
     sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
     

@@ -280,7 +280,7 @@ struct CastSpell {
 
 struct CastSpellAns {
 
-   CastSpellAns(uint32 casterNetId, float x, float y) : casterNetId(casterNetId), casterNetId2(casterNetId), unk2(0x400001f59c0cb5a7), x(x), z(55), y(y), x2(x), z2(55), y2(y), finalX(x), finalZ(55), finalY(y), unk4_3(0x41e0), unk5(1) {
+   CastSpellAns(uint32 casterNetId, float x, float y, float origX, float origY) : casterNetId(casterNetId), casterNetId2(casterNetId), unk2(0x400001f59c0cb5a7), x(x), z(55), y(y), x2(x), z2(55), y2(y), unk3(0), finalX(origX), finalZ(55), finalY(origY), unk4_3(0x41e0), unk5(1) {
       header.cmd = (GameCmd)PKT_S2C_CastSpellAns;
       header.netId = casterNetId;
       header.ticks = clock();
@@ -289,7 +289,7 @@ struct CastSpellAns {
       unk3_2 = 0;
       unk3_3 = 1.0f;
       cooldown = 6.0f;
-      unk3_4 = 28.0f;
+      unk3_4 = 0;
       spellSlot = 0;
    }
    
@@ -304,7 +304,7 @@ struct CastSpellAns {
    float unk3_2; // 0 for ez Q
    float unk3_3; // 1.0 for ez Q ?
    float cooldown; // 6.0 for ez Q
-   float unk3_4; // 28.0 for ez Q ?
+   float unk3_4;
    uint8 unk4_1;
    uint8 spellSlot;
    short unk4_2;
