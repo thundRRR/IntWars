@@ -243,11 +243,32 @@ struct CastSpell {
     uint32 targetNetId; // If 0, use coordinates, else use target net id
 };
 
+struct CastSpellAns {
+
+   CastSpellAns(uint32 casterNetId, float x, float y) : casterNetId(casterNetId), casterNetId2(casterNetId), unk2(0x400001f59c0cb5a7), x(x), z(55), y(y), x2(x), z2(55), y2(y), finalX(x), finalZ(55), finalY(y), unk4(1) {
+      header.cmd = (GameCmd)PKT_S2C_CastSpellAns;
+      header.netId = casterNetId;
+      header.ticks = clock();
+      memcpy(unk, "\x00\x66\x00\x44\x40\x7f\x01\xf6\x01\x00\x40\x00\x00\x00\x80\x3f", 16);
+      memcpy(unk3,"\x00\x00\x00\x80\x3e\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\xc0\x40\x00\x00\x00\x00\x00\x00\x00\x00\xe0\x41", 27);
+   }
+   
+   GameHeader header;
+   uint8 unk[16];
+   uint32 casterNetId, casterNetId2;
+   uint64 unk2;
+   float x, z, y;
+   float x2, z2, y2;
+   uint8 unk3[27];
+   float finalX, finalZ, finalY;
+   uint64 unk4;
+};
+
 /**
  * Change Target ??
  */
 struct Unk {
-   Unk(uint32 netId, float x, float y, uint32 targetNetId = 0) : unk1(0x0F), unk2(1), unk3(1), x(x), unk4(0), y(y), targetNetId(targetNetId) {
+   Unk(uint32 netId, float x, float y, uint32 targetNetId = 0) : unk1(0x0F), unk2(1), unk3(2), x(x), unk4(55), y(y), targetNetId(targetNetId) {
       header.cmd = PKT_S2C_UNK;
       header.netId = netId;
    }
@@ -276,7 +297,7 @@ enum MinionSpawnType : uint32 {
 
 struct MinionSpawn {
    
-   MinionSpawn(uint32 netId, uint32 position = SPAWN_BLUE_MID, uint8 type = MINION_TYPE_MELEE) : netId(netId), netId2(netId), netId3(netId), unk(0x00150017), unk2(0x03), position(position), unk4(0xff), unk5_1(1), type(type), unk5_3(0), unk5_4(1), unk7(5), unk8(0x0ff84540f546f424) {
+   MinionSpawn(uint32 netId, uint32 position = SPAWN_RED_MID, uint8 type = MINION_TYPE_MELEE) : netId(netId), netId2(netId), netId3(netId), unk(0x00150017), unk2(0x03), position(position), unk4(0xff), unk5_1(1), type(type), unk5_3(0), unk5_4(1), unk7(5), unk8(0x0ff84540f546f424) {
       header.cmd = PKT_S2C_MinionSpawn;
       header.netId = netId;
       memcpy(unk6, "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00\x00\x06", 36);

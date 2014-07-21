@@ -345,8 +345,12 @@ bool PacketHandler::handleCastSpell(HANDLE_ARGS) {
     
     printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %d\n", spell->spellSlot, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
     
-    Unk unk(peerInfo(peer)->netId, spell->x, spell->y);
+    Unk unk(peerInfo(peer)->netId, spell->x, spell->y, spell->targetNetId);
     sendPacket(peer, reinterpret_cast<uint8 *>(&unk), sizeof(unk), CHL_S2C);
+    
+    CastSpellAns response(peerInfo(peer)->netId, spell->x, spell->y);
+    printPacket(reinterpret_cast<uint8 *>(&response), sizeof(response));
+    sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
     
     return true;
 }
