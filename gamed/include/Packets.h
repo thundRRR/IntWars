@@ -133,7 +133,7 @@ typedef struct _LoadScreenInfo {
 } LoadScreenInfo;
 
 typedef struct _LoadScreenPlayer {
-    static _LoadScreenPlayer *create(PacketCmd cmd, int8 *str, uint32 size) {
+    static _LoadScreenPlayer *create(PacketCmd cmd, const int8 *str, uint32 size) {
         //Builds packet buffer
         uint32 totalSize = sizeof(_LoadScreenPlayer) + size + 1;
         uint8 *buf = new uint8[totalSize];
@@ -245,12 +245,11 @@ struct CastSpell {
 
 struct CastSpellAns {
 
-   CastSpellAns(uint32 casterNetId, float x, float y) : casterNetId(casterNetId), casterNetId2(casterNetId), unk2(0x400001f59c0cb5a7), x(x), z(55), y(y), x2(x), z2(55), y2(y), finalX(x), finalZ(55), finalY(y), unk4(1) {
+   CastSpellAns(uint32 casterNetId, float x, float y) : casterNetId(casterNetId), casterNetId2(casterNetId), unk2(0x400001f59c0cb5a7), x(x), z(55), y(y), x2(x), z2(55), y2(y), finalX(x), finalZ(55), finalY(y), unk4_3(0x41e0), unk5(1) {
       header.cmd = (GameCmd)PKT_S2C_CastSpellAns;
       header.netId = casterNetId;
       header.ticks = clock();
       memcpy(unk, "\x00\x66\x00\x44\x40\x7f\x01\xf6\x01\x00\x40\x00\x00\x00\x80\x3f", 16);
-      memcpy(unk3,"\x00\x00\x00\x80\x3e\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\xc0\x40\x00\x00\x00\x00\x00\x00\x00\x00\xe0\x41", 27);
    }
    
    GameHeader header;
@@ -259,9 +258,18 @@ struct CastSpellAns {
    uint64 unk2;
    float x, z, y;
    float x2, z2, y2;
-   uint8 unk3[27];
+   uint8 unk3;
+   float castTime; // Unsure - 0.25 for ez Q
+   float unk3_2; // 0 for ez Q
+   float unk3_3; // 1.0 for ez Q ?
+   float cooldown; // 6.0 for ez Q
+   float unk3_4; // 28.0 for ez Q ?
+   uint8 unk4_1;
+   uint8 spellSlot;
+   short unk4_2;
+   short unk4_3;
    float finalX, finalZ, finalY;
-   uint64 unk4;
+   uint64 unk5;
 };
 
 /**

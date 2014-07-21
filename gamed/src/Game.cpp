@@ -16,7 +16,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "stdafx.h"
-#include "NetworkListener.h"
+#include "Game.h"
+
+#define REFRESH_RATE 10
 
 uint32 GetNewNetID() {
 	static uint32 dwStart = 0x40000019;
@@ -25,21 +27,20 @@ uint32 GetNewNetID() {
 	return dwRet;
 }
 
-NetworkListener::NetworkListener()
+Game::Game()
 {
 
 }
 
-NetworkListener::~NetworkListener()
+Game::~Game()
 {
 	_isAlive = false;
 
-	delete _handler;
 	delete _blowfish;
 	enet_host_destroy(_server);
 }
 
-bool NetworkListener::initialize(ENetAddress *address, const char *baseKey)
+bool Game::initialize(ENetAddress *address, const char *baseKey)
 {
 	if (enet_initialize () != 0)
 		return false;
@@ -52,17 +53,20 @@ bool NetworkListener::initialize(ENetAddress *address, const char *baseKey)
 	std::string key = base64_decode(baseKey);
 	if(key.length() <= 0)
 		return false;
+      
 	_blowfish = new BlowFish((uint8*)key.c_str(), 16);
-	_handler = new PacketHandler(_server, _blowfish);
+	initHandlers();
+   
+   map = new Map();
 	
 	return _isAlive = true;
 }
 
-void NetworkListener::netLoop()
+void Game::netLoop()
 {
 	ENetEvent event;
 
-	while(enet_host_service(_server, & event, 10) >= 0 && _isAlive)
+	while(enet_host_service(_server, & event, REFRESH_RATE) >= 0 && _isAlive)
 	{
 		switch (event.type)
 		{
@@ -74,14 +78,13 @@ void NetworkListener::netLoop()
 
 				event.peer->data = new ClientInfo();
 				peerInfo(event.peer)->setName("Test");
-				peerInfo(event.peer)->setType("Ezreal");
+				peerInfo(event.peer)->setChampion(ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID()));
 				peerInfo(event.peer)->skinNo = 6;
-				peerInfo(event.peer)->netId = GetNewNetID();
 
 			break;
 
 		case ENET_EVENT_TYPE_RECEIVE:
-			if(!_handler->handlePacket(event.peer, event.packet,event.channelID))
+			if(!handlePacket(event.peer, event.packet,event.channelID))
 			{
 				//enet_peer_disconnect(event.peer, 0);
 			}
