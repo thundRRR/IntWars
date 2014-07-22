@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="94">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="../../../dep" name="0">
+      <df name="include">
+        <df name="enet">
+          <in>callbacks.h</in>
+          <in>enet.h</in>
+          <in>list.h</in>
+          <in>protocol.h</in>
+          <in>time.h</in>
+          <in>types.h</in>
+          <in>unix.h</in>
+          <in>utility.h</in>
+          <in>win32.h</in>
+        </df>
+        <df name="intlib">
+          <in>base64.h</in>
+          <in>blowfish.h</in>
+          <in>general.h</in>
+        </df>
+      </df>
+      <df name="src">
+        <df name="enet">
+          <in>callbacks.c</in>
+          <in>host.c</in>
+          <in>list.c</in>
+          <in>packet.c</in>
+          <in>peer.c</in>
+          <in>protocol.c</in>
+          <in>unix.c</in>
+          <in>win32.c</in>
+        </df>
+        <df name="intlib">
+          <in>base64.cpp</in>
+          <in>blowfish.cpp</in>
+          <in>general.cpp</in>
+        </df>
+      </df>
+    </df>
+    <df root="../../../gamed" name="1">
+      <df name="include">
+        <in>Buffer.h</in>
+        <in>Champion.h</in>
+        <in>ChampionFactory.h</in>
+        <in>ChatBox.h</in>
+        <in>Client.h</in>
+        <in>Game.h</in>
+        <in>Map.h</in>
+        <in>Object.h</in>
+        <in>Packets.h</in>
+        <in>Stats.h</in>
+        <in>Target.h</in>
+        <in>Unit.h</in>
+        <in>common.h</in>
+        <in>stdafx.h</in>
+      </df>
+      <df name="src">
+        <in>Game.cpp</in>
+        <in>Handlers.cpp</in>
+        <in>Map.cpp</in>
+        <in>Object.cpp</in>
+        <in>PacketHandler.cpp</in>
+        <in>Packets.cpp</in>
+        <in>Target.cpp</in>
+        <in>main.cpp</in>
+      </df>
+    </df>
+    <df root="../../../utils" name="2">
+      <df name="win">
+        <in>ip.h</in>
+        <in>platforms-time.h</in>
+      </df>
+      <in>base64.cpp</in>
+      <in>base64.h</in>
+      <in>blowfish.cpp</in>
+      <in>blowfish.h</in>
+      <in>pcapDecrypt.cpp</in>
+    </df>
+  </logicalFolder>
+  <projectmakefile>../../../build/Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>3</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>../../../build</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>
