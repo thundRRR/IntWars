@@ -46,7 +46,7 @@ class Game
    protected:
 		bool handlePacket(ENetPeer *peer, ENetPacket *packet, uint8 channelID);
 
-		//Handlers
+		// Handlers
 		bool handleNull(HANDLE_ARGS);
 		bool handleKeyCheck(HANDLE_ARGS);
 		bool handleLoadPing(HANDLE_ARGS);
@@ -67,7 +67,10 @@ class Game
       bool handleCastSpell(HANDLE_ARGS);
       bool handleClick(HANDLE_ARGS);
       
-		//Tools
+      // Notifiers
+      void notifyMinionSpawned(const Minion* m);
+      
+		// Tools
 		void printPacket(const uint8 *buf, uint32 len);
 		void printLine(uint8 *buf, uint32 len);
 		bool sendPacket(ENetPeer *peer, const uint8 *data, uint32 length, uint8 channelNo, uint32 flag = RELIABLE);
@@ -78,6 +81,7 @@ class Game
 		bool _isAlive;
 		ENetHost *_server;
 		BlowFish *_blowfish;
+      ENetPeer* currentPeer;
       
       void registerHandler(bool (Game::*handler)(HANDLE_ARGS), PacketCmd pktcmd,Channel c);
       bool (Game::*_handlerTable[0x100][0x7])(HANDLE_ARGS);

@@ -20,8 +20,6 @@ protected:
 	float xvector, yvector;
 	Target* target;
    Map* map;
-	
-	std::list<Object*> attackers;
 
    unsigned int side;
    
@@ -55,6 +53,7 @@ public:
     Target* getTarget() { return target; }
     virtual void setTarget(Target* target);
     uint32 getNetId() const { return id; }
+    Map* getMap() const { return map; }
 
     void setPosition(float x, float y);
 

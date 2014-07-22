@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "common.h"
 #include "Buffer.h"
 #include "Client.h"
+#include "Minion.h"
 
 #if defined( __GNUC__ )
 #pragma pack(1)
@@ -201,6 +202,15 @@ public:
     uint8* description;*/
 };
 
+class SetHealth : public BasePacket {
+public:
+   SetHealth(const Unit* u) : BasePacket(PKT_S2C_SetHealth, u->getNetId()) {
+      buffer << (uint32)0x000000ae; // unk
+      buffer << u->getStats().getCurrentHealth();
+      buffer << u->getStats().getMaxHealth();
+   }
+};
+
 
 typedef struct _KeyCheck {
     _KeyCheck() {
@@ -329,26 +339,11 @@ struct Unk {
    uint32 targetNetId;
 };
 
-enum MinionSpawnPosition : uint32 {
-   SPAWN_BLUE_TOP = 0xeb364c40,
-   SPAWN_BLUE_BOT = 0x53b83640,
-   SPAWN_BLUE_MID = 0xb7717140,
-   SPAWN_RED_TOP  = 0xe647d540,
-   SPAWN_RED_BOT  = 0x5ec9af40,
-   SPAWN_RED_MID  = 0xba00e840
-};
-
-enum MinionSpawnType : uint32 {
-   MINION_TYPE_MELEE = 0x00,
-   MINION_TYPE_CASTER = 0x01,
-   MINION_TYPE_CANNON = 0x02
-};
-
 struct MinionSpawn {
    
-   MinionSpawn(uint32 netId, uint32 position = SPAWN_RED_MID, uint8 type = MINION_TYPE_MELEE) : netId(netId), netId2(netId), netId3(netId), unk(0x00150017), unk2(0x03), position(position), unk4(0xff), unk5_1(1), type(type), unk5_3(0), unk5_4(1), unk7(5), unk8(0x0ff84540f546f424) {
+   MinionSpawn(const Minion* m) : netId(m->getNetId()), netId2(m->getNetId()), netId3(m->getNetId()), unk(0x00150017), unk2(0x03), position(m->getPosition()), unk4(0xff), unk5_1(1), type(m->getType()), unk5_3(0), unk5_4(1), unk7(5), unk8(0x0ff84540f546f424) {
       header.cmd = PKT_S2C_MinionSpawn;
-      header.netId = netId;
+      header.netId = m->getNetId();
       memcpy(unk6, "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00\x00\x06", 36);
    }
 

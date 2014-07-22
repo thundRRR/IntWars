@@ -93,6 +93,7 @@ void Game::netLoop()
             break;
 
          case ENET_EVENT_TYPE_RECEIVE:
+            currentPeer = event.peer;
             if(!handlePacket(event.peer, event.packet,event.channelID))
             {
                //enet_peer_disconnect(event.peer, 0);

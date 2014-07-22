@@ -372,13 +372,14 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
            return true;
         }
         
-        //spawn
-        if(strncmp(message->getMessage(), cmd[10], strlen(cmd[10])) == 0)
-        {
-           MinionSpawn ms(GetNewNetID());
-           sendPacket(peer,reinterpret_cast<uint8*>(&ms),sizeof(ms),  CHL_S2C);
-           return true;
-        }
+         //spawn
+         if(strncmp(message->getMessage(), cmd[10], strlen(cmd[10])) == 0)
+         {
+            Minion* m = new Minion(map, GetNewNetID(), MINION_TYPE_MELEE, SPAWN_RED_MID);
+            map->addObject(m);
+            notifyMinionSpawned(m);
+            return true;
+         }
         
          
         //health

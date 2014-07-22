@@ -4,7 +4,7 @@
 #include <map>
 #include <set>
 
-#include "Buffer.h"
+#include "stdafx.h"
 
 class Stats {
 
@@ -13,7 +13,13 @@ private:
    std::set<std::pair<uint8, uint32> > updatedStats;
    
 public:
-   float getStat(uint8 blockId, uint32 stat);
+   float getStat(uint8 blockId, uint32 stat) const;
+   float setStat(uint8 blockId, uint32 stat, float value);
+   
+   float getCurrentHealth() const;
+   float getMaxHealth() const;
+   void setCurrentHealth(float health);
+   void setMaxHealth(float health);
 
 };
 
