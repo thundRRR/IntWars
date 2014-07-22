@@ -68,7 +68,7 @@ class Game
       bool handleClick(HANDLE_ARGS);
       
       // Notifiers
-      void notifyMinionSpawned(const Minion* m);
+      void notifyMinionSpawned(Minion* m);
       void notifySetHealth(Unit* u);
       
 		// Tools

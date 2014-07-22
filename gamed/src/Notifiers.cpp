@@ -2,9 +2,10 @@
 #include "Game.h"
 #include "Packets.h"
 
-void Game::notifyMinionSpawned(const Minion* m) {
+void Game::notifyMinionSpawned(Minion* m) {
    MinionSpawn ms(m);
    sendPacket(currentPeer, reinterpret_cast<uint8*>(&ms),sizeof(ms), CHL_S2C);
+   notifySetHealth(m);
 }
 
 void Game::notifySetHealth(Unit* u) {
