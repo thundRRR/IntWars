@@ -23,7 +23,6 @@
     <df root="../../../gamed" name="1">
       <df name="src">
         <in>Handlers.cpp</in>
-        <in>NetworkListener.cpp</in>
         <in>PacketHandler.cpp</in>
         <in>Packets.cpp</in>
         <in>main.cpp</in>
@@ -99,11 +98,6 @@
             flavor2="0">
       </item>
       <item path="../../../gamed/src/Handlers.cpp" ex="false" tool="1" flavor2="8">
-      </item>
-      <item path="../../../gamed/src/NetworkListener.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
       </item>
       <item path="../../../gamed/src/PacketHandler.cpp"
             ex="false"

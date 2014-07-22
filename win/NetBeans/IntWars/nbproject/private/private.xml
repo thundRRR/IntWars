@@ -10,20 +10,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/include/NetworkListener.h</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/dep/include/enet/protocol.h</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/src/NetworkListener.cpp</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/src/Packets.cpp</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/src/Handlers.cpp</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/include/common.h</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/include/ChatBox.h</file>
             <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/src/PacketHandler.cpp</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/dep/include/enet/unix.h</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/include/Client.h</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/include/Packets.h</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/dep/include/enet/win32.h</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/src/main.cpp</file>
-            <file>file:/C:/Users/Cameron/Documents/GitHub/IntWars/gamed/include/PacketHandler.h</file>
         </group>
     </open-files>
 </project-private>

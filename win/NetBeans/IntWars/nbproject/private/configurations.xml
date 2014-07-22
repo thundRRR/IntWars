@@ -40,19 +40,29 @@
     </df>
     <df root="../../../gamed" name="1">
       <df name="include">
+        <in>Buffer.h</in>
+        <in>Champion.h</in>
+        <in>ChampionFactory.h</in>
         <in>ChatBox.h</in>
         <in>Client.h</in>
-        <in>NetworkListener.h</in>
-        <in>PacketHandler.h</in>
+        <in>Game.h</in>
+        <in>Map.h</in>
+        <in>Object.h</in>
         <in>Packets.h</in>
+        <in>Stats.h</in>
+        <in>Target.h</in>
+        <in>Unit.h</in>
         <in>common.h</in>
         <in>stdafx.h</in>
       </df>
       <df name="src">
+        <in>Game.cpp</in>
         <in>Handlers.cpp</in>
-        <in>NetworkListener.cpp</in>
+        <in>Map.cpp</in>
+        <in>Object.cpp</in>
         <in>PacketHandler.cpp</in>
         <in>Packets.cpp</in>
+        <in>Target.cpp</in>
         <in>main.cpp</in>
       </df>
     </df>
