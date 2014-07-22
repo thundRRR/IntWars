@@ -2,8 +2,13 @@
 #include "common.h"
 
 float Stats::getStat(uint8 blockId, uint32 stat) const {
-   auto it = stats[blockId].find(stat);
-   if(it != stats[blockId].end()) {
+   int block = -1;
+   while(blockId) {
+      blockId = blockId >> 1;
+      ++block;
+   }
+   auto it = stats[block].find(stat);
+   if(it != stats[block].end()) {
       return it->second;
    }
    
@@ -11,7 +16,12 @@ float Stats::getStat(uint8 blockId, uint32 stat) const {
 }
 
 float Stats::setStat(uint8 blockId, uint32 stat, float value) {
-   stats[blockId][stat] = value;
+   int block = -1;
+   while(blockId) {
+      blockId = blockId >> 1;
+      ++block;
+   }
+   stats[block][stat] = value;
 }
 
 float Stats::getCurrentHealth() const {
