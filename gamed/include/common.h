@@ -122,7 +122,7 @@ enum Channel : uint8
    CHL_LOADING_SCREEN = 7,
 };
 
-enum Spell : uint32
+enum SpellIds : uint32
 {
    SPL_Revive = 0x05C8B3A5,
    SPL_Smite = 0x065E8695,
@@ -159,14 +159,18 @@ enum FieldMaskOne : uint32
 enum FieldMaskTwo : uint32
 {
    FM2_Base_Ad       = 0x00000020, // champ's base ad that increase every level. No item bonus should be added here
-   FM2_Armor         = 0x00000100,
+   FM2_Base_Ap       = 0x00000040,
+   FM2_Crit_Chance   = 0x00000100, // 0.5 = 50%
+   FM2_Armor         = 0x00000200,
+   FM2_Magic_Armor   = 0x00000400,
    FM2_Hp5           = 0x00000800,
    FM2_Mp5           = 0x00001000,
+   FM2_Range         = 0x00002000,
    FM2_Bonus_Ad_Flat = 0x00004000, // AD flat bonuses
    FM2_Bonus_Ad_Pct  = 0x00008000, // AD percentage bonuses. 0.5 = 50%
    FM2_Bonus_Ap_Flat = 0x00010000, // AP flat bonuses
    FM2_Bonus_Ats     = 0x00080000, // Attack speed bonus. If set to 2 and champ's base attack speed is 0.600, then his new AtkSpeed becomes 1.200
-   FM2_cdr           = 0x00800000, // Cooldown reduction. 0.5 = 50%
+   FM2_cdr           = 0x00200000, // Cooldown reduction. 0.5 = 50%
 };
 
 enum FieldMaskThree : uint32

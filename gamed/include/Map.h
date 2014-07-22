@@ -8,13 +8,17 @@
 #include "Object.h"
 #include "Client.h"
 
+class Game;
+
 class Map {
 
 private:
    std::map<uint32, Object*> objects;
    std::vector<ClientInfo*> players;
+   Game* game;
    
 public:
+   Map(Game* game) : game(game) { }
    virtual ~Map() { }
    virtual void update(unsigned int diff);
    Object* getObjectById(uint32 id);

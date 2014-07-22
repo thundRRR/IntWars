@@ -43,7 +43,7 @@ class Game
 		bool initialize(ENetAddress *address, const char *baseKey);
 		void netLoop();
       
-   protected:
+   
 		bool handlePacket(ENetPeer *peer, ENetPacket *packet, uint8 channelID);
 
 		// Handlers
@@ -70,7 +70,9 @@ class Game
       // Notifiers
       void notifyMinionSpawned(Minion* m);
       void notifySetHealth(Unit* u);
-      
+      void notifyUpdatedStats(Unit* u);
+   
+   protected:
 		// Tools
 		void printPacket(const uint8 *buf, uint32 len);
 		void printLine(uint8 *buf, uint32 len);
@@ -79,7 +81,7 @@ class Game
 		bool broadcastPacket(uint8 *data, uint32 length, uint8 channelNo, uint32 flag = RELIABLE);
 
 	private:
-		bool _isAlive;
+		bool _isAlive, _started;
 		ENetHost *_server;
 		BlowFish *_blowfish;
       ENetPeer* currentPeer;

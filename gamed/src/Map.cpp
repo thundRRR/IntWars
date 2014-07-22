@@ -1,8 +1,15 @@
 #include "Map.h"
+#include "Game.h"
 
 void Map::update(unsigned int diff) {
    for(auto& kv : objects) {
       kv.second->update(diff);
+      Unit* u = dynamic_cast<Unit*>(kv.second);
+      
+      if(u && !u->getStats().getUpdatedStats().empty()) {
+         game->notifyUpdatedStats(u);
+         u->getStats().clearUpdatedStats();
+      }
    }
 }
 

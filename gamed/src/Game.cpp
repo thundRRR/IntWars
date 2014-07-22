@@ -33,7 +33,7 @@ uint32 GetNewNetID() {
 	return dwRet;
 }
 
-Game::Game()
+Game::Game() : _started(false)
 {
 
 }
@@ -63,7 +63,7 @@ bool Game::initialize(ENetAddress *address, const char *baseKey)
 	_blowfish = new BlowFish((uint8*)key.c_str(), 16);
 	initHandlers();
    
-   map = new Map();
+   map = new Map(this);
 	
 	return _isAlive = true;
 }
@@ -89,6 +89,7 @@ void Game::netLoop()
             peerInfo(event.peer)->setName("Test");
             peerInfo(event.peer)->setChampion(ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID()));
             peerInfo(event.peer)->skinNo = 6;
+            map->addObject(peerInfo(event.peer)->getChampion());
 
             break;
 
@@ -108,7 +109,10 @@ void Game::netLoop()
             break;
          }
       }
-      map->update(REFRESH_RATE);
+      
+      if(_started) {
+         map->update(REFRESH_RATE);
+      }
       gettimeofday(&tEnd, 0);
       timersub(&tEnd, &tStart, &tDiff);
       usleep(REFRESH_RATE*1000 - (tDiff.tv_sec*1000000+tDiff.tv_usec));

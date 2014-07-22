@@ -175,6 +175,9 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
 bool Game::handleStartGame(HANDLE_ARGS) {
    StatePacket start(PKT_S2C_StartGame);
    sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket), CHL_S2C);
+   
+   _started = true;
+   
    FogUpdate2 test;
    test.x = 0;
    test.y = 0;
@@ -376,9 +379,19 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
          //spawn
          if(strncmp(message->getMessage(), cmd[10], strlen(cmd[10])) == 0)
          {
-            Minion* m = new Minion(map, GetNewNetID(), MINION_TYPE_MELEE, SPAWN_RED_MID);
-            map->addObject(m);
-            notifyMinionSpawned(m);
+            static const MinionSpawnPosition positions[] = {   SPAWN_BLUE_TOP,
+                                                               SPAWN_BLUE_BOT,
+                                                               SPAWN_BLUE_MID,
+                                                               SPAWN_RED_TOP,
+                                                               SPAWN_RED_BOT,
+                                                               SPAWN_RED_MID, 
+                                                            };
+                          
+            for(int i = 0; i < 6; ++i) {                                     
+               Minion* m = new Minion(map, GetNewNetID(), MINION_TYPE_MELEE, positions[i]);
+               map->addObject(m);
+               notifyMinionSpawned(m);
+            }
             return true;
          }
          

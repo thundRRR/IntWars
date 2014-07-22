@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <time.h>
 #include <cmath>
+#include <set>
 
 #include <intlib/general.h>
 #include <enet/enet.h>
@@ -59,8 +60,8 @@ public:
 class GamePacket : public BasePacket {
    
 public:
-   GamePacket(uint8 cmd = 0, uint32 netId = 0, uint32 ticks = 0) : BasePacket(cmd, netId) {
-      buffer << ticks;
+   GamePacket(uint8 cmd = 0, uint32 netId = 0) : BasePacket(cmd, netId) {
+      buffer << (uint32)clock();
    }
 
 };
@@ -293,7 +294,9 @@ struct CastSpellAns {
       header.cmd = (GameCmd)PKT_S2C_CastSpellAns;
       header.netId = casterNetId;
       header.ticks = clock();
-      memcpy(unk, "\x00\x66\x00\x44\x40\x7f\x01\xf6\x01\x00\x40\x00\x00\x00\x80\x3f", 16);
+      memcpy(unk, "\x00\x66\x00", 3);
+      spellId = 0x017f4044; // TODO : do NOT hardcode this to Mystic Shot's ID
+      memcpy(unk_1, "\xf6\x01\x00\x40\x00\x00\x00\x80\x3f", 9);
       castTime = 0.25f;
       unk3_2 = 0;
       unk3_3 = 1.0f;
@@ -303,7 +306,9 @@ struct CastSpellAns {
    }
    
    GameHeader header;
-   uint8 unk[16];
+   uint8 unk[3];
+   uint32 spellId;
+   uint8 unk_1[9];
    uint32 casterNetId, casterNetId2;
    uint64 unk2;
    float x, z, y;
@@ -542,6 +547,43 @@ struct CharacterStats {
       unsigned short sValue;
       float fValue;
    } value;
+};
+
+class UpdateStats : public GamePacket {
+public:
+   UpdateStats(Unit* u) : GamePacket(PKT_S2C_CharStats, u->getNetId()) {
+      const std::multimap<uint8, uint32>& stats = u->getStats().getUpdatedStats();
+      
+      std::set<uint8> masks;
+      uint8 masterMask = 0;
+      
+      for(auto& p : stats) {
+         masterMask |= p.first;
+         masks.insert(p.first);
+      }
+      
+      buffer << (uint8)1;
+      buffer << masterMask;
+      buffer << u->getNetId();
+      
+      for(uint8 m : masks) {
+         uint32 mask = 0;
+         
+         for(auto it = stats.lower_bound(m); it != stats.upper_bound(m); ++it) {
+            mask |= it->second;
+         }
+         
+         buffer << mask;
+         buffer << (uint8)(stats.count(m)*4);
+         
+         for(int i = 0; i < 32; ++i) {
+            uint32 tmpMask = (1 << i);
+            if(tmpMask & mask) {
+               buffer << u->getStats().getStat(m, tmpMask);
+            }
+         }
+      }
+   }
 };
 
 struct ChatMessage {
