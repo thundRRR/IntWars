@@ -282,7 +282,7 @@ bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
         answer->getVector(i)->y = vMoves[i].y;
     }
     
-    peerInfo(peer)->getChampion()->setPosition(vMoves[1].x, vMoves[1].y);
+    peerInfo(peer)->getChampion()->setPosition(2.0 * vMoves[1].x + MAP_WIDTH, 2.0 * vMoves[1].y + MAP_HEIGHT);
     
     bool bRet = broadcastPacket(reinterpret_cast<uint8 *>(answer), answer->size(), 4);
     MovementAns::destroy(answer);
@@ -328,6 +328,9 @@ bool Game::handleCastSpell(HANDLE_ARGS) {
     CastSpellAns response(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, peerInfo(peer)->getChampion()->getX(), peerInfo(peer)->getChampion()->getY());
     printPacket(reinterpret_cast<uint8 *>(&response), sizeof(response));
     sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
+    
+    SpawnProjectile sp(GetNewNetID(), peerInfo(peer)->getChampion(), spell->x, spell->y);
+    sendPacket(peer, sp, CHL_S2C);
     
     return true;
 }

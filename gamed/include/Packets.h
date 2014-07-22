@@ -297,7 +297,7 @@ struct CastSpellAns {
       castTime = 0.25f;
       unk3_2 = 0;
       unk3_3 = 1.0f;
-      cooldown = 6.0f;
+      cooldown = 2.0f;
       unk3_4 = 0;
       spellSlot = 0;
    }
@@ -320,6 +320,44 @@ struct CastSpellAns {
    short unk4_3;
    float finalX, finalZ, finalY;
    uint64 unk5;
+};
+
+class SpawnProjectile : public BasePacket {
+public:
+   SpawnProjectile(uint32 projNetId, Unit* caster, float x, float y) : BasePacket(PKT_S2C_SpawnProjectile, projNetId) {
+      buffer << caster->getX() << 150.f << caster->getY();
+      buffer << caster->getX() << 150.f << caster->getY();
+      buffer << (uint64)0x000000003f510fe2; // unk
+      buffer << (uint32)0x3f13bf22; // unk
+      buffer << x << 150.f << y;
+      buffer << caster->getX() << 150.f << caster->getY();
+      buffer << x << 150.f << y;
+      buffer << caster->getX() << 150.f << caster->getY();
+      buffer << uint32(0); // unk
+      buffer << 2000.f; // Projectile speed
+      buffer << (uint64)0x00000000d5002fce; // unk
+      buffer << (uint32)0x7f7fffff; // unk
+      buffer << (uint32)0x25006600; // unk
+      buffer << (uint32)0xab0a0fe6; // unk
+      buffer << (uint32)0x00400000; // unk
+      buffer << (uint32)0x3f800000; // unk
+      buffer << caster->getNetId() << caster->getNetId();
+      buffer << (uint32)0x9c0cb5a7; // unk
+      buffer << projNetId;
+      buffer << 300.f << 200.f << 400.f; // no idea what these coords are for
+      buffer << 300.f << 200.f << 400.f; // no idea what these coords are for
+      buffer << (uint32)0x80000000; // unk
+      buffer << (uint32)0x000000bf; // unk
+      buffer << (uint32)0x80000000; // unk
+      buffer << (uint32)0x2fd5843f; // unk
+      buffer << (uint32)0x00000000; // unk
+      buffer << (uint16)0x0000; // unk
+      buffer << (uint8)0x2f; // unk
+      buffer << (uint32)0x00000000; // unk
+      buffer << caster->getX() << 150.f << caster->getY();
+      buffer << (uint64)0x0000000000000000; // unk
+   }
+
 };
 
 /**
