@@ -16,11 +16,21 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if defined(WIN32) || defined(_WIN32)
-   #include "win/platforms-time.h"
+#ifdef WIN32
+   #include <time.h>
+   #include <sys/timeb.h>
+   int gettimeofday (struct timeval *tp, void *tz)
+   {
+      struct _timeb timebuffer;
+      _ftime (&timebuffer);
+      tp->tv_sec = timebuffer.time;
+      tp->tv_usec = timebuffer.millitm * 1000;
+      return 0;
+   }
+#else
+   #include <sys/time.h>
 #endif
 
-#include <sys/time.h>
 #include "stdafx.h"
 #include "Game.h"
 

@@ -10,15 +10,8 @@
 #include <stdio.h>
 #include <pcap.h>
 #include <stdlib.h>
-#if defined(WIN32) || defined(_WIN32)
-	#include <winsock2.h>
-	#include <ws2tcpip.h>
-	#include "win/platforms-time.h"
-	#include "win/ip.h"
-#else
-	#include <netinet/ip.h>
-	#include <arpa/inet.h>
-#endif
+#include <netinet/ip.h>
+#include <arpa/inet.h>
 #include <string.h>
 
 #include "blowfish.h"
