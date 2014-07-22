@@ -15,31 +15,35 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _PACKET_HANDLER_H
-#define _PACKET_HANDLER_H
-#include <enet/enet.h>
-#include "common.h"
-#include "ChatBox.h"
-#include "stdafx.h"
+#ifndef _NETWORK_LISTENER_H
+#define _NETWORK_LISTENER_H
 
+#include <enet/enet.h>
 #include <intlib/base64.h>
 #include <intlib/blowfish.h>
 
-
-#include "Packets.h"
+#include "Map.h"
+#include "common.h"
 #include "Client.h"
+#include "Packets.h"
 
+#define HANDLE_ARGS ENetPeer *peer, ENetPacket *packet
+#define PEER_MTU 996
 #define RELIABLE ENET_PACKET_FLAG_RELIABLE
 #define UNRELIABLE 0
 
-#define HANDLE_ARGS ENetPeer *peer, ENetPacket *packet
+#define peerInfo(p) ((ClientInfo*)p->data)
 
-class PacketHandler
+class Game
 {
 	public:
-		PacketHandler(ENetHost *server, BlowFish *blowfish);
-		~PacketHandler();
+		Game();
+		~Game();
 
+		bool initialize(ENetAddress *address, const char *baseKey);
+		void netLoop();
+      
+   protected:
 		bool handlePacket(ENetPeer *peer, ENetPacket *packet, uint8 channelID);
 
 		//Handlers
@@ -64,15 +68,25 @@ class PacketHandler
       bool handleClick(HANDLE_ARGS);
       
 		//Tools
-		void printPacket(uint8 *buf, uint32 len);
+		void printPacket(const uint8 *buf, uint32 len);
 		void printLine(uint8 *buf, uint32 len);
-		bool sendPacket(ENetPeer *peer, uint8 *data, uint32 length, uint8 channelNo, uint32 flag = RELIABLE);
+		bool sendPacket(ENetPeer *peer, const uint8 *data, uint32 length, uint8 channelNo, uint32 flag = RELIABLE);
+      bool sendPacket(ENetPeer *peer, const Packet& packet, uint8 channelNo, uint32 flag = RELIABLE);
 		bool broadcastPacket(uint8 *data, uint32 length, uint8 channelNo, uint32 flag = RELIABLE);
+
 	private:
-		void registerHandler(bool (PacketHandler::*handler)(HANDLE_ARGS), PacketCmd pktcmd,Channel c);
-	private:
+		bool _isAlive;
 		ENetHost *_server;
 		BlowFish *_blowfish;
-		bool (PacketHandler::*_handlerTable[0x100][0x7])(HANDLE_ARGS); 
+      
+      void registerHandler(bool (Game::*handler)(HANDLE_ARGS), PacketCmd pktcmd,Channel c);
+      bool (Game::*_handlerTable[0x100][0x7])(HANDLE_ARGS);
+      void initHandlers();
+      
+      Map* map;
 };
+
+extern uint32 GetNewNetID();
+
 #endif
+

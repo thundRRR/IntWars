@@ -19,61 +19,48 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define _CLIENT_H
 
 #include "common.h"
+#include "ChampionFactory.h"
+#include <string>
 
 struct ClientInfo
 {
 	ClientInfo()
 	{
 		keyChecked = false;
-		name = type = NULL;
 		ticks = 0;
 		skinNo = 0;
 	}
 
 	~ClientInfo()
 	{
-		if(name != NULL)
-			delete[] name;
-		if(type != NULL)
-			delete[] type;
 	}
 
-	void setName(char *name)
+	void setName(const std::string& name)
 	{
-		if(this->name != NULL)
-			delete[] this->name;
-
-		nameLen = strlen(name);
-		this->name = new int8[nameLen+1];
-		memcpy(this->name, name, nameLen+1);
+		this->name = name;
 	}
 
-	void setType(char *type)
+	void setChampion(Champion* champion)
 	{
-		if(this->type != NULL)
-			delete[] this->type;
-
-		typeLen = strlen(type);
-		this->type = new int8[typeLen+1];
-		memcpy(this->type, type, typeLen+1);
+		this->champion = champion; //ChampionFactory::getChampionFromType(type);
 	}
+   
+   Champion* getChampion() const { return champion; }
+   
+   const std::string& getName() const { return name; }
 
-	uint32 getTicks()
-	{
-		ticks++;
-		return ticks;
-	}
-	bool keyChecked;
-	uint64 userId;
-	uint32 ticks;
-	uint32 netId;
-	uint32 nameLen;
-	uint32 typeLen;
-	uint32 skinNo;
-	int8 *name;
-	int8 *type;
+   uint32 getTicks()
+   {
+      ticks++;
+      return ticks;
+   }
+   bool keyChecked;
+   uint64 userId;
+   uint32 ticks;
+   uint32 skinNo;
+   std::string name;
+   Champion* champion;
 
 };
-#define peerInfo(p) ((ClientInfo*)p->data)
 
 #endif

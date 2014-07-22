@@ -16,19 +16,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "stdafx.h"
-#include "PacketHandler.h"
-#include "NetworkListener.h"
+#include "Game.h"
+#include "Packets.h"
+#include "ChatBox.h"
 
 #include <vector>
 #include <string>
 
 using namespace std;
 
-bool PacketHandler::handleNull(HANDLE_ARGS) {
+bool Game::handleNull(HANDLE_ARGS) {
     return true;
 }
 
-bool PacketHandler::handleKeyCheck(ENetPeer *peer, ENetPacket *packet) {
+bool Game::handleKeyCheck(ENetPeer *peer, ENetPacket *packet) {
     KeyCheck *keyCheck = (KeyCheck *)packet->data;
     uint64 userId = _blowfish->Decrypt(keyCheck->checkId);
     /*
@@ -56,15 +57,15 @@ bool PacketHandler::handleKeyCheck(ENetPeer *peer, ENetPacket *packet) {
     return bRet;
 }
 
-bool PacketHandler::handleGameNumber(ENetPeer *peer, ENetPacket *packet) {
+bool Game::handleGameNumber(ENetPeer *peer, ENetPacket *packet) {
     WorldSendGameNumber world;
     world.gameId = 1;
     strcpy((char *)world.data1, "EUW1");
-    memcpy(world.data, peerInfo(peer)->name, peerInfo(peer)->nameLen);
+    memcpy(world.data, peerInfo(peer)->getName().c_str(), peerInfo(peer)->getName().length());
     return sendPacket(peer, reinterpret_cast<uint8 *>(&world), sizeof(WorldSendGameNumber), CHL_S2C);
 }
 
-bool PacketHandler::handleSynch(ENetPeer *peer, ENetPacket *packet) {
+bool Game::handleSynch(ENetPeer *peer, ENetPacket *packet) {
     SynchVersion *version = reinterpret_cast<SynchVersion *>(packet->data);
     //Logging->writeLine("Client version: %s\n", version->version);
     SynchVersionAns answer;
@@ -75,12 +76,9 @@ bool PacketHandler::handleSynch(ENetPeer *peer, ENetPacket *packet) {
     return sendPacket(peer, reinterpret_cast<uint8 *>(&answer), sizeof(SynchVersionAns), 3);
 }
 
-bool PacketHandler::handleMap(ENetPeer *peer, ENetPacket *packet) {
-    LoadScreenPlayer *playerName = LoadScreenPlayer::create(PKT_S2C_LoadName, peerInfo(peer)->name, peerInfo(peer)->nameLen);
-    playerName->userId = peerInfo(peer)->userId;
-    LoadScreenPlayer *playerHero = LoadScreenPlayer::create(PKT_S2C_LoadHero, peerInfo(peer)->type, peerInfo(peer)->typeLen);
-    playerHero->userId = peerInfo(peer)->userId;
-    playerHero->skinId = peerInfo(peer)->skinNo;
+bool Game::handleMap(ENetPeer *peer, ENetPacket *packet) {
+    LoadScreenPlayerName loadName(*peerInfo(peer));
+    LoadScreenPlayerChampion loadChampion(*peerInfo(peer));
     //Builds team info
     LoadScreenInfo screenInfo;
     screenInfo.bluePlayerNo = 1;
@@ -88,30 +86,28 @@ bool PacketHandler::handleMap(ENetPeer *peer, ENetPacket *packet) {
     screenInfo.bluePlayerIds[0] = peerInfo(peer)->userId;
     bool pInfo = sendPacket(peer, reinterpret_cast<uint8 *>(&screenInfo), sizeof(LoadScreenInfo), CHL_LOADING_SCREEN);
     //For all players send this info
-    bool pName = sendPacket(peer, reinterpret_cast<uint8 *>(playerName), playerName->getPacketLength(), CHL_LOADING_SCREEN);
-    bool pHero = sendPacket(peer, reinterpret_cast<uint8 *>(playerHero), playerHero->getPacketLength(), CHL_LOADING_SCREEN);
-    //cleanup
-    LoadScreenPlayer::destroy(playerName);
-    LoadScreenPlayer::destroy(playerHero);
+    bool pName = sendPacket(peer, loadName, CHL_LOADING_SCREEN);
+    bool pHero = sendPacket(peer, loadChampion, CHL_LOADING_SCREEN);
+
     return (pInfo && pName && pHero);
 }
 
 //building the map
-bool PacketHandler::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
+bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     StatePacket2 start(PKT_S2C_StartSpawn);
     bool p1 = sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket2), CHL_S2C);
     printf("Spawning map\r\n");
     HeroSpawn spawn;
-    spawn.netId = peerInfo(peer)->netId;
+    spawn.netId = peerInfo(peer)->getChampion()->getNetId();
     spawn.gameId = 0;
-    memcpy(spawn.name, peerInfo(peer)->name, peerInfo(peer)->nameLen);
-    memcpy(spawn.type, peerInfo(peer)->type, peerInfo(peer)->typeLen);
+    memcpy(spawn.name, peerInfo(peer)->getName().c_str(), peerInfo(peer)->getName().length());
+    memcpy(spawn.type, peerInfo(peer)->getChampion()->getType().c_str(), peerInfo(peer)->getChampion()->getType().length());
     bool p2 = sendPacket(peer, reinterpret_cast<uint8 *>(&spawn), sizeof(HeroSpawn), CHL_S2C);
     HeroSpawn2 h2;
-    h2.header.netId = peerInfo(peer)->netId;
+    h2.header.netId = peerInfo(peer)->getChampion()->getNetId();
     sendPacket(peer, reinterpret_cast<uint8 *>(&h2), sizeof(HeroSpawn2), CHL_S2C);
     HeroSpawn3 h3;
-    h3.header.netId = peerInfo(peer)->netId;
+    h3.header.netId = peerInfo(peer)->getChampion()->getNetId();
     sendPacket(peer, reinterpret_cast<uint8 *>(&h3), sizeof(HeroSpawn3), CHL_S2C);
     //Spawn Turrets
     vector<string> szTurrets = {
@@ -147,39 +143,19 @@ bool PacketHandler::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
         sendPacket(peer, reinterpret_cast<uint8 *>(&turretSpawn), sizeof(TurretSpawn), CHL_S2C);
     }
     //Spawn Props
-    LevelPropSpawn lpSpawn;
-    lpSpawn.SetProp("LevelProp_Yonkey", "Yonkey");
-    lpSpawn.header.netId = 0;
-    lpSpawn.netId = GetNewNetID();
-    lpSpawn.x = 12465;
-    lpSpawn.y = 101;
-    lpSpawn.z = 14422.257f;
-    sendPacket(peer, reinterpret_cast<uint8 *>(&lpSpawn), sizeof(LevelPropSpawn), CHL_S2C);
-    lpSpawn.SetProp("LevelProp_Yonkey1", "Yonkey");
-    lpSpawn.header.netId = 0;
-    lpSpawn.netId = GetNewNetID();
-    lpSpawn.x = -76;
-    lpSpawn.y = 94;
-    lpSpawn.z = 1769.1589f;
-    sendPacket(peer, reinterpret_cast<uint8 *>(&lpSpawn), sizeof(LevelPropSpawn), CHL_S2C);
-    lpSpawn.SetProp("LevelProp_ShopMale", "ShopMale");
-    lpSpawn.header.netId = 0;
-    lpSpawn.netId = GetNewNetID();
-    lpSpawn.x = 13374;
-    lpSpawn.y = 194;
-    lpSpawn.z = 14245.673f;
-    sendPacket(peer, reinterpret_cast<uint8 *>(&lpSpawn), sizeof(LevelPropSpawn), CHL_S2C);
-    lpSpawn.SetProp("LevelProp_ShopMale1", "ShopMale");
-    lpSpawn.header.netId = 0;
-    lpSpawn.netId = GetNewNetID();
-    lpSpawn.x = -99;
-    lpSpawn.y = 191;
-    lpSpawn.z = 855.6632f;
-    sendPacket(peer, reinterpret_cast<uint8 *>(&lpSpawn), sizeof(LevelPropSpawn), CHL_S2C);
+    LevelPropSpawn lpSpawn(GetNewNetID(), "LevelProp_Yonkey", "Yonkey", 12465, 14422.257f, 101);
+    sendPacket(peer, lpSpawn, CHL_S2C);
+    LevelPropSpawn lpSpawn2(GetNewNetID(), "LevelProp_Yonkey1", "Yonkey", -76, 1769.1589f, 94);
+    sendPacket(peer, lpSpawn2, CHL_S2C);
+    LevelPropSpawn lpSpawn3(GetNewNetID(), "LevelProp_ShopMale", "ShopMale", 13374, 14245.673f, 194);
+    sendPacket(peer, lpSpawn3, CHL_S2C);
+    LevelPropSpawn lpSpawn4(GetNewNetID(), "LevelProp_ShopMale1", "ShopMale", -99, 855.6632f, 191);
+    sendPacket(peer, lpSpawn4, CHL_S2C);
+    
     StatePacket end(PKT_S2C_EndSpawn);
     bool p3 = sendPacket(peer, reinterpret_cast<uint8 *>(&end), sizeof(StatePacket), CHL_S2C);
     BuyItemAns recall;
-    recall.header.netId = peerInfo(peer)->netId;
+    recall.header.netId = peerInfo(peer)->getChampion()->getNetId();
     recall.itemId = 2001;
     recall.slotId = 7;
     recall.stack = 1;
@@ -192,13 +168,13 @@ bool PacketHandler::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     sendPacket(peer, reinterpret_cast<uint8 *>(&timer3), sizeof(GameTimerUpdate), CHL_S2C);
     //lvl 1 R for elise
     for(int i = 0; i < 4; i++) {
-        SpellSet spell(peerInfo(peer)->netId, i, 1);
+        SpellSet spell(peerInfo(peer)->getChampion()->getNetId(), i, 1);
         sendPacket(peer, reinterpret_cast<uint8 *>(&spell), sizeof(SpellSet), CHL_S2C);
     }
     return p1 & p2 & p3;
 }
 
-bool PacketHandler::handleStartGame(HANDLE_ARGS) {
+bool Game::handleStartGame(HANDLE_ARGS) {
    StatePacket start(PKT_S2C_StartGame);
    sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket), CHL_S2C);
    FogUpdate2 test;
@@ -220,14 +196,14 @@ bool PacketHandler::handleStartGame(HANDLE_ARGS) {
    return true;
 }
 
-bool PacketHandler::handleAttentionPing(ENetPeer *peer, ENetPacket *packet) {
+bool Game::handleAttentionPing(ENetPeer *peer, ENetPacket *packet) {
     AttentionPing *ping = reinterpret_cast<AttentionPing *>(packet->data);
     AttentionPingAns response(ping);
     //Logging->writeLine("Plong x: %f, y: %f, z: %f, type: %i\n", ping->x, ping->y, ping->z, ping->type);
     return broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(AttentionPing), 3);
 }
 
-bool PacketHandler::handleView(ENetPeer *peer, ENetPacket *packet) {
+bool Game::handleView(ENetPeer *peer, ENetPacket *packet) {
     ViewReq *request = reinterpret_cast<ViewReq *>(packet->data);
     ////Logging->writeLine("View (%i), x:%f, y:%f, zoom: %f\n", request->requestNo, request->x, request->y, request->zoom);
     ViewAns answer;
@@ -284,7 +260,7 @@ std::vector<MovementVector> readWaypoints(uint8 *buffer, int coordCount) {
 #define MAP_WIDTH (13982 / 2)
 #define MAP_HEIGHT (14446 / 2)
 
-bool PacketHandler::handleMove(ENetPeer *peer, ENetPacket *packet) {
+bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
     MovementReq *request = reinterpret_cast<MovementReq *>(packet->data);
     switch(request->type) {
         //TODO, Implement stop commands
@@ -302,17 +278,20 @@ bool PacketHandler::handleMove(ENetPeer *peer, ENetPacket *packet) {
     MovementAns *answer = MovementAns::create(request->vectorNo);
     answer->ok = 1;
     answer->vectorNo = request->vectorNo;
-    answer->netId = peerInfo(peer)->netId;
+    answer->netId = peerInfo(peer)->getChampion()->getNetId();
     for(int i = 0; i < vMoves.size(); i++) {
         answer->getVector(i)->x = vMoves[i].x;
         answer->getVector(i)->y = vMoves[i].y;
     }
+    
+    peerInfo(peer)->getChampion()->setPosition(vMoves[1].x, vMoves[1].y);
+    
     bool bRet = broadcastPacket(reinterpret_cast<uint8 *>(answer), answer->size(), 4);
     MovementAns::destroy(answer);
     return bRet;
 }
 
-bool PacketHandler::handleLoadPing(ENetPeer *peer, ENetPacket *packet) {
+bool Game::handleLoadPing(ENetPeer *peer, ENetPacket *packet) {
     PingLoadInfo *loadInfo = reinterpret_cast<PingLoadInfo *>(packet->data);
     PingLoadInfo response;
     memcpy(&response, packet->data, sizeof(PingLoadInfo));
@@ -328,34 +307,34 @@ bool PacketHandler::handleLoadPing(ENetPeer *peer, ENetPacket *packet) {
     return bRet;
 }
 
-bool PacketHandler::handleQueryStatus(HANDLE_ARGS) {
+bool Game::handleQueryStatus(HANDLE_ARGS) {
     QueryStatus response;
     return sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(QueryStatus), CHL_S2C);
 }
 
-bool PacketHandler::handleClick(HANDLE_ARGS) {
+bool Game::handleClick(HANDLE_ARGS) {
    Click *click = reinterpret_cast<Click *>(packet->data);
-   printf("Object %u clicked on %u\n", peerInfo(peer)->netId,click->targetNetId);
-   Unk response(peerInfo(peer)->netId, 0, 0, click->targetNetId);
+   printf("Object %u clicked on %u\n", peerInfo(peer)->getChampion()->getNetId(),click->targetNetId);
+   Unk response(peerInfo(peer)->getChampion()->getNetId(), 0, 0, click->targetNetId);
    return sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
 }
 
-bool PacketHandler::handleCastSpell(HANDLE_ARGS) {
+bool Game::handleCastSpell(HANDLE_ARGS) {
     CastSpell *spell = reinterpret_cast<CastSpell *>(packet->data);
     
-    printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %d\n", spell->spellSlot, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
+    printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %08X\n", spell->spellSlot, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
     
-    Unk unk(peerInfo(peer)->netId, spell->x, spell->y, spell->targetNetId);
+    Unk unk(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, spell->targetNetId);
     sendPacket(peer, reinterpret_cast<uint8 *>(&unk), sizeof(unk), CHL_S2C);
     
-    CastSpellAns response(peerInfo(peer)->netId, spell->x, spell->y);
+    CastSpellAns response(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, peerInfo(peer)->getChampion()->getX(), peerInfo(peer)->getChampion()->getY());
     printPacket(reinterpret_cast<uint8 *>(&response), sizeof(response));
     sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
     
     return true;
 }
 
-bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
+bool Game::handleChatBoxMessage(HANDLE_ARGS) {
     ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
     //Lets do commands
     if(message->msg == '.') {
@@ -367,14 +346,14 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
             sscanf(&message->getMessage()[strlen(cmd[0])+1], "%u %u %f", &blockNo, &fieldNo, &value);
             blockNo = 1 << (blockNo - 1);
             uint32 mask = 1 << (fieldNo - 1);
-            CharacterStats stats(blockNo, peerInfo(peer)->netId, mask, value);
+            CharacterStats stats(blockNo, peerInfo(peer)->getChampion()->getNetId(), mask, value);
             sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats), CHL_LOW_PRIORITY, 2);
             return true;
         }
         // Set Gold
         if(strncmp(message->getMessage(), cmd[1], strlen(cmd[1])) == 0) {
             float gold = (float)atoi(&message->getMessage()[strlen(cmd[1]) + 1]);
-            CharacterStats stats(MM_One, peerInfo(peer)->netId, FM1_Gold, gold);
+            CharacterStats stats(MM_One, peerInfo(peer)->getChampion()->getNetId(), FM1_Gold, gold);
             sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats), CHL_LOW_PRIORITY, 2);
             /*CharacterStats stats2(MM_One, peerInfo(peer)->netId, FM1_Gold_2, gold);
             sendPacket(peer, reinterpret_cast<uint8 *>(&stats2), sizeof(stats), CHL_LOW_PRIORITY, 2);*/
@@ -388,7 +367,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
            
            printf("Setting speed to %f\n", data);
            
-           CharacterStats stats(MM_Four, peerInfo(peer)->netId, FM4_Speed, data);
+           CharacterStats stats(MM_Four, peerInfo(peer)->getChampion()->getNetId(), FM4_Speed, data);
            sendPacket(peer,reinterpret_cast<uint8*>(&stats),sizeof(stats), CHL_LOW_PRIORITY, 2);
            return true;
         }
@@ -397,8 +376,6 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
         if(strncmp(message->getMessage(), cmd[10], strlen(cmd[10])) == 0)
         {
            MinionSpawn ms(GetNewNetID());
-           printf("Spawning %d\n", sizeof(ms));
-           printPacket((unsigned char*)&ms, sizeof(ms));
            sendPacket(peer,reinterpret_cast<uint8*>(&ms),sizeof(ms),  CHL_S2C);
            return true;
         }
@@ -409,10 +386,10 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
         {
            float data = (float)atoi(&message->getMessage()[strlen(cmd[3])+1]);
 
-           CharacterStats stats2(MM_Four, peerInfo(peer)->netId, FM4_MaxHp, data);
+           CharacterStats stats2(MM_Four, peerInfo(peer)->getChampion()->getNetId(), FM4_MaxHp, data);
            sendPacket(peer,reinterpret_cast<uint8*>(&stats2),sizeof(stats2), CHL_LOW_PRIORITY, 2);
 
-           CharacterStats stats(MM_Four, peerInfo(peer)->netId, FM4_CurrentHp, data);
+           CharacterStats stats(MM_Four, peerInfo(peer)->getChampion()->getNetId(), FM4_CurrentHp, data);
            sendPacket(peer,reinterpret_cast<uint8*>(&stats),sizeof(stats), CHL_LOW_PRIORITY, 2);
            
            return true;
@@ -467,7 +444,7 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
         //Model
         if(strncmp(message->getMessage(), cmd[8], strlen(cmd[8])) == 0) {
             std::string sModel = (char *)&message->getMessage()[strlen(cmd[8]) + 1];
-            UpdateModel modelPacket(peerInfo(peer)->netId, (char *)sModel.c_str()); //96
+            UpdateModel modelPacket(peerInfo(peer)->getChampion()->getNetId(), (char *)sModel.c_str()); //96
             broadcastPacket(reinterpret_cast<uint8 *>(&modelPacket), sizeof(UpdateModel), CHL_S2C);
             return true;
         }
@@ -488,20 +465,16 @@ bool PacketHandler::handleChatBoxMessage(HANDLE_ARGS) {
     return false;
 }
 
-bool PacketHandler::handleSkillUp(HANDLE_ARGS) {
+bool Game::handleSkillUp(HANDLE_ARGS) {
     SkillUpPacket *skillUpPacket = reinterpret_cast<SkillUpPacket *>(packet->data);
     //!TODO Check if can up skill? :)
     
-    SkillUpResponse skillUpResponse;
-    skillUpResponse.header.netId = peerInfo(peer)->netId;
-    skillUpResponse.skill = skillUpPacket->skill;
-    skillUpResponse.level = 0x01;
-    skillUpResponse.pointsLeft = 1;
+    SkillUpResponse skillUpResponse(peerInfo(peer)->getChampion()->getNetId(), skillUpPacket->skill, 1, 1);
     
     printf("Upping skill %d\n", skillUpPacket->skill);
-    sendPacket(peer, reinterpret_cast<uint8 *>(&skillUpResponse), sizeof(skillUpResponse), CHL_GAMEPLAY);
+    sendPacket(peer, skillUpResponse, CHL_GAMEPLAY);
     
-    CharacterStats stats(MM_One, peerInfo(peer)->netId, FM1_SPELL, (unsigned short)(0x108F)); // activate all the spells
+    CharacterStats stats(MM_One, peerInfo(peer)->getChampion()->getNetId(), FM1_SPELL, (unsigned short)(0x108F)); // activate all the spells
     sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats)-2, CHL_LOW_PRIORITY, 2);
     
     /*CharacterStats stats2(MM_One, peerInfo(peer)->netId, 0x40, 28.0f);
@@ -510,7 +483,7 @@ bool PacketHandler::handleSkillUp(HANDLE_ARGS) {
     return true;
 }
 
-bool PacketHandler::handleBuyItem(HANDLE_ARGS) {
+bool Game::handleBuyItem(HANDLE_ARGS) {
     static int slot = 0;
     BuyItemReq *request = reinterpret_cast<BuyItemReq *>(packet->data);
     BuyItemAns response;
@@ -521,7 +494,7 @@ bool PacketHandler::handleBuyItem(HANDLE_ARGS) {
     return broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
 }
 
-bool PacketHandler::handleEmotion(HANDLE_ARGS) {
+bool Game::handleEmotion(HANDLE_ARGS) {
     EmotionPacket *emotion = reinterpret_cast<EmotionPacket *>(packet->data);
     //for later use -> tracking, etc.
     switch(emotion->id) {
