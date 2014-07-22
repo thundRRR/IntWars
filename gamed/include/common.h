@@ -35,7 +35,6 @@ enum PacketCmd : uint8
    PKT_S2C_SkillUp = 0x15,   // 4.12
    PKT_C2S_Ping_Load_Info = 0x16,
 
-   PKT_S2C_SetHealth = 0x2A,
    PKT_S2C_ViewAns = 0x2C,   // 4.12
    PKT_C2S_ViewReq = 0x2E,   // 4.12
 
@@ -80,6 +79,7 @@ enum PacketCmd : uint8
 
    PKT_C2S_Surrender = 0xA4,
    PKT_C2S_StatsConfirm = 0xA8, 
+   PKT_S2C_SetHealth = 0xAE, 
    PKT_C2S_Click = 0xAF, 
 
    PKT_S2C_CastSpellAns = 0xB5,

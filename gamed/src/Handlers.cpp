@@ -106,9 +106,7 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     HeroSpawn2 h2;
     h2.header.netId = peerInfo(peer)->getChampion()->getNetId();
     sendPacket(peer, reinterpret_cast<uint8 *>(&h2), sizeof(HeroSpawn2), CHL_S2C);
-    HeroSpawn3 h3;
-    h3.header.netId = peerInfo(peer)->getChampion()->getNetId();
-    sendPacket(peer, reinterpret_cast<uint8 *>(&h3), sizeof(HeroSpawn3), CHL_S2C);
+    notifySetHealth(peerInfo(peer)->getChampion());
     //Spawn Turrets
     vector<string> szTurrets = {
         "@Turret_T1_R_03_A",
@@ -380,7 +378,6 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
             notifyMinionSpawned(m);
             return true;
          }
-        
          
         //health
         if(strncmp(message->getMessage(), cmd[3], strlen(cmd[3])) == 0)
@@ -389,9 +386,12 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
 
            CharacterStats stats2(MM_Four, peerInfo(peer)->getChampion()->getNetId(), FM4_MaxHp, data);
            sendPacket(peer,reinterpret_cast<uint8*>(&stats2),sizeof(stats2), CHL_LOW_PRIORITY, 2);
-
            CharacterStats stats(MM_Four, peerInfo(peer)->getChampion()->getNetId(), FM4_CurrentHp, data);
            sendPacket(peer,reinterpret_cast<uint8*>(&stats),sizeof(stats), CHL_LOW_PRIORITY, 2);
+           
+           peerInfo(peer)->getChampion()->getStats().setCurrentHealth(data);
+           peerInfo(peer)->getChampion()->getStats().setMaxHealth(data);
+           notifySetHealth(peerInfo(peer)->getChampion());
            
            return true;
         }

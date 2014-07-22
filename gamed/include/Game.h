@@ -69,6 +69,7 @@ class Game
       
       // Notifiers
       void notifyMinionSpawned(const Minion* m);
+      void notifySetHealth(Unit* u);
       
 		// Tools
 		void printPacket(const uint8 *buf, uint32 len);

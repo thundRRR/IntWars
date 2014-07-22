@@ -6,7 +6,7 @@ protected:
    std::string type;
    
 public:
-   Champion(const std::string& type, Map* map, uint32 id) : Unit::Unit(map, id), type(type) { }
+   Champion(const std::string& type, Map* map, uint32 id);
    const std::string& getType() { return type; }
 
 

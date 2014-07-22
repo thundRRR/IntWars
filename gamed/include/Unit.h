@@ -16,7 +16,7 @@ protected:
 public:
    Unit(Map* map, uint32 id, float x = 0, float y = 0, AI* ai = 0) : Object(map, id, x, y, 0, 0), ai(ai) { }
    virtual ~Unit() { }
-   const Stats& getStats() const { return stats; }
+   Stats& getStats() { return stats; }
 
 };
 

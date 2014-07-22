@@ -204,13 +204,12 @@ public:
 
 class SetHealth : public BasePacket {
 public:
-   SetHealth(const Unit* u) : BasePacket(PKT_S2C_SetHealth, u->getNetId()) {
-      buffer << (uint32)0x000000ae; // unk
+   SetHealth(Unit* u) : BasePacket(PKT_S2C_SetHealth, u->getNetId()) {
+      buffer << (uint16)0x0000; // unk
       buffer << u->getStats().getCurrentHealth();
       buffer << u->getStats().getMaxHealth();
    }
 };
-
 
 typedef struct _KeyCheck {
     _KeyCheck() {
@@ -625,19 +624,6 @@ struct HeroSpawn2 {
     uint32 f2;
     uint32 f3;
     uint32 f4;
-};
-struct HeroSpawn3 {
-    HeroSpawn3() {
-        header.cmd = (PacketCmd)0xAE;
-        unk = 0;
-        health = 1337;
-        maxHealth = 666;
-    }
-
-    PacketHeader header;
-    uint16 unk;
-    float health;
-    float maxHealth;
 };
 
 struct TurretSpawn {
