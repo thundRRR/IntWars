@@ -57,6 +57,14 @@
       </df>
     </df>
     <df root="../../../utils" name="2">
+      <df name="win">
+        <in>ip.h</in>
+        <in>platforms-time.h</in>
+      </df>
+      <in>base64.cpp</in>
+      <in>base64.h</in>
+      <in>blowfish.cpp</in>
+      <in>blowfish.h</in>
       <in>pcapDecrypt.cpp</in>
     </df>
   </logicalFolder>

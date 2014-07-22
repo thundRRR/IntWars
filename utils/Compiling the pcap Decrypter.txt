@@ -1,0 +1,2 @@
+To compile the pcap decrypter on Windows, run the following (MinGW):
+g++ pcapDecrypt.cpp base64.cpp blowfish.cpp -lws2_32 -lwpcap -o "pcapDecrypt.exe"
