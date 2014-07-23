@@ -17,22 +17,22 @@ public:
     */
    static Champion* getChampionFromType(const std::string& type, Map* map, uint32 id) {
       if(type == "Corki") {
-         return new Ezreal(map, id);
+         return new Corki(map, id);
       }
       if(type == "Ezreal") {
          return new Ezreal(map, id);
       }
       if(type == "Jinx") {
-         return new Ezreal(map, id);
+         return new Jinx(map, id);
       }
       if(type == "Teemo") {
-         return new Ezreal(map, id);
+         return new Teemo(map, id);
       }
       if(type == "Tryndamere") {
-         return new Ezreal(map, id);
+         return new Tryndamere(map, id);
       }
       if(type == "Vayne") {
-         return new Ezreal(map, id);
+         return new Vayne(map, id);
       }
       
       return new Champion(type, map, id);
