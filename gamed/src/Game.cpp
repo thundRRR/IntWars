@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "stdafx.h"
 #include "Game.h"
 
-#define REFRESH_RATE 16
+#define REFRESH_RATE 10
 
 uint32 GetNewNetID() {
 	static uint32 dwStart = 0x40000019;
@@ -76,7 +76,6 @@ void Game::netLoop()
 
 	while(true)
 	{
-      gettimeofday(&tStart, 0);
       while(enet_host_service(_server, & event, 1) > 0) {
          switch (event.type)
          {
@@ -110,12 +109,12 @@ void Game::netLoop()
             break;
          }
       }
-      
+      tEnd = tStart;
+      gettimeofday(&tStart, 0);
+      timersub(&tStart, &tEnd, &tDiff);
       if(_started) {
-         map->update(REFRESH_RATE);
+         map->update(tDiff.tv_sec*1000 + tDiff.tv_usec/1000);
       }
-      gettimeofday(&tEnd, 0);
-      timersub(&tEnd, &tStart, &tDiff);
-      usleep(std::max(1, (int32)(REFRESH_RATE*1000 - (tDiff.tv_sec*1000000+tDiff.tv_usec))));
+      usleep(REFRESH_RATE*1000);
    }
 }

@@ -124,6 +124,14 @@ public:
       setStat(MM_Two, FM2_Magic_Armor, armor);
    }
    
+   virtual void setHp5(float hp5) {
+      setStat(MM_Two, FM2_Hp5, hp5);
+   }
+   
+   virtual void setMp5(float mp5) {
+      setStat(MM_Two, FM2_Mp5, mp5);
+   }
+   
    virtual void setCurrentHealth(float health) {
       setStat(MM_Four, FM4_CurrentHp, health);
    }

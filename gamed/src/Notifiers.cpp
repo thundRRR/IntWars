@@ -37,6 +37,6 @@ void Game::notifyMovement(Object* o) {
       answer->getVector(i)->y = waypoints[i].y;
    }
    
-   MovementAns::destroy(answer);
    broadcastPacket(reinterpret_cast<uint8 *>(answer), answer->size(), 4);
+   MovementAns::destroy(answer);
 }

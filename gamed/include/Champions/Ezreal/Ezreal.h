@@ -22,6 +22,8 @@ public:
       stats->setMovementSpeed(325.f);
       stats->setArmor(19.5f);
       stats->setMagicArmor(30.f);
+      stats->setHp5(5.5f);
+      stats->setMp5(7.0f);
    }
 
 
