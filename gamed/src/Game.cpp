@@ -15,12 +15,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#if defined(WIN32) || defined(_WIN32)
-   #include "win/platforms-time.h"
-#endif
-
-#include <sys/time.h>
+#include <chrono>
+#include <thread>
 #include <algorithm>
 #include "stdafx.h"
 #include "Game.h"
@@ -72,7 +68,9 @@ bool Game::initialize(ENetAddress *address, const char *baseKey)
 void Game::netLoop()
 {
 	ENetEvent event;
-   struct timeval tStart, tEnd, tDiff;
+	std::chrono::time_point<std::chrono::high_resolution_clock> tStart, tEnd;
+	tStart = std::chrono::high_resolution_clock::now();
+	long long tDiff;
 
 	while(true)
 	{
@@ -110,11 +108,11 @@ void Game::netLoop()
          }
       }
       tEnd = tStart;
-      gettimeofday(&tStart, 0);
-      timersub(&tStart, &tEnd, &tDiff);
+	  tStart = std::chrono::high_resolution_clock::now();
+	  tDiff = std::chrono::duration_cast<std::chrono::microseconds>(tStart - tEnd).count();
       if(_started) {
-         map->update(tDiff.tv_sec*1000 + tDiff.tv_usec/1000);
+         map->update(tDiff);
       }
-      usleep(REFRESH_RATE*1000);
+      std::this_thread::sleep_for(std::chrono::microseconds(REFRESH_RATE*1000));
    }
 }

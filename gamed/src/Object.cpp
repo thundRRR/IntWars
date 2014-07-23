@@ -1,5 +1,6 @@
 #include "Object.h"
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ void Object::calculateVector(float xtarget, float ytarget) {
    if(xvector == 0 && yvector == 0)
     return;
 
-   float tmp = std::max(abs(xvector), abs(yvector));
+   float tmp = max(abs(xvector), abs(yvector));
    xvector /= tmp;
    yvector /= tmp;
 }

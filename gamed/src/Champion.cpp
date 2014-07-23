@@ -1,6 +1,6 @@
 #include "Champion.h"
 
-Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit::Unit(map, id, new Stats()), type(type), skillPoints(1), level(1)  {
+Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id, new Stats()), type(type), skillPoints(1), level(1)  {
    stats->setCurrentHealth(666.0f);
    stats->setMaxHealth(1337.0f);
 }

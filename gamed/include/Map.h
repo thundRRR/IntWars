@@ -20,7 +20,7 @@ private:
 public:
    Map(Game* game) : game(game) { }
    virtual ~Map() { }
-   virtual void update(unsigned int diff);
+   virtual void update(long long diff);
    Object* getObjectById(uint32 id);
    void addObject(Object* o);
 

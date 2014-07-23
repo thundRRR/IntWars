@@ -1,7 +1,7 @@
 #include "Map.h"
 #include "Game.h"
 
-void Map::update(unsigned int diff) {
+void Map::update(long long diff) {
    for(auto& kv : objects) {
       kv.second->update(diff);
       
