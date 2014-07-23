@@ -692,26 +692,41 @@ struct Unk2 {
 };
 
 struct HeroSpawn {
-    HeroSpawn() {
-        header.cmd = PKT_S2C_HeroSpawn;
-        unk1 = 0;
-        memset(&name, 0, 128 + 64); //Set name + type to zero
-        x = 130880;
-        y = 502;
-    }
+    	HeroSpawn()
+	{
+		ZeroMemory(this, sizeof(HeroSpawn));
+		header.cmd = PKT_S2C_HeroSpawn;
+		netNodeID = 0;
+        	skillLevel = 1;
+		teamIsOrder = 1; //Order = Blue = 1, Choas = Purple = 0
+		isBot = 0;
+		botRank = 0;
+		spawnPosIndex = 0; //Indexes stored in client Inibins?
+		deathDurationRemaining = 0;
+		timeSinceDeath = 0;
+		bitfield = 0;
+        	memset(&name, 0, 128 + 40); //Set name + champion to zero
+	}
 
-    PacketHeader header;
-    uint32 netId; //Also found something about locking flag//Perhaps first 4 bits is type and rest is netId?? or something?? //Linked for mastery's (first uitn32, and also animation (looks like it) and possible more) often looks like XX 00 00 40 where XX is around 10-30
-    uint32 gameId; //1-number of players
-    uint32 x;       //Some coordinates, no idea how they work yet
-    uint32 y;
-    uint16 unk1;
-    uint8 name[128];
-    uint8 type[64];
+	PacketHeader header;
+	uint32 netId; //Also found something about locking flag//Perhaps first 4 bits is type and rest is netId?? or something?? //Linked for mastery's (first uitn32, and also animation (looks like it) and possible more) often looks like XX 00 00 40 where XX is around 10-30
+	uint32 gameId; //playerUID
+    	BYTE netNodeID; //?
+    	BYTE skillLevel; 
+	BYTE teamIsOrder;
+	BYTE isBot;
+	BYTE botRank;
+	BYTE spawnPosIndex;
+	int skinID;
+	uint8 name[128];
+	uint8 type[40];
+	float deathDurationRemaining;
+	float timeSinceDeath;
+	BYTE bitfield;
 } ;
 struct HeroSpawn2 {
     HeroSpawn2() {
-        header.cmd = (PacketCmd)0xBA;
+        header.cmd = (PacketCmd)PKT_S2C_HeroSpawn2;
         memset(unk, 0, 30);
         unk[15] = 0x80;
         unk[16] = 0x3F;
