@@ -86,7 +86,7 @@ void Game::netLoop()
             event.peer->mtu = PEER_MTU;
 
             event.peer->data = new ClientInfo();
-            peerInfo(event.peer)->setName("Test");
+            peerInfo(event.peer)->setName("ProudHeart");
             peerInfo(event.peer)->setChampion(ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID()));
             peerInfo(event.peer)->skinNo = 6;
             map->addObject(peerInfo(event.peer)->getChampion());

@@ -238,7 +238,6 @@ typedef struct _AttentionPing {
         x = ping->x;
         y = ping->y;
         z = ping->z;
-        unk2 = ping->unk2;
         type = ping->type;
     }
 
@@ -247,18 +246,50 @@ typedef struct _AttentionPing {
     float x;
     float y;
     float z;
-    uint32 unk2;
     uint8 type;
 } AttentionPing;
 
 typedef struct _AttentionPingAns {
     _AttentionPingAns(AttentionPing *ping) {
-        attentionPing = AttentionPing(ping);
-        attentionPing.cmd = PKT_S2C_AttentionPing;
+		cmd = PKT_S2C_AttentionPing;
+		unk1 = ping->unk1;
+		x = ping->x;
+		y = ping->y;
+		z = ping->z;
+		netId = 0;
+		switch (ping->type)
+		{
+			case 0: 
+				type = 0xb0;
+				break;
+			case 1:
+				type = 0xb1;
+				break;
+			case 2: // Danger ping
+				type = 0xb2;
+				break;
+			case 3: // Enemy missing ping
+				type = 0xb3;
+				break;
+			case 4: // On my way ping
+				type = 0xb4;
+				break;
+			case 5: // Fall back/retreat ping
+				type = 0xb5;
+				break;
+			case 6: // Needs assistance ping
+				type = 0xb6;
+				break;
+		}
     }
-
-    AttentionPing attentionPing;
-    uint32 response;
+	//uint8 temp[22];
+    uint8 cmd;
+    uint32 unk1;
+    float x;
+    float y;
+    float z;
+    uint32 netId;
+    uint8 type;    
 } AttentionPingAns;
 
 struct CameraLock {

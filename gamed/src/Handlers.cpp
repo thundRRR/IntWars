@@ -199,9 +199,18 @@ bool Game::handleStartGame(HANDLE_ARGS) {
 
 bool Game::handleAttentionPing(ENetPeer *peer, ENetPacket *packet) {
     AttentionPing *ping = reinterpret_cast<AttentionPing *>(packet->data);
+    /*printf("Ping! x: %f, y: %f, z: %f, type: %i\n", ping->x, ping->y, ping->z, ping->type);
+	printf("cmd: %x\n", ping->cmd);
+	printf("unk1: %x\n", ping->unk1);
+	printf("x: %f\n", ping->x);
+	printf("y: %f\n", ping->y);
+	printf("z: %f\n", ping->z);
+	printf("type: %x\n", ping->type);*/
     AttentionPingAns response(ping);
-    //Logging->writeLine("Plong x: %f, y: %f, z: %f, type: %i\n", ping->x, ping->y, ping->z, ping->type);
-    return broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(AttentionPing), 3);
+	response.netId = peerInfo(peer)->getChampion()->getNetId();
+	//printPacket(reinterpret_cast<uint8 *>(&response), sizeof(response));
+	
+    return broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(AttentionPingAns), CHL_S2C);
 }
 
 bool Game::handleView(ENetPeer *peer, ENetPacket *packet) {

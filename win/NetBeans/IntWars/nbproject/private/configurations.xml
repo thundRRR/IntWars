@@ -40,6 +40,19 @@
     </df>
     <df root="../../../gamed" name="1">
       <df name="include">
+        <df name="AI">
+          <in>MinionAI.h</in>
+        </df>
+        <df name="Champions">
+          <df name="Ezreal">
+            <in>Ezreal.h</in>
+            <in>MysticShot.h</in>
+          </df>
+        </df>
+        <df name="win">
+          <in>platforms-time.h</in>
+        </df>
+        <in>AI.h</in>
         <in>Buffer.h</in>
         <in>Champion.h</in>
         <in>ChampionFactory.h</in>
@@ -47,8 +60,10 @@
         <in>Client.h</in>
         <in>Game.h</in>
         <in>Map.h</in>
+        <in>Minion.h</in>
         <in>Object.h</in>
         <in>Packets.h</in>
+        <in>Spell.h</in>
         <in>Stats.h</in>
         <in>Target.h</in>
         <in>Unit.h</in>
@@ -56,13 +71,18 @@
         <in>stdafx.h</in>
       </df>
       <df name="src">
+        <in>Champion.cpp</in>
         <in>Game.cpp</in>
         <in>Handlers.cpp</in>
         <in>Map.cpp</in>
+        <in>Minion.cpp</in>
+        <in>Notifiers.cpp</in>
         <in>Object.cpp</in>
         <in>PacketHandler.cpp</in>
         <in>Packets.cpp</in>
+        <in>Stats.cpp</in>
         <in>Target.cpp</in>
+        <in>Unit.cpp</in>
         <in>main.cpp</in>
       </df>
     </df>

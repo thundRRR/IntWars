@@ -40,7 +40,7 @@ enum PacketCmd : uint8
 
    PKT_C2S_SkillUp = 0x39,   // 4.12
    PKT_S2C_SpawnProjectile = 0x3B,
-   PKT_S2C_AttentionPing = 0x3F,
+   PKT_S2C_AttentionPing = 0x40, //4.12
 
    PKT_S2C_Emotion = 0x42,
    PKT_C2S_Emotion = 0x47,
