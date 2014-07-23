@@ -9,14 +9,14 @@ class AI;
 class Unit : public Object {
 
 protected:
-   Stats stats;
-   virtual void update(unsigned int diff);
+   Stats* stats;
    AI* ai;
 
 public:
-   Unit(Map* map, uint32 id, float x = 0, float y = 0, AI* ai = 0) : Object(map, id, x, y, 0, 0), ai(ai) { }
-   virtual ~Unit() { }
-   Stats& getStats() { return stats; }
+   Unit(Map* map, uint32 id, Stats* stats, float x = 0, float y = 0, AI* ai = 0) : Object(map, id, x, y, 0, 0), ai(ai) { }
+   virtual ~Unit();
+   Stats& getStats() { return *stats; }
+   virtual void update(unsigned int diff);
 
 };
 

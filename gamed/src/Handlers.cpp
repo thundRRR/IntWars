@@ -330,21 +330,26 @@ bool Game::handleClick(HANDLE_ARGS) {
 }
 
 bool Game::handleCastSpell(HANDLE_ARGS) {
-    CastSpell *spell = reinterpret_cast<CastSpell *>(packet->data);
-    
-    printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %08X\n", spell->spellSlot, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
-    
-    Unk unk(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, spell->targetNetId);
-    sendPacket(peer, reinterpret_cast<uint8 *>(&unk), sizeof(unk), CHL_S2C);
-    
-    CastSpellAns response(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, peerInfo(peer)->getChampion()->getX(), peerInfo(peer)->getChampion()->getY());
-    printPacket(reinterpret_cast<uint8 *>(&response), sizeof(response));
-    sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
-    
-    SpawnProjectile sp(GetNewNetID(), peerInfo(peer)->getChampion(), spell->x, spell->y);
-    sendPacket(peer, sp, CHL_S2C);
-    
-    return true;
+   CastSpell *spell = reinterpret_cast<CastSpell *>(packet->data);
+
+   printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %08X\n", spell->spellSlot, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
+
+   Spell* s = peerInfo(peer)->getChampion()->castSpell(spell->spellSlot, spell->x, spell->y, 0);
+
+   if(!s) {
+      return false;
+   }
+
+   /*Unk unk(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, spell->targetNetId);
+   sendPacket(peer, reinterpret_cast<uint8 *>(&unk), sizeof(unk), CHL_S2C);*/
+
+   CastSpellAns response(s, spell->x, spell->y);
+   sendPacket(peer, response, CHL_S2C);
+
+   SpawnProjectile sp(GetNewNetID(), peerInfo(peer)->getChampion(), spell->x, spell->y);
+   sendPacket(peer, sp, CHL_S2C);
+
+   return true;
 }
 
 bool Game::handleChatBoxMessage(HANDLE_ARGS) {
@@ -408,14 +413,10 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
         if(strncmp(message->getMessage(), cmd[3], strlen(cmd[3])) == 0)
         {
            float data = (float)atoi(&message->getMessage()[strlen(cmd[3])+1]);
-
-           CharacterStats stats2(MM_Four, peerInfo(peer)->getChampion()->getNetId(), FM4_MaxHp, data);
-           sendPacket(peer,reinterpret_cast<uint8*>(&stats2),sizeof(stats2), CHL_LOW_PRIORITY, 2);
-           CharacterStats stats(MM_Four, peerInfo(peer)->getChampion()->getNetId(), FM4_CurrentHp, data);
-           sendPacket(peer,reinterpret_cast<uint8*>(&stats),sizeof(stats), CHL_LOW_PRIORITY, 2);
            
            peerInfo(peer)->getChampion()->getStats().setCurrentHealth(data);
            peerInfo(peer)->getChampion()->getStats().setMaxHealth(data);
+           
            notifySetHealth(peerInfo(peer)->getChampion());
            
            return true;
@@ -495,16 +496,17 @@ bool Game::handleSkillUp(HANDLE_ARGS) {
     SkillUpPacket *skillUpPacket = reinterpret_cast<SkillUpPacket *>(packet->data);
     //!TODO Check if can up skill? :)
     
-    SkillUpResponse skillUpResponse(peerInfo(peer)->getChampion()->getNetId(), skillUpPacket->skill, 1, 1);
+    Spell*s = peerInfo(peer)->getChampion()->levelUpSpell(skillUpPacket->skill);
     
-    printf("Upping skill %d\n", skillUpPacket->skill);
+    if(!s) {
+      return false;
+    }
+    
+    SkillUpResponse skillUpResponse(peerInfo(peer)->getChampion()->getNetId(), skillUpPacket->skill, s->getLevel(), peerInfo(peer)->getChampion()->getSkillPoints());
     sendPacket(peer, skillUpResponse, CHL_GAMEPLAY);
     
     CharacterStats stats(MM_One, peerInfo(peer)->getChampion()->getNetId(), FM1_SPELL, (unsigned short)(0x108F)); // activate all the spells
     sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats)-2, CHL_LOW_PRIORITY, 2);
-    
-    /*CharacterStats stats2(MM_One, peerInfo(peer)->netId, 0x40, 28.0f);
-    sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats2), CHL_LOW_PRIORITY, 2);*/
     
     return true;
 }

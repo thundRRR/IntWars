@@ -319,24 +319,31 @@ struct CastSpell {
     uint32 targetNetId; // If 0, use coordinates, else use target net id
 };
 
-struct CastSpellAns {
-
-   CastSpellAns(uint32 casterNetId, float x, float y, float origX, float origY) : casterNetId(casterNetId), casterNetId2(casterNetId), unk2(0x400001f59c0cb5a7), x(x), z(55), y(y), x2(x), z2(55), y2(y), unk3(0), finalX(origX), finalZ(55), finalY(origY), unk4_3(0x41e0), unk5(1) {
-      header.cmd = (GameCmd)PKT_S2C_CastSpellAns;
-      header.netId = casterNetId;
-      header.ticks = clock();
-      memcpy(unk, "\x00\x66\x00", 3);
-      spellId = 0x017f4044; // TODO : do NOT hardcode this to Mystic Shot's ID
-      memcpy(unk_1, "\xf6\x01\x00\x40\x00\x00\x00\x80\x3f", 9);
-      castTime = 0.25f;
-      unk3_2 = 0;
-      unk3_3 = 1.0f;
-      cooldown = 2.0f;
-      unk3_4 = 0;
-      spellSlot = 0;
+class CastSpellAns : public GamePacket {
+public:
+   CastSpellAns(Spell* s, float x, float y) : GamePacket(PKT_S2C_CastSpellAns, s->getOwner()->getNetId()) {
+      buffer << "\x00\x66\x00"; // unk
+      buffer << s->getId();
+      buffer << "\xf6\x01\x00\x40\x00\x00\x00\x80\x3f"; // unk
+      buffer << s->getOwner()->getNetId() << s->getOwner()->getNetId();
+      buffer << (uint64)0x400001f59c0cb5a7; // unk
+      buffer << x << 55.f << y;
+      buffer << x << 55.f << y;
+      buffer << (uint8)0;
+      buffer << s->getCastTime();
+      buffer << (float)0.f; // unk
+      buffer << (float)1.0f; // unk
+      buffer << s->getCooldown();
+      buffer << (float)0.f; // unk
+      buffer << (uint8)0; // unk
+      buffer << s->getSlot(); 
+      buffer << (uint16)0; // unk
+      buffer << (uint16)0x41e0; // unk
+      buffer << s->getOwner()->getX() << 55.f << s->getOwner()->getY();
+      buffer << (uint64)1; // unk
    }
    
-   GameHeader header;
+   /*GameHeader header;
    uint8 unk[3];
    uint32 spellId;
    uint8 unk_1[9];
@@ -355,7 +362,7 @@ struct CastSpellAns {
    short unk4_2;
    short unk4_3;
    float finalX, finalZ, finalY;
-   uint64 unk5;
+   uint64 unk5;*/
 };
 
 class SpawnProjectile : public BasePacket {

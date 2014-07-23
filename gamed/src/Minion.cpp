@@ -1,6 +1,7 @@
 #include "Minion.h"
+#include "MinionStats.h"
 
-Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition position) : Unit(map, id, 0, 0, new MinionAI(this)), type(type), position(position) {
+Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition position) : Unit(map, id, new MinionStats(), 0, 0, new MinionAI(this)), type(type), position(position) {
    switch(position) {
    case SPAWN_BLUE_TOP:
       setSide(0);
@@ -31,19 +32,19 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
    // TODO : make these data dynamic with the game elapsed time
    switch(type) {
    case MINION_TYPE_MELEE:
-      stats.setCurrentHealth(475.0f);
-      stats.setMaxHealth(475.0f);
-      stats.setBaseAd(12.0f);
+      stats->setCurrentHealth(475.0f);
+      stats->setMaxHealth(475.0f);
+      stats->setBaseAd(12.0f);
       break;
    case MINION_TYPE_CASTER:
-      stats.setCurrentHealth(279.0f);
-      stats.setMaxHealth(279.0f);
-      stats.setBaseAd(23.0f);
+      stats->setCurrentHealth(279.0f);
+      stats->setMaxHealth(279.0f);
+      stats->setBaseAd(23.0f);
       break;
    case MINION_TYPE_CANNON:
-      stats.setCurrentHealth(600.0f);
-      stats.setMaxHealth(600.0f);
-      stats.setBaseAd(40.0f);
+      stats->setCurrentHealth(600.0f);
+      stats->setMaxHealth(600.0f);
+      stats->setBaseAd(40.0f);
       break;
    }
 }
