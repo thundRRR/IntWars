@@ -2,19 +2,26 @@
 #include "Game.h"
 
 void Map::update(unsigned int diff) {
-   for(auto& kv : objects) {
-      kv.second->update(diff);
+   for(std::map<uint32, Object*>::iterator kv = objects.begin(); kv != objects.end();) {
+      kv->second->update(diff);
       
-      if(kv.second->isMovementUpdated()) {
-         game->notifyMovement(kv.second);
-         kv.second->clearMovementUpdated();
+      if(kv->second->isMovementUpdated()) {
+         game->notifyMovement(kv->second);
+         kv->second->clearMovementUpdated();
       }
       
-      Unit* u = dynamic_cast<Unit*>(kv.second);
+      Unit* u = dynamic_cast<Unit*>(kv->second);
       
       if(u && !u->getStats().getUpdatedStats().empty()) {
          game->notifyUpdatedStats(u);
          u->getStats().clearUpdatedStats();
+      }
+      
+      if(kv->second->isToRemove()) {
+         delete kv->second;
+         kv = objects.erase(kv);
+      } else {
+         ++kv;
       }
    }
 }

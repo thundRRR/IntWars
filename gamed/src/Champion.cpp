@@ -3,6 +3,7 @@
 Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit::Unit(map, id, new Stats()), type(type), skillPoints(1), level(1)  {
    stats->setCurrentHealth(666.0f);
    stats->setMaxHealth(1337.0f);
+   stats->setGold(475.0f);
 }
 
 Spell* Champion::castSpell(uint8 slot, float x, float y, Unit* target) {

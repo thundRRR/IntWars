@@ -324,11 +324,12 @@ public:
    CastSpellAns(Spell* s, float x, float y) : GamePacket(PKT_S2C_CastSpellAns, s->getOwner()->getNetId()) {
       buffer << (uint8)0 << (uint8)0x66 << (uint8)0x00; // unk
       buffer << s->getId();
-      buffer << (uint32)0x400001f6; // unk
+      buffer << (uint32)0x400001f6; // a net ID, but what for..
       buffer << (uint8)0 << (uint8)0 << (uint8)0;
       buffer << (uint16)0x3f80; // unk
       buffer << s->getOwner()->getNetId() << s->getOwner()->getNetId();
-      buffer << (uint64)0x400001f59c0cb5a7; // unk
+      buffer << (uint32)0x400001f5; // Another net ID..
+      buffer << (uint32)0x9c0cb5a7; // unk
       buffer << x << 55.f << y;
       buffer << x << 55.f << y;
       buffer << (uint8)0;
@@ -371,7 +372,7 @@ public:
       buffer << caster->getX() << 150.f << caster->getY();
       buffer << caster->getX() << 150.f << caster->getY();
       buffer << (uint64)0x000000003f510fe2; // unk
-      buffer << (uint32)0x3f13bf22; // unk
+      buffer << (float)0.577f; // unk
       buffer << x << 150.f << y;
       buffer << caster->getX() << 150.f << caster->getY();
       buffer << x << 150.f << y;
@@ -388,8 +389,8 @@ public:
       buffer << caster->getNetId() << caster->getNetId();
       buffer << (uint32)0x9c0cb5a7; // unk
       buffer << projNetId;
-      buffer << 300.f << 200.f << 400.f; // no idea what these coords are for
-      buffer << 300.f << 200.f << 400.f; // no idea what these coords are for
+      buffer << x << 150.f << y;
+      buffer << x << 150.f << y;
       buffer << (uint32)0x80000000; // unk
       buffer << (uint32)0x000000bf; // unk
       buffer << (uint32)0x80000000; // unk

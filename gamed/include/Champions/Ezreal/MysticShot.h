@@ -2,9 +2,13 @@
 #define _SPELL_MYSTICSHOT_H
 
 #include "Spell.h"
+
 #define ID_MYSTICSHOT 0x017f4044
 
 class MysticShot : public Spell {
+private:
+   float damage[5];
+   
 public:
    MysticShot(Champion* owner) : Spell(ID_MYSTICSHOT, owner, 0.25f, 0) {
       cooldown[0] = 6;
@@ -18,6 +22,12 @@ public:
       cost[2] = 34;
       cost[3] = 37;
       cost[4] = 40;
+      
+      damage[0] = 35;
+      damage[0] = 55;
+      damage[0] = 75;
+      damage[0] = 95;
+      damage[0] = 115;
    }
    
    /**
@@ -31,16 +41,12 @@ public:
     * This is called when the spell is finished casting, and we're supposed to
     * create the projectile
     */
-   virtual void finishCasting() {
-      Spell::finishCasting();
-   }
+   virtual void finishCasting();
    
    /**
     * This will be called when Mystic's Shot projectile hits a unit
     */
-   virtual void applyEffects(float x, float y, Unit* u = 0) {
-   
-   }
+   virtual void applyEffects(Target* t, Projectile* p = 0);
 
 
 };

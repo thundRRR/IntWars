@@ -2,6 +2,7 @@
 #define _SPELL_H
 
 #include "stdafx.h"
+#include "Projectile.h"
 
 class Unit;
 class Champion;
@@ -53,7 +54,7 @@ public:
     * Called by projectiles when they land / hit
     * In here we apply the effects : damage, buffs, debuffs...
     */
-   virtual void applyEffects(float x, float y, Unit* u = 0) = 0;
+   virtual void applyEffects(Target* t, Projectile* p = 0) = 0;
    
    Champion* getOwner() const { return owner; }
    
@@ -67,6 +68,7 @@ public:
     * TODO : Add in CDR % from champion's stat
     */
    float getCooldown() const { 
+      return 0; // TODO : remove this 
       if(!level) {
          return 0;
       }
@@ -77,6 +79,7 @@ public:
     * @return the mana/energy/health cost
     */
    float getCost() const {
+      return 0; // TODO : remove this 
       if(!level) {
          return 0;
       }

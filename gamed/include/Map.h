@@ -19,10 +19,13 @@ private:
    
 public:
    Map(Game* game) : game(game) { }
+   
    virtual ~Map() { }
    virtual void update(unsigned int diff);
    Object* getObjectById(uint32 id);
    void addObject(Object* o);
+   
+   const std::map<uint32, Object*>& getObjects() { return objects; }
 
 };
 
