@@ -691,39 +691,28 @@ struct Unk2 {
    uint32 targetNetId;
 };
 
-struct HeroSpawn {
-    	HeroSpawn()
-	{
-		ZeroMemory(this, sizeof(HeroSpawn));
-		header.cmd = PKT_S2C_HeroSpawn;
-		netNodeID = 0;
-        	skillLevel = 1;
-		teamIsOrder = 1; //Order = Blue = 1, Choas = Purple = 0
-		isBot = 0;
-		botRank = 0;
-		spawnPosIndex = 0; //Indexes stored in client Inibins?
-		deathDurationRemaining = 0;
-		timeSinceDeath = 0;
-		bitfield = 0;
-        	memset(&name, 0, 128 + 40); //Set name + champion to zero
+class HeroSpawn : public BasePacket {
+public:
+	HeroSpawn(uint32 netId, uint32 gameId, const std::string& name, const std::string& type, uint32 skinNo) : BasePacket(PKT_S2C_HeroSpawn) {
+		buffer << (uint32)netId;
+		buffer << (uint32)gameId;
+		buffer << (uint8)0; // netNodeID ?
+		buffer << (uint8)1; // SkillLevel
+		buffer << (uint8)1; // teamIsOrder Blue=Order=1 Purple=Choas=0
+		buffer << (uint8)0; // isBot
+		buffer << (uint8)0; // botRank
+		buffer << (uint8)0; // spawnPosIndex ?
+		buffer << (uint32)skinNo;
+		buffer << name;
+		buffer.fill(0, 128-name.length());
+		buffer << type;
+		buffer.fill(0, 40-type.length());
+		buffer << (float)0.f; // deathDurationRemaining
+		buffer << (float)0.f; // timeSinceDeath
+		buffer << (uint8)0; // bitField
 	}
+};
 
-	PacketHeader header;
-	uint32 netId; //Also found something about locking flag//Perhaps first 4 bits is type and rest is netId?? or something?? //Linked for mastery's (first uitn32, and also animation (looks like it) and possible more) often looks like XX 00 00 40 where XX is around 10-30
-	uint32 gameId; //playerUID
-    	BYTE netNodeID; //?
-    	BYTE skillLevel; 
-	BYTE teamIsOrder;
-	BYTE isBot;
-	BYTE botRank;
-	BYTE spawnPosIndex;
-	int skinID;
-	uint8 name[128];
-	uint8 type[40];
-	float deathDurationRemaining;
-	float timeSinceDeath;
-	BYTE bitfield;
-} ;
 struct HeroSpawn2 {
     HeroSpawn2() {
         header.cmd = (PacketCmd)PKT_S2C_HeroSpawn2;
