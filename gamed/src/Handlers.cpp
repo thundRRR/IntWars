@@ -105,6 +105,7 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     spawn.gameId = 0;
     memcpy(spawn.name, peerInfo(peer)->getName().c_str(), peerInfo(peer)->getName().length());
     memcpy(spawn.type, peerInfo(peer)->getChampion()->getType().c_str(), peerInfo(peer)->getChampion()->getType().length());
+    spawn.skinID = peerInfo(peer)->getSkinNo();
     bool p2 = sendPacket(peer, reinterpret_cast<uint8 *>(&spawn), sizeof(HeroSpawn), CHL_S2C);
     
     
