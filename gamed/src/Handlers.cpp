@@ -217,17 +217,18 @@ bool Game::handleAttentionPing(ENetPeer *peer, ENetPacket *packet) {
 }
 
 bool Game::handleView(ENetPeer *peer, ENetPacket *packet) {
-    ViewReq *request = reinterpret_cast<ViewReq *>(packet->data);
-    ////Logging->writeLine("View (%i), x:%f, y:%f, zoom: %f\n", request->requestNo, request->x, request->y, request->zoom);
-    ViewAns answer;
-    answer.requestNo = request->requestNo;
-    sendPacket(peer, reinterpret_cast<uint8 *>(&answer), sizeof(ViewAns), CHL_S2C, UNRELIABLE);
-    enet_host_flush(peer->host);
-    if(request->requestNo == 0xFE) {
-        answer.requestNo = 0xFF;
-        sendPacket(peer, reinterpret_cast<uint8 *>(&answer), sizeof(ViewAns), CHL_S2C, UNRELIABLE);
-    }
-    return true;
+   ViewRequest *request = reinterpret_cast<ViewRequest *>(packet->data);
+   ViewAnswer answer(request);
+   if (request->requestNo == 0xFE)
+   {
+      answer.setRequestNo(0xFF);
+   }
+   else
+   {
+      answer.setRequestNo(request->requestNo);
+   }
+   sendPacket(peer, answer, CHL_S2C, UNRELIABLE);
+   return true;
 }
 
 inline void SetBitmaskValue(uint8 mask[], int pos, bool val) {
