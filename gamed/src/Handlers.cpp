@@ -292,6 +292,7 @@ bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
       float y = ((request->y) - MAP_HEIGHT)/2;
 
       printf("Stopped at x:%f , y: %f\n", x,y);
+      break;
    }
    case EMOTE:
       //Logging->writeLine("Emotion\n");
