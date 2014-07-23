@@ -1,5 +1,5 @@
-#ifndef _CHAMPION_JINX_H
-#define _CHAMPION_JINX_H
+#ifndef _CHAMPION_TRYNDAMERE_H
+#define _CHAMPION_TRYNDAMERE_H
 
 #include "Champion.h"
 

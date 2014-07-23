@@ -1,5 +1,5 @@
-#ifndef _CHAMPION_JINX_H
-#define _CHAMPION_JINX_H
+#ifndef _CHAMPION_VAYNE_H
+#define _CHAMPION_VAYNE_H
 
 #include "Champion.h"
 
