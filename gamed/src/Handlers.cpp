@@ -98,19 +98,8 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     bool p1 = sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket2), CHL_S2C);
     printf("Spawning map\r\n");
     
-    
-    
-    HeroSpawn spawn;
-    spawn.netId = peerInfo(peer)->getChampion()->getNetId();
-    spawn.gameId = 0;
-    memcpy(spawn.name, peerInfo(peer)->getName().c_str(), peerInfo(peer)->getName().length());
-    memcpy(spawn.type, peerInfo(peer)->getChampion()->getType().c_str(), peerInfo(peer)->getChampion()->getType().length());
-    spawn.skinID = peerInfo(peer)->getSkinNo();
-    bool p2 = sendPacket(peer, reinterpret_cast<uint8 *>(&spawn), sizeof(HeroSpawn), CHL_S2C);
-    
-    
-    
-
+    HeroSpawn spawn(peerInfo(peer)->getChampion()->getNetId(), 0, peerInfo(peer)->getName(), peerInfo(peer)->getChampion()->getType(), peerInfo(peer)->getSkinNo());
+    bool p2 = sendPacket(peer, spawn, CHL_S2C);
     
     PlayerInfo info(peerInfo(peer)->getChampion()->getNetId(), SPL_Ignite, SPL_Flash);
    // sendPacket(peer, reinterpret_cast<uint8 *>(&info), sizeof(PlayerInfo), CHL_S2C);
