@@ -24,10 +24,10 @@ public:
       cost[4] = 40;
       
       damage[0] = 35;
-      damage[0] = 55;
-      damage[0] = 75;
-      damage[0] = 95;
-      damage[0] = 115;
+      damage[1] = 55;
+      damage[2] = 75;
+      damage[3] = 95;
+      damage[4] = 115;
    }
    
    /**

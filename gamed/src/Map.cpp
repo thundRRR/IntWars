@@ -17,6 +17,11 @@ void Map::update(unsigned int diff) {
          u->getStats().clearUpdatedStats();
       }
       
+      if(u && u->getStats().isUpdatedHealth()) {
+         game->notifySetHealth(u);
+         u->getStats().clearUpdatedHealth();
+      }
+      
       if(kv->second->isToRemove()) {
          delete kv->second;
          kv = objects.erase(kv);

@@ -12,7 +12,7 @@ void MysticShot::finishCasting() {
 
    Map* m = owner->getMap();
    
-   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 1000, 1000, new Target(x, y), this, 2000.f);
+   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 40, 40, new Target(x, y), this, 2000.f);
    owner->getMap()->addObject(p);
 }
 
@@ -33,7 +33,7 @@ void MysticShot::applyEffects(Target* t, Projectile* p) {
       return;
    }
    
-   owner->dealDamageTo(u, damage[level], DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_SPELL);
+   owner->dealDamageTo(u, damage[level-1], DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_SPELL);
    
    p->setToRemove();
 }
