@@ -44,12 +44,22 @@
           <in>MinionAI.h</in>
         </df>
         <df name="Champions">
+          <df name="Corki">
+          </df>
           <df name="Ezreal">
             <in>Ezreal.h</in>
             <in>MysticShot.h</in>
           </df>
           <df name="Jinx">
             <in>Jinx.h</in>
+          </df>
+          <df name="Teemo">
+          </df>
+          <df name="Tryndamere">
+            <in>Tryndamere.h</in>
+          </df>
+          <df name="Vayne">
+            <in>Vayne.h</in>
           </df>
         </df>
         <df name="win">
