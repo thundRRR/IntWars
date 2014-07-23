@@ -21,10 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #include <sys/time.h>
+#include <algorithm>
 #include "stdafx.h"
 #include "Game.h"
 
-#define REFRESH_RATE 8
+#define REFRESH_RATE 16
 
 uint32 GetNewNetID() {
 	static uint32 dwStart = 0x40000019;
@@ -115,6 +116,6 @@ void Game::netLoop()
       }
       gettimeofday(&tEnd, 0);
       timersub(&tEnd, &tStart, &tDiff);
-      usleep(REFRESH_RATE*1000 - (tDiff.tv_sec*1000000+tDiff.tv_usec));
+      usleep(std::max(1, (int32)(REFRESH_RATE*1000 - (tDiff.tv_sec*1000000+tDiff.tv_usec))));
    }
 }

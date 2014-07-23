@@ -388,8 +388,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
            
            printf("Setting speed to %f\n", data);
            
-           CharacterStats stats(MM_Four, peerInfo(peer)->getChampion()->getNetId(), FM4_Speed, data);
-           sendPacket(peer,reinterpret_cast<uint8*>(&stats),sizeof(stats), CHL_LOW_PRIORITY, 2);
+           peerInfo(peer)->getChampion()->getStats().setMovementSpeed(data);
            return true;
         }
         

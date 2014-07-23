@@ -57,7 +57,7 @@ void Object::Move(unsigned int diff) {
 }
 
 void Object::update(unsigned int diff) {
-
+   Move(diff);
 }
 
 void Object::setWaypoints(const std::vector<MovementVector>& newWaypoints) {
