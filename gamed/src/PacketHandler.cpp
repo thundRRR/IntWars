@@ -145,6 +145,10 @@ bool Game::broadcastPacket(uint8 *data, uint32 length, uint8 channelNo, uint32 f
 	return true;
 }
 
+bool Game::broadcastPacket(const Packet& packet, uint8 channelNo, uint32 flag) {
+   return broadcastPacket((uint8*)&packet.getBuffer().getBytes()[0], packet.getBuffer().size(), channelNo, flag);
+}
+
 bool Game::handlePacket(ENetPeer *peer, ENetPacket *packet, uint8 channelID)
 {
 	if(packet->dataLength >= 8)
