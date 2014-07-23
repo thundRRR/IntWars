@@ -322,9 +322,11 @@ struct CastSpell {
 class CastSpellAns : public GamePacket {
 public:
    CastSpellAns(Spell* s, float x, float y) : GamePacket(PKT_S2C_CastSpellAns, s->getOwner()->getNetId()) {
-      buffer << "\x00\x66\x00"; // unk
+      buffer << (uint8)0 << (uint8)0x66 << (uint8)0x00; // unk
       buffer << s->getId();
-      buffer << "\xf6\x01\x00\x40\x00\x00\x00\x80\x3f"; // unk
+      buffer << (uint32)0x400001f6; // unk
+      buffer << (uint8)0 << (uint8)0 << (uint8)0;
+      buffer << (uint16)0x3f80; // unk
       buffer << s->getOwner()->getNetId() << s->getOwner()->getNetId();
       buffer << (uint64)0x400001f59c0cb5a7; // unk
       buffer << x << 55.f << y;
