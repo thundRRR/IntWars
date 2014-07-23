@@ -34,6 +34,8 @@ enum PacketCmd : uint8
    PKT_C2S_QueryStatusReq = 0x14,
    PKT_S2C_SkillUp = 0x15,   // 4.12
    PKT_C2S_Ping_Load_Info = 0x16,
+   
+   PKT_S2C_PlayerInfo = 0x2A,
 
    PKT_S2C_ViewAns = 0x2C,   // 4.12
    PKT_C2S_ViewReq = 0x2E,   // 4.12

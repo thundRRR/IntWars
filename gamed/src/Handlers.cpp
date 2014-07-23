@@ -97,12 +97,25 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     StatePacket2 start(PKT_S2C_StartSpawn);
     bool p1 = sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket2), CHL_S2C);
     printf("Spawning map\r\n");
+    
+    
+    
     HeroSpawn spawn;
     spawn.netId = peerInfo(peer)->getChampion()->getNetId();
     spawn.gameId = 0;
     memcpy(spawn.name, peerInfo(peer)->getName().c_str(), peerInfo(peer)->getName().length());
     memcpy(spawn.type, peerInfo(peer)->getChampion()->getType().c_str(), peerInfo(peer)->getChampion()->getType().length());
     bool p2 = sendPacket(peer, reinterpret_cast<uint8 *>(&spawn), sizeof(HeroSpawn), CHL_S2C);
+    
+    
+    
+
+    
+    PlayerInfo info(peerInfo(peer)->getChampion()->getNetId(), SPL_Ignite, SPL_Flash);
+   // sendPacket(peer, reinterpret_cast<uint8 *>(&info), sizeof(PlayerInfo), CHL_S2C);
+    
+    sendPacket(peer, info, CHL_S2C);
+    
     HeroSpawn2 h2;
     h2.header.netId = peerInfo(peer)->getChampion()->getNetId();
     sendPacket(peer, reinterpret_cast<uint8 *>(&h2), sizeof(HeroSpawn2), CHL_S2C);
@@ -272,21 +285,42 @@ std::vector<MovementVector> readWaypoints(uint8 *buffer, int coordCount) {
 
 bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
     MovementReq *request = reinterpret_cast<MovementReq *>(packet->data);
+	std::vector<MovementVector> vMoves = readWaypoints(&request->moveData, request->vectorNo);
+	MovementAns *answer = MovementAns::create(request->vectorNo);
     switch(request->type) {
         //TODO, Implement stop commands
         case STOP:
-            //Logging->writeLine("Move stop\n");
-            return true;
+        {
+             answer->ok = 1;
+             answer->vectorNo = request->vectorNo;
+             answer->netId = peerInfo(peer)->getChampion()->getNetId();
+             
+
+             float x = ((request->x) - MAP_WIDTH)/2;
+             float y = ((request->y) - MAP_HEIGHT)/2;
+
+				 printf("Stopped at x:%f , y: %f\n", x,y);
+
+				 
+				 for (int i = 0; i < vMoves.size(); i++){
+					 answer->getVector(i)->x = x;
+					 answer->getVector(i)->y = y;
+				 }
+            
+           peerInfo(peer)->getChampion()->setPosition(2.0 * answer->getVector(1)->x + MAP_WIDTH, 2.0 * answer->getVector(1)->x + MAP_HEIGHT);
+			   
+            
+            return broadcastPacket(reinterpret_cast<uint8 *>(answer), answer->size(), 4);
+			}
         case EMOTE:
             //Logging->writeLine("Emotion\n");
             return true;
     }
-    std::vector<MovementVector> vMoves = readWaypoints(&request->moveData, request->vectorNo);
+
     //Logging->writeLine("Move to(normal): x:%f, y:%f, type: %i, vectorNo: %i\n", request->x, request->y, request->type, vMoves.size());
     for(int i = 0; i < vMoves.size(); i++)
     { printf("     Vector %i, x: %f, y: %f\n", i, 2.0 * vMoves[i].x + MAP_WIDTH, 2.0 * vMoves[i].y + MAP_HEIGHT); }
-    MovementAns *answer = MovementAns::create(request->vectorNo);
-    answer->ok = 1;
+	answer->ok = 1;
     answer->vectorNo = request->vectorNo;
     answer->netId = peerInfo(peer)->getChampion()->getNetId();
     for(int i = 0; i < vMoves.size(); i++) {
