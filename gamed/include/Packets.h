@@ -172,40 +172,6 @@ typedef struct _LoadScreenInfo {
     uint32 redPlayerNo;
 } LoadScreenInfo;
 
-class LoadScreenPlayerName : public Packet {
-public:
-   LoadScreenPlayerName(const ClientInfo& player) : Packet(PKT_S2C_LoadName) {
-      buffer << player.userId;
-      buffer << (uint32)0;
-      buffer << (uint32)player.getName().length()+1;
-      buffer << player.getName();
-      buffer << (uint8)0;
-   }
-
-    /*uint8 cmd;
-    uint64 userId;
-    uint32 skinId;
-    uint32 length;
-    uint8* description;*/
-};
-
-class LoadScreenPlayerChampion : public Packet {
-public:
-   LoadScreenPlayerChampion(const ClientInfo& player) : Packet(PKT_S2C_LoadHero) {
-      buffer << player.userId;
-      buffer << player.skinNo;
-      buffer << (uint32)player.getChampion()->getType().length()+1;
-      buffer << player.getChampion()->getType();
-      buffer << (uint8)0;
-   }
-
-    /*uint8 cmd;
-    uint64 userId;
-    uint32 skinId;
-    uint32 length;
-    uint8* description;*/
-};
-
 typedef struct _KeyCheck {
     _KeyCheck() {
         cmd = PKT_KeyCheck;
@@ -229,7 +195,7 @@ struct CameraLock {
     uint32 padding;
 };
 
-typedef struct _ViewReq {
+/*typedef struct _ViewReq {
     uint8 cmd;
     uint32 unk1;
     float x;
@@ -240,7 +206,7 @@ typedef struct _ViewReq {
     uint32 height;	//Unk
     uint32 unk2;	//Unk
     uint8 requestNo;
-} ViewReq;
+} ViewReq;*/
 
 /**
  * Change Target ??
@@ -343,7 +309,7 @@ struct MovementAns {
 
 };
 
-typedef struct _ViewAns {
+/*typedef struct _ViewAns {
     _ViewAns() {
         cmd = PKT_S2C_ViewAns;
         unk1 = 0;
@@ -352,7 +318,7 @@ typedef struct _ViewAns {
     uint8 cmd;
     uint32 unk1;
     uint8 requestNo;
-} ViewAns;
+} ViewAns;*/
 
 
 typedef struct _QueryStatus {
@@ -588,13 +554,6 @@ typedef struct _SkillUpPacket {
     uint8 skill;
 } SkillUpPacket;
 
-class SkillUpResponse : public BasePacket {
-public:
-    SkillUpResponse(uint32 netId, uint8 skill, uint8 level, uint8 pointsLeft) : BasePacket(PKT_S2C_SkillUp, netId) {
-        buffer << skill << level << pointsLeft;
-    }
-};
-
 typedef struct _BuyItemReq {
     PacketHeader header;
     uint32 id;
@@ -631,7 +590,41 @@ typedef struct _EmotionResponse {
 
 /* New Style Packets */
 
-typedef struct AttentionPing {
+class LoadScreenPlayerName : public Packet {
+public:
+   LoadScreenPlayerName(const ClientInfo& player) : Packet(PKT_S2C_LoadName) {
+      buffer << player.userId;
+      buffer << (uint32)0;
+      buffer << (uint32)player.getName().length()+1;
+      buffer << player.getName();
+      buffer << (uint8)0;
+   }
+
+    /*uint8 cmd;
+    uint64 userId;
+    uint32 skinId;
+    uint32 length;
+    uint8* description;*/
+};
+
+class LoadScreenPlayerChampion : public Packet {
+public:
+   LoadScreenPlayerChampion(const ClientInfo& player) : Packet(PKT_S2C_LoadHero) {
+      buffer << player.userId;
+      buffer << player.skinNo;
+      buffer << (uint32)player.getChampion()->getType().length()+1;
+      buffer << player.getChampion()->getType();
+      buffer << (uint8)0;
+   }
+
+    /*uint8 cmd;
+    uint64 userId;
+    uint32 skinId;
+    uint32 length;
+    uint8* description;*/
+};
+
+struct AttentionPing {
     AttentionPing() {
     }
     AttentionPing(AttentionPing *ping) {
@@ -649,7 +642,7 @@ typedef struct AttentionPing {
     float y;
     float z;
     uint8 type;
-} AttentionPing;
+};
 
 class AttentionPingAns : public Packet {
 public:
@@ -662,25 +655,25 @@ public:
       switch (ping->type)
       {
          case 0:
-            buffer << 0xb0;
+            buffer << (uint8)0xb0;
             break;
          case 1:
-            buffer << 0xb1;
+            buffer << (uint8)0xb1;
             break;
          case 2:
-            buffer << 0xb2; // Danger
+            buffer << (uint8)0xb2; // Danger
             break;
          case 3:
-            buffer << 0xb3; // Enemy Missing
+            buffer << (uint8)0xb3; // Enemy Missing
             break;
          case 4:
-            buffer << 0xb4; // On My Way
+            buffer << (uint8)0xb4; // On My Way
             break;
          case 5:
-            buffer << 0xb5; // Retreat / Fall Back
+            buffer << (uint8)0xb5; // Retreat / Fall Back
             break;
          case 6:
-            buffer << 0xb6; // Assistance Needed
+            buffer << (uint8)0xb6; // Assistance Needed
             break;            
       }
    }
@@ -693,6 +686,13 @@ public:
       buffer << u->getStats().getCurrentHealth();
       buffer << u->getStats().getMaxHealth();
    }
+};
+
+class SkillUpResponse : public BasePacket {
+public:
+    SkillUpResponse(uint32 netId, uint8 skill, uint8 level, uint8 pointsLeft) : BasePacket(PKT_S2C_SkillUp, netId) {
+        buffer << skill << level << pointsLeft;
+    }
 };
 
 struct CastSpell {
@@ -851,6 +851,28 @@ class LevelPropSpawn : public BasePacket {
         uint8 type[64];*/
 };
 
+struct ViewRequest {
+    uint8 cmd;
+    uint32 unk1;
+    float x;
+    float zoom;
+    float y;
+    float y2;		//Unk
+    uint32 width;	//Unk
+    uint32 height;	//Unk
+    uint32 unk2;	//Unk
+    uint8 requestNo;
+};
+
+class ViewAnswer : public Packet {
+public:
+   ViewAnswer(ViewRequest *request) : Packet(PKT_S2C_ViewAns) {
+      buffer << request->unk1;
+   }
+   void setRequestNo(uint8 requestNo){
+      buffer << requestNo;
+   }
+};
 /* End New Packets */
 
 #if defined( __GNUC__ )
