@@ -6,12 +6,24 @@
 #ifndef OBJECT_H_
 #define OBJECT_H_
 
-#include <list>
+#include <vector>
 
 #include "Target.h"
 #include "stdafx.h"
 
 class Map;
+
+#define MAP_WIDTH (13982 / 2)
+#define MAP_HEIGHT (14446 / 2)
+
+struct MovementVector {
+    short x;
+    short y;
+    
+    MovementVector() : x(0), y(0){ }
+    MovementVector(uint16 x, uint16 y) : x(x), y(x) { }
+    Target* toTarget() { return new Target(2.0*x + MAP_WIDTH, 2.0*y + MAP_HEIGHT); }
+};
 
 class Object : public Target {
 protected:
@@ -19,9 +31,12 @@ protected:
 
 	float xvector, yvector;
 	Target* target;
+   std::vector<MovementVector> waypoints;
+   uint32 curWaypoint;
    Map* map;
 
    unsigned int side;
+   bool movementUpdated;
    
    int hitboxWidth, hitboxHeight;
    
@@ -33,9 +48,8 @@ public:
     /**
     * Moves the object depending on its target, updating its coordinate.
     * @param diff the amount of milliseconds the object is supposed to move
-    * @param moveSpeed the object's moveSpeed
     */
-    void Move(unsigned int diff, unsigned int moveSpeed = 40);
+    void Move(unsigned int diff);
     
     void calculateVector(float xtarget, float ytarget);
 
@@ -46,12 +60,19 @@ public:
     void setSide(unsigned int side) { this->side = side; }
     unsigned int getSide() { return side; }
 
-    virtual void update(unsigned int diff) = 0;
+    virtual void update(unsigned int diff);
+    virtual float getMoveSpeed() const = 0;
 
     virtual bool isSimpleTarget() { return false; }
 
     Target* getTarget() { return target; }
-    virtual void setTarget(Target* target);
+    void setTarget(Target* target);
+    void setWaypoints(const std::vector<MovementVector>& waypoints);
+    
+    const std::vector<MovementVector>& getWaypoints() { return waypoints; }
+    bool isMovementUpdated() { return movementUpdated; }
+    void clearMovementUpdated() { movementUpdated = false; }
+    
     uint32 getNetId() const { return id; }
     Map* getMap() const { return map; }
 

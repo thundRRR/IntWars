@@ -17,6 +17,7 @@ public:
    virtual ~Unit();
    Stats& getStats() { return *stats; }
    virtual void update(unsigned int diff);
+   virtual float getMoveSpeed() const { return stats->getMovementSpeed(); }
 
 };
 

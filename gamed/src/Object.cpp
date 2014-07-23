@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Object::Object(Map* map, uint32 id, float x, float y, int hitboxWidth, int hitboxHeight) : Target(x, y), map(map), id(id), target(0), hitboxWidth(hitboxWidth), hitboxHeight(hitboxHeight) {
+Object::Object(Map* map, uint32 id, float x, float y, int hitboxWidth, int hitboxHeight) : Target(x, y), map(map), id(id), target(0), hitboxWidth(hitboxWidth), hitboxHeight(hitboxHeight), movementUpdated(false) {
 }
 
 Object::~Object() {
@@ -34,22 +34,44 @@ void Object::setTarget(Target* target) {
 
 }
 
-void Object::Move(unsigned int diff, unsigned int moveSpeed) {
+void Object::Move(unsigned int diff) {
 
 	if(!target)
 	  return;
 	
 	calculateVector(target->getX(), target->getY());
 
-	float factor = 0.001f*diff*moveSpeed;
+	float factor = 0.001f*diff*getMoveSpeed();
 
 	x += factor*xvector;
 	y += factor*yvector;
 	
 	/* If the target was a simple point, stop when it is reached */
 	if(target->isSimpleTarget() && distanceWith(target) < factor) {
-	   setTarget(0);
+	   if(++curWaypoint >= waypoints.size()) {
+         setTarget(0);
+      } else {
+         setTarget(waypoints[curWaypoint].toTarget());
+      }
 	}
+}
+
+void Object::update(unsigned int diff) {
+
+}
+
+void Object::setWaypoints(const std::vector<MovementVector>& newWaypoints) {
+   waypoints = newWaypoints;
+   
+   setPosition(2.0 * waypoints[0].x + MAP_WIDTH, 2.0 * waypoints[0].y + MAP_HEIGHT);
+   movementUpdated = true;
+   if(waypoints.size() == 1) {
+      setTarget(0);
+      return;
+   }
+   
+   setTarget(waypoints[1].toTarget());
+   curWaypoint = 1;
 }
 
 void Object::setPosition(float x, float y) {

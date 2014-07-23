@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "stdafx.h"
 #include "Game.h"
 
-#define REFRESH_RATE 16
+#define REFRESH_RATE 8
 
 uint32 GetNewNetID() {
 	static uint32 dwStart = 0x40000019;

@@ -9,6 +9,8 @@ Unit::~Unit() {
 }
 
 void Unit::update(unsigned int diff) {
+   Object::update(diff);
+   
    if(ai) {
       ai->update(diff);
    }

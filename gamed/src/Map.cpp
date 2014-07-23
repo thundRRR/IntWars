@@ -4,6 +4,12 @@
 void Map::update(unsigned int diff) {
    for(auto& kv : objects) {
       kv.second->update(diff);
+      
+      if(kv.second->isMovementUpdated()) {
+         game->notifyMovement(kv.second);
+         kv.second->clearMovementUpdated();
+      }
+      
       Unit* u = dynamic_cast<Unit*>(kv.second);
       
       if(u && !u->getStats().getUpdatedStats().empty()) {

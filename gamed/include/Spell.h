@@ -56,6 +56,10 @@ public:
    virtual void applyEffects(float x, float y, Unit* u = 0) = 0;
    
    Champion* getOwner() const { return owner; }
+   
+   /**
+    * @return Spell's unique ID
+    */
    uint32 getId() const { return id; }
    float getCastTime() const { return castTime; }
    
@@ -69,6 +73,9 @@ public:
       return cooldown[level-1];
    }
    
+   /**
+    * @return the mana/energy/health cost
+    */
    float getCost() const {
       if(!level) {
          return 0;

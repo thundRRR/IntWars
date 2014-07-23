@@ -71,6 +71,7 @@ class Game
       void notifyMinionSpawned(Minion* m);
       void notifySetHealth(Unit* u);
       void notifyUpdatedStats(Unit* u);
+      void notifyMovement(Object* o);
    
    protected:
 		// Tools
