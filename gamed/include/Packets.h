@@ -382,9 +382,10 @@ public:
       buffer << 2000.f; // Projectile speed
       buffer << (uint64)0x00000000d5002fce; // unk
       buffer << (uint32)0x7f7fffff; // unk
-      buffer << (uint32)0x25006600; // unk
-      buffer << (uint32)0xab0a0fe6; // unk
-      buffer << (uint32)0x00400000; // unk
+      buffer << (uint8)0 << (uint8)0x66 << (uint8)0;
+      buffer << (uint32)0x0a0fe625; // Projectile unique ID ; Right now hardcoded at Mystic Shot
+      buffer << (uint32)0x400001f8; // unk
+      buffer << (uint8)0; // unk
       buffer << (uint32)0x3f800000; // unk
       buffer << caster->getNetId() << caster->getNetId();
       buffer << (uint32)0x9c0cb5a7; // unk
