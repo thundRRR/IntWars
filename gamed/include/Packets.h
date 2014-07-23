@@ -691,9 +691,10 @@ struct Unk2 {
    uint32 targetNetId;
 };
 
-class HeroSpawn : public BasePacket {
+class HeroSpawn : public Packet {
 public:
-	HeroSpawn(uint32 netId, uint32 gameId, const std::string& name, const std::string& type, uint32 skinNo) : BasePacket(PKT_S2C_HeroSpawn) {
+	HeroSpawn(uint32 netId, uint32 gameId, const std::string& name, const std::string& type, uint32 skinNo) : Packet(PKT_S2C_HeroSpawn) {
+		buffer << (uint32)0; // ???
 		buffer << (uint32)netId;
 		buffer << (uint32)gameId;
 		buffer << (uint8)0; // netNodeID ?
