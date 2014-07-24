@@ -507,22 +507,14 @@ bool Game::handleSkillUp(HANDLE_ARGS) {
 
 bool Game::handleBuyItem(HANDLE_ARGS) {
    
-    //static int slot = 0;
     BuyItemReq *request = reinterpret_cast<BuyItemReq *>(packet->data);
-     printf("Item bought :%i", request->id);
      
     Item newItem = ItemFactory::getItemFromId(request->id);
     
    // todo: trinket support
     
      
-   
-    printf("Inventory add new item :%i\n", request->id);
     peerInfo(peer)->getChampion()->inventory.addItemNew(newItem);
-    printf("Added to inventory :%i\n", request->id);
-      
-    printf("In inventory :%i\n", peerInfo(peer)->getChampion()->inventory.items[0].id);
-    printf("In inventory :%i\n", peerInfo(peer)->getChampion()->inventory.items[1].id);
       
     for(int i=0;i<5;i++){
         if(peerInfo(peer)->getChampion()->inventory.items[i].id != -1){
@@ -531,23 +523,11 @@ bool Game::handleBuyItem(HANDLE_ARGS) {
         response.itemId = peerInfo(peer)->getChampion()->inventory.items[i].id;
         response.slotId = i;
         response.stack = peerInfo(peer)->getChampion()->inventory.items[i].stackAmount;
-          printf("Sending packet :%i", request->id);
         broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
-          printf("Packet sent :%i", request->id);
         }
     }
 
-    
-    //peerInfo(peer)->getChampion()->setWaypoints(vMoves);
-    
-    
-    /*BuyItemAns response;
-    response.header.netId = request->header.netId;
-    response.itemId = request->id;
-    response.slotId = slot++; //check for trinket ID and addapt slot
-    response.stack = 1;
-    return broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);*/
-    
+
     
 }
 
