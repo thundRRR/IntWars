@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "stdafx.h"
 #include "Game.h"
 #include "Packets.h"
+#include "Inventory.h"
+#include "ItemFactory.h"
 #include "ChatBox.h"
 
 #include <vector>
@@ -271,6 +273,11 @@ bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
    {
       float x = ((request->x) - MAP_WIDTH)/2;
       float y = ((request->y) - MAP_HEIGHT)/2;
+      
+      for(int i=0;i<vMoves.size(); i++){
+          vMoves.at(i).x = x;
+          vMoves.at(i).y = y;
+      }
 
       printf("Stopped at x:%f , y: %f\n", x,y);
       break;
@@ -443,7 +450,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
            printf("Setting Mana to %f\n", data);
            
            peerInfo(peer)->getChampion()->getStats().setCurrentMana(data);
-		   peerInfo(peer)->getChampion()->getStats().setMaxMana(data);
+         peerInfo(peer)->getChampion()->getStats().setMaxMana(data);
            return true;
         }
         //Model
@@ -454,14 +461,14 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
             return true;
         }
         //Size
-	if(strncmp(message->getMessage(), cmd[11], strlen(cmd[11])) == 0) {
-	   float data = (float)atoi(&message->getMessage()[strlen(cmd[11])+1]);
-			
-	   printf("Setting size to %f\n", data);
-			
-	   peerInfo(peer)->getChampion()->getStats().setSize(data);
-	   return true;
-	}
+   if(strncmp(message->getMessage(), cmd[11], strlen(cmd[11])) == 0) {
+      float data = (float)atoi(&message->getMessage()[strlen(cmd[11])+1]);
+         
+      printf("Setting size to %f\n", data);
+         
+      peerInfo(peer)->getChampion()->getStats().setSize(data);
+      return true;
+   }
     }
     switch(message->type) {
         case CMT_ALL:
@@ -499,14 +506,29 @@ bool Game::handleSkillUp(HANDLE_ARGS) {
 }
 
 bool Game::handleBuyItem(HANDLE_ARGS) {
-    static int slot = 0;
+   
     BuyItemReq *request = reinterpret_cast<BuyItemReq *>(packet->data);
-    BuyItemAns response;
-    response.header.netId = request->header.netId;
-    response.itemId = request->id;
-    response.slotId = slot++; //check for trinket ID and addapt slot
-    response.stack = 1;
-    return broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
+     
+    Item newItem = ItemFactory::getItemFromId(request->id);
+    
+   // todo: trinket support
+    
+     
+    peerInfo(peer)->getChampion()->inventory.addItemNew(newItem);
+      
+    for(int i=0;i<5;i++){
+        if(peerInfo(peer)->getChampion()->inventory.items[i].id != -1){
+        BuyItemAns response;
+        response.header.netId = request->header.netId;
+        response.itemId = peerInfo(peer)->getChampion()->inventory.items[i].id;
+        response.slotId = i;
+        response.stack = peerInfo(peer)->getChampion()->inventory.items[i].stackAmount;
+        broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
+        }
+    }
+
+
+    
 }
 
 bool Game::handleEmotion(HANDLE_ARGS) {
