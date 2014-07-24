@@ -24,15 +24,14 @@
 #include "blowfish.h"
 #include "base64.h"
 
-//defines for the packet type code in an ETHERNET header
-#define ETHER_TYPE_IP (0x0800)
-#define ETHER_TYPE_8021Q (0x8100)
 #define B64_KEY "Z6zrBNmC42AhIC6UQR6KDg=="
 //#define B64_KEY "3FAYg4Md9Qzl0O4qC7NZbQ=="
 //#define B64_KEY "17BLOhi6KZsTtldTsizvHg=="
 #define PACKET_FILE "packets.txt"
 
 #define min(a, b)       ((a) < (b) ? (a) : (b))
+#define FLAG_SAME_COMMAND 0x01 // If this is set, then there's another flag byte before the command, and the opCode is skipped
+#define FLAG_UNK 0x02 // Seems related to netId
 
 using namespace std;
 
@@ -78,18 +77,71 @@ void printPacket(unsigned char* buffer, unsigned int size) {
    puts("\n");
 }
 
+void dumpBatch(u_char* pkt_ptr) {
+
+   int nbPackets = pkt_ptr[1];
+   int firstPacketSize = pkt_ptr[2];
+   pkt_ptr += 3;
+   
+   unsigned char previousCommand = pkt_ptr[0];
+   
+   printf("Packet 1 (100%% accurate)\n");
+   printf("Length : %d\n", firstPacketSize);
+   
+   printPacket(pkt_ptr, firstPacketSize);
+   pkt_ptr += firstPacketSize;
+   
+
+   for(int i = 2; i < nbPackets+1; ++i) {
+      unsigned char flagsAndLength = pkt_ptr[0]; // 6 first bits = size (if not 0xFC), 2 last bits = flags
+      unsigned char size = flagsAndLength >> 2;
+      unsigned char additionalByte = pkt_ptr[1]; // Only preset if flagsAndLength & FLAG_UNK
+      unsigned char command;
+      unsigned char buffer[8192];
+      
+      ++pkt_ptr;
+      
+      if(flagsAndLength & FLAG_SAME_COMMAND) { // additionnal byte, skip command
+         ++pkt_ptr;
+         command = previousCommand;
+      } else {
+         command = pkt_ptr[0];
+         ++pkt_ptr;
+         if(flagsAndLength & FLAG_UNK) { // looks like when this is set, we keep the same netId, else we use a new one
+            pkt_ptr += 1;
+         } else {
+            pkt_ptr += 4;
+         }
+      }
+      
+      if(size == 0x3F) { // size is too big to be on 6 bits, so instead it's stored later
+         size = pkt_ptr[0];
+         ++pkt_ptr;
+      }
+      
+      printf("Packet %d (The start might be wrong, especially the netId (missing))\n", i);
+      printf("Length : %d\n", size+1);
+      
+      buffer[0] = command;
+      memcpy(buffer+1, pkt_ptr, size);
+      
+      printPacket(buffer, size+1);
+      pkt_ptr += size;
+      
+      previousCommand = command;
+   } 
+}
+
 //------------------------------------------------------------------- 
 int main(int argc, char **argv) 
-{ 
- 
-  //temporary packet buffers 
+{
   struct pcap_pkthdr header; // The header that pcap gives us 
   const u_char *packet; // The actual packet 
   struct timeval startTime = {0, 0};
   
   //check command line arguments 
   if (argc < 2) { 
-    fprintf(stderr, "Usage: %s [input pcaps]\n", argv[0]); 
+    fprintf(stderr, "Usage: %s <input pcap> [b64key]\n", argv[0]); 
     exit(1); 
   }
   
@@ -194,6 +246,12 @@ int main(int argc, char **argv)
       
          b.Decrypt(pkt_ptr, commandLength);
          printPacket(pkt_ptr, commandLength);
+         
+         if(pkt_ptr[0] == 0xFF) { // Batch Packet
+            puts("=== Attempting to parse batch packet ===");
+            dumpBatch(pkt_ptr);
+            puts("=== End of batch packet ===");
+         }
          
          pkt_ptr += commandLength;
          finalLength -= commandLength;

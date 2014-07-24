@@ -702,7 +702,7 @@ public:
 
 struct CastSpell {
     PacketHeader header;
-    uint8 spellSlot;
+    uint8 spellSlot; // 2 first bits seem to be unknown flags
     float x, y;
     float x2, y2;
     uint32 targetNetId; // If 0, use coordinates, else use target net id
