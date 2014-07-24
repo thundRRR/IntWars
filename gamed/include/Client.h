@@ -44,10 +44,17 @@ struct ClientInfo
 	{
 		this->champion = champion; //ChampionFactory::getChampionFromType(type);
 	}
+	
+	void setSkinNo(uint32 skinNo)
+	{
+		this->skinNo = skinNo;
+	}
    
    Champion* getChampion() const { return champion; }
    
    const std::string& getName() const { return name; }
+   
+   uint32 getSkinNo() const { return skinNo; }
 
    uint32 getTicks()
    {

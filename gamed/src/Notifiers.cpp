@@ -27,7 +27,7 @@ void Game::notifyMovement(Object* o) {
    MovementAns *answer = MovementAns::create(waypoints.size()*2);
    
    for(size_t i = 0; i < waypoints.size(); i++) {
-      printf("     Vector %i, x: %f, y: %f\n", i, 2.0 * waypoints[i].x + MAP_WIDTH, 2.0 * waypoints[i].y + MAP_HEIGHT);
+      printf("     Vector %lu, x: %f, y: %f\n", i, 2.0 * waypoints[i].x + MAP_WIDTH, 2.0 * waypoints[i].y + MAP_HEIGHT);
    }
    
    answer->nbUpdates = 1;

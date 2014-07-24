@@ -100,18 +100,8 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     bool p1 = sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket2), CHL_S2C);
     printf("Spawning map\r\n");
     
-    
-    
-    HeroSpawn spawn;
-    spawn.netId = peerInfo(peer)->getChampion()->getNetId();
-    spawn.gameId = 0;
-    memcpy(spawn.name, peerInfo(peer)->getName().c_str(), peerInfo(peer)->getName().length());
-    memcpy(spawn.type, peerInfo(peer)->getChampion()->getType().c_str(), peerInfo(peer)->getChampion()->getType().length());
-    bool p2 = sendPacket(peer, reinterpret_cast<uint8 *>(&spawn), sizeof(HeroSpawn), CHL_S2C);
-    
-    
-    
-
+    HeroSpawn spawn(peerInfo(peer)->getChampion()->getNetId(), 0, peerInfo(peer)->getName(), peerInfo(peer)->getChampion()->getType(), peerInfo(peer)->getSkinNo());
+    bool p2 = sendPacket(peer, spawn, CHL_S2C);
     
     PlayerInfo info(peerInfo(peer)->getChampion()->getNetId(), SPL_Ignite, SPL_Flash);
    // sendPacket(peer, reinterpret_cast<uint8 *>(&info), sizeof(PlayerInfo), CHL_S2C);
@@ -333,9 +323,9 @@ bool Game::handleClick(HANDLE_ARGS) {
 bool Game::handleCastSpell(HANDLE_ARGS) {
    CastSpell *spell = reinterpret_cast<CastSpell *>(packet->data);
 
-   printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %08X\n", spell->spellSlot & 0x7F, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
+   printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %08X\n", spell->spellSlot & 0x3F, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
 
-   Spell* s = peerInfo(peer)->getChampion()->castSpell(spell->spellSlot & 0x7F, spell->x, spell->y, 0);
+   Spell* s = peerInfo(peer)->getChampion()->castSpell(spell->spellSlot & 0x3F, spell->x, spell->y, 0);
 
    if(!s) {
       return false;
@@ -357,7 +347,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
     ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
     //Lets do commands
     if(message->msg == '.') {
-        const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn" };
+        const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size" };
         //Set field
         if(strncmp(message->getMessage(), cmd[0], strlen(cmd[0])) == 0) {
             uint32 blockNo, fieldNo;
@@ -422,52 +412,47 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
            return true;
         }
         
-        /*
         //experience
         if(strncmp(message->getMessage(), cmd[4], strlen(cmd[4])) == 0)
         {
-        float data = (float)atoi(&message->getMessage()[strlen(cmd[4])+1]);
-
-        charStats.statType = STI_Exp;
-        charStats.statValue = data;
-        //Logging->writeLine("set champ exp to %f\n", data);
-        sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
-        return true;
+           float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
+           
+           printf("Setting experience to %f\n", data);
+           
+           peerInfo(peer)->getChampion()->getStats().setExp(data);
+           return true;
         }
         //AbilityPower
         if(strncmp(message->getMessage(), cmd[5], strlen(cmd[5])) == 0)
         {
-        float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
-
-        charStats.statType = STI_AbilityPower;
-        charStats.statValue = data;
-        //Logging->writeLine("set champ abilityPower to %f\n", data);
-        sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
-        return true;
+           float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
+           
+           printf("Setting AP to %f\n", data);
+           
+           peerInfo(peer)->getChampion()->getStats().setBaseAp(data);
+           return true;
         }
         //Attack damage
         if(strncmp(message->getMessage(), cmd[6], strlen(cmd[6])) == 0)
         {
-        float data = (float)atoi(&message->getMessage()[strlen(cmd[6])+1]);
-
-        charStats.statType = STI_AttackDamage;
-        charStats.statValue = data;
-        //Logging->writeLine("set champ attack damage to %f\n", data);
-        sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
-        return true;
+           float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
+           
+           printf("Setting AD to %f\n", data);
+           
+           peerInfo(peer)->getChampion()->getStats().setBaseAd(data);
+           return true;
         }
         //Mana
         if(strncmp(message->getMessage(), cmd[7], strlen(cmd[7])) == 0)
         {
-        float data = (float)atoi(&message->getMessage()[strlen(cmd[7])+1]);
-
-        charStats.statType = STI_Mana;
-        charStats.statValue = data;
-        //Logging->writeLine("set champ mana to %f\n", data);
-        sendPacket(peer,reinterpret_cast<uint8*>(&charStats),sizeof(charStats), CHL_LOW_PRIORITY, 2);
-        return true;
+           float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
+           
+           printf("Setting Mana to %f\n", data);
+           
+           peerInfo(peer)->getChampion()->getStats().setCurrentMana(data);
+		   peerInfo(peer)->getChampion()->getStats().setMaxMana(data);
+           return true;
         }
-        */
         //Model
         if(strncmp(message->getMessage(), cmd[8], strlen(cmd[8])) == 0) {
             std::string sModel = (char *)&message->getMessage()[strlen(cmd[8]) + 1];
@@ -475,6 +460,15 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
             broadcastPacket(reinterpret_cast<uint8 *>(&modelPacket), sizeof(UpdateModel), CHL_S2C);
             return true;
         }
+        //Size
+	if(strncmp(message->getMessage(), cmd[11], strlen(cmd[11])) == 0) {
+	   float data = (float)atoi(&message->getMessage()[strlen(cmd[11])+1]);
+			
+	   printf("Setting size to %f\n", data);
+			
+	   peerInfo(peer)->getChampion()->getStats().setSize(data);
+	   return true;
+	}
     }
     switch(message->type) {
         case CMT_ALL:
