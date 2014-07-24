@@ -37,6 +37,7 @@ protected:
 
    unsigned int side;
    bool movementUpdated;
+   bool toRemove;
    
    int hitboxWidth, hitboxHeight;
    
@@ -72,6 +73,8 @@ public:
     const std::vector<MovementVector>& getWaypoints() { return waypoints; }
     bool isMovementUpdated() { return movementUpdated; }
     void clearMovementUpdated() { movementUpdated = false; }
+    bool isToRemove() { return toRemove; }
+    void setToRemove() { toRemove = true; }
     
     uint32 getNetId() const { return id; }
     Map* getMap() const { return map; }

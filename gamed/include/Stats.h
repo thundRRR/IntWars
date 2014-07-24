@@ -56,16 +56,23 @@ enum FieldMaskFive : uint32
 
 class Stats {
 
-private:
+protected:
    std::map<uint32, float> stats[5];
    std::multimap<uint8, uint32> updatedStats;
+   bool updatedHealth;
    
 public:
+
+   Stats() : updatedHealth(false) { }
+
    float getStat(uint8 blockId, uint32 stat) const;
    void setStat(uint8 blockId, uint32 stat, float value);
 
    const std::multimap<uint8, uint32>& getUpdatedStats() const { return updatedStats; }
    void clearUpdatedStats() { updatedStats.clear(); }
+   
+   bool isUpdatedHealth() const { return updatedHealth; }
+   void clearUpdatedHealth() { updatedHealth = false; }
 
    virtual float getBaseAd() const {
       return getStat(MM_Two, FM2_Base_Ad);
@@ -134,6 +141,7 @@ public:
    
    virtual void setCurrentHealth(float health) {
       setStat(MM_Four, FM4_CurrentHp, health);
+      updatedHealth = true;
    }
    
    virtual void setCurrentMana(float mana) {
@@ -146,6 +154,7 @@ public:
 
    virtual void setMaxHealth(float health) {
       setStat(MM_Four, FM4_MaxHp, health);
+      updatedHealth = true;
    }
    
    virtual void setMovementSpeed(float speed) {

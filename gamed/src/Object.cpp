@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Object::Object(Map* map, uint32 id, float x, float y, int hitboxWidth, int hitboxHeight) : Target(x, y), map(map), id(id), target(0), hitboxWidth(hitboxWidth), hitboxHeight(hitboxHeight), movementUpdated(false) {
+Object::Object(Map* map, uint32 id, float x, float y, int hitboxWidth, int hitboxHeight) : Target(x, y), map(map), id(id), target(0), hitboxWidth(hitboxWidth), hitboxHeight(hitboxHeight), side(0), movementUpdated(false), toRemove(false) {
 }
 
 Object::~Object() {

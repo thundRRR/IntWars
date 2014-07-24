@@ -36,6 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma pack(push,1)
 #endif
 
+/* New Packet Architecture */
 class Packet {
 protected:
    Buffer buffer;
@@ -66,6 +67,7 @@ public:
 
 };
 
+/* Old Packet Architecture & Packets */
 
 struct PacketHeader {
     PacketHeader() {
@@ -85,6 +87,7 @@ struct GameHeader {
     uint32 netId;
     uint32 ticks;
 };
+
 typedef struct _SynchBlock {
     _SynchBlock() {
         userId = 0xFFFFFFFFFFFFFFFF;
@@ -169,49 +172,6 @@ typedef struct _LoadScreenInfo {
     uint32 redPlayerNo;
 } LoadScreenInfo;
 
-class LoadScreenPlayerName : public Packet {
-public:
-   LoadScreenPlayerName(const ClientInfo& player) : Packet(PKT_S2C_LoadName) {
-      buffer << player.userId;
-      buffer << (uint32)0;
-      buffer << (uint32)player.getName().length()+1;
-      buffer << player.getName();
-      buffer << (uint8)0;
-   }
-
-    /*uint8 cmd;
-    uint64 userId;
-    uint32 skinId;
-    uint32 length;
-    uint8* description;*/
-};
-
-class LoadScreenPlayerChampion : public Packet {
-public:
-   LoadScreenPlayerChampion(const ClientInfo& player) : Packet(PKT_S2C_LoadHero) {
-      buffer << player.userId;
-      buffer << player.skinNo;
-      buffer << (uint32)player.getChampion()->getType().length()+1;
-      buffer << player.getChampion()->getType();
-      buffer << (uint8)0;
-   }
-
-    /*uint8 cmd;
-    uint64 userId;
-    uint32 skinId;
-    uint32 length;
-    uint8* description;*/
-};
-
-class SetHealth : public BasePacket {
-public:
-   SetHealth(Unit* u) : BasePacket(PKT_S2C_SetHealth, u->getNetId()) {
-      buffer << (uint16)0x0000; // unk
-      buffer << u->getStats().getCurrentHealth();
-      buffer << u->getStats().getMaxHealth();
-   }
-};
-
 typedef struct _KeyCheck {
     _KeyCheck() {
         cmd = PKT_KeyCheck;
@@ -229,76 +189,13 @@ typedef struct _KeyCheck {
     uint32 trash2;
 } KeyCheck;
 
-typedef struct _AttentionPing {
-    _AttentionPing() {
-    }
-    _AttentionPing(_AttentionPing *ping) {
-        cmd = ping->cmd;
-        unk1 = ping->unk1;
-        x = ping->x;
-        y = ping->y;
-        z = ping->z;
-        type = ping->type;
-    }
-
-    uint8 cmd;
-    uint32 unk1;
-    float x;
-    float y;
-    float z;
-    uint8 type;
-} AttentionPing;
-
-typedef struct _AttentionPingAns {
-    _AttentionPingAns(AttentionPing *ping) {
-		cmd = PKT_S2C_AttentionPing;
-		unk1 = ping->unk1;
-		x = ping->x;
-		y = ping->y;
-		z = ping->z;
-		netId = 0;
-		switch (ping->type)
-		{
-			case 0: 
-				type = 0xb0;
-				break;
-			case 1:
-				type = 0xb1;
-				break;
-			case 2: // Danger ping
-				type = 0xb2;
-				break;
-			case 3: // Enemy missing ping
-				type = 0xb3;
-				break;
-			case 4: // On my way ping
-				type = 0xb4;
-				break;
-			case 5: // Fall back/retreat ping
-				type = 0xb5;
-				break;
-			case 6: // Needs assistance ping
-				type = 0xb6;
-				break;
-		}
-    }
-	//uint8 temp[22];
-    uint8 cmd;
-    uint32 unk1;
-    float x;
-    float y;
-    float z;
-    uint32 netId;
-    uint8 type;    
-} AttentionPingAns;
-
 struct CameraLock {
     PacketHeader header;
     uint8 isLock;
     uint32 padding;
 };
 
-typedef struct _ViewReq {
+/*typedef struct _ViewReq {
     uint8 cmd;
     uint32 unk1;
     float x;
@@ -309,100 +206,7 @@ typedef struct _ViewReq {
     uint32 height;	//Unk
     uint32 unk2;	//Unk
     uint8 requestNo;
-} ViewReq;
-
-struct CastSpell {
-    PacketHeader header;
-    uint8 spellSlot;
-    float x, y;
-    float x2, y2;
-    uint32 targetNetId; // If 0, use coordinates, else use target net id
-};
-
-class CastSpellAns : public GamePacket {
-public:
-   CastSpellAns(Spell* s, float x, float y) : GamePacket(PKT_S2C_CastSpellAns, s->getOwner()->getNetId()) {
-      buffer << (uint8)0 << (uint8)0x66 << (uint8)0x00; // unk
-      buffer << s->getId();
-      buffer << (uint32)0x400001f6; // unk
-      buffer << (uint8)0 << (uint8)0 << (uint8)0;
-      buffer << (uint16)0x3f80; // unk
-      buffer << s->getOwner()->getNetId() << s->getOwner()->getNetId();
-      buffer << (uint64)0x400001f59c0cb5a7; // unk
-      buffer << x << 55.f << y;
-      buffer << x << 55.f << y;
-      buffer << (uint8)0;
-      buffer << s->getCastTime();
-      buffer << (float)0.f; // unk
-      buffer << (float)1.0f; // unk
-      buffer << s->getCooldown();
-      buffer << (float)0.f; // unk
-      buffer << (uint8)0; // unk
-      buffer << s->getSlot(); 
-      buffer << (uint16)0; // unk
-      buffer << (uint16)0x41e0; // unk
-      buffer << s->getOwner()->getX() << 55.f << s->getOwner()->getY();
-      buffer << (uint64)1; // unk
-}
-};
-
-class PlayerInfo : public BasePacket{
-
-public:
-
-   PlayerInfo(uint32 _netId, uint32 summonerSpell1, uint32 summonerSpell2) : BasePacket(PKT_S2C_PlayerInfo, _netId){
-   
-   buffer << (uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x83  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xD7  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xD7  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xD7  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00;
-
-   buffer << summonerSpell1;
-   buffer << summonerSpell2;
- 
-   buffer <<(uint8) 0x41  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x42  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x04  <<(uint8) 0x52  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x03  <<(uint8) 0x61  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x62  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x64  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x03  <<(uint8) 0x71  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x72  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x03  <<(uint8) 0x82  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x03  <<(uint8) 0x92  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x41  <<(uint8) 0x75  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x42  <<(uint8) 0x75  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x02  <<(uint8) 0x43  <<(uint8) 0x75  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x02  <<(uint8) 0x52  <<(uint8) 0x75  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x03  <<(uint8) 0x62  <<(uint8) 0x75  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x1E  <<(uint8) 0x00;
-   
-   }
-
-
-};
-
-
-class SpawnProjectile : public BasePacket {
-public:
-   SpawnProjectile(uint32 projNetId, Unit* caster, float x, float y) : BasePacket(PKT_S2C_SpawnProjectile, projNetId) {
-      buffer << caster->getX() << 150.f << caster->getY();
-      buffer << caster->getX() << 150.f << caster->getY();
-      buffer << (uint64)0x000000003f510fe2; // unk
-      buffer << (uint32)0x3f13bf22; // unk
-      buffer << x << 150.f << y;
-      buffer << caster->getX() << 150.f << caster->getY();
-      buffer << x << 150.f << y;
-      buffer << caster->getX() << 150.f << caster->getY();
-      buffer << uint32(0); // unk
-      buffer << 2000.f; // Projectile speed
-      buffer << (uint64)0x00000000d5002fce; // unk
-      buffer << (uint32)0x7f7fffff; // unk
-      buffer << (uint8)0 << (uint8)0x66 << (uint8)0;
-      buffer << (uint32)0x0a0fe625; // Projectile unique ID ; Right now hardcoded at Mystic Shot
-      buffer << (uint32)0x400001f8; // Projectile NetID + 1 ?
-      buffer << (uint8)0; // unk
-      buffer << (uint32)0x3f800000; // unk (1.0f)
-      buffer << caster->getNetId() << caster->getNetId();
-      buffer << (uint32)0x9c0cb5a7; // unk
-      buffer << projNetId;
-      buffer << 300.f << 200.f << 400.f; // no idea what these coords are for
-      buffer << 300.f << 200.f << 400.f; // no idea what these coords are for
-      buffer << (uint32)0x80000000; // unk
-      buffer << (uint32)0x000000bf; // unk
-      buffer << (uint32)0x80000000; // unk
-      buffer << (uint32)0x2fd5843f; // unk
-      buffer << (uint32)0x00000000; // unk
-      buffer << (uint16)0x0000; // unk
-      buffer << (uint8)0x2f; // unk
-      buffer << (uint32)0x00000000; // unk
-      buffer << caster->getX() << 150.f << caster->getY();
-      buffer << (uint64)0x0000000000000000; // unk
-   }
-
-};
+} ViewReq;*/
 
 /**
  * Change Target ??
@@ -505,7 +309,7 @@ struct MovementAns {
 
 };
 
-typedef struct _ViewAns {
+/*typedef struct _ViewAns {
     _ViewAns() {
         cmd = PKT_S2C_ViewAns;
         unk1 = 0;
@@ -514,7 +318,7 @@ typedef struct _ViewAns {
     uint8 cmd;
     uint32 unk1;
     uint8 requestNo;
-} ViewAns;
+} ViewAns;*/
 
 
 typedef struct _QueryStatus {
@@ -573,43 +377,6 @@ struct CharacterStats {
       unsigned short sValue;
       float fValue;
    } value;
-};
-
-class UpdateStats : public GamePacket {
-public:
-   UpdateStats(Unit* u) : GamePacket(PKT_S2C_CharStats, u->getNetId()) {
-      const std::multimap<uint8, uint32>& stats = u->getStats().getUpdatedStats();
-      
-      std::set<uint8> masks;
-      uint8 masterMask = 0;
-      
-      for(auto& p : stats) {
-         masterMask |= p.first;
-         masks.insert(p.first);
-      }
-      
-      buffer << (uint8)1;
-      buffer << masterMask;
-      buffer << u->getNetId();
-      
-      for(uint8 m : masks) {
-         uint32 mask = 0;
-         
-         for(auto it = stats.lower_bound(m); it != stats.upper_bound(m); ++it) {
-            mask |= it->second;
-         }
-         
-         buffer << mask;
-         buffer << (uint8)(stats.count(m)*4);
-         
-         for(int i = 0; i < 32; ++i) {
-            uint32 tmpMask = (1 << i);
-            if(tmpMask & mask) {
-               buffer << u->getStats().getStat(m, tmpMask);
-            }
-         }
-      }
-   }
 };
 
 struct ChatMessage {
@@ -774,31 +541,6 @@ struct SpellSet {
     uint32 spellID;
     uint32 level;
 };
-class LevelPropSpawn : public BasePacket {
-    public:
-        LevelPropSpawn(uint32 netId, const std::string& name, const std::string& type, float x, float y, float z) : BasePacket(PKT_S2C_LevelPropSpawn) {
-            buffer << netId;
-            buffer << (uint32)0x00000040; // unk
-            buffer << (uint8)0; // unk
-            buffer << x << z << y;
-            buffer.fill(0, 41); // unk
-            buffer << name;
-            buffer.fill(0, 64-name.length());
-            buffer << type;
-            buffer.fill(0, 64-type.length());
-        }
-        
-        /*PacketHeader header;
-        uint32 netId;
-        uint32 unk1;
-        uint8 unk2;
-        float x;
-        float y;
-        float z; // unsure
-        uint8 unk3[41];
-        uint8 name[64];
-        uint8 type[64];*/
-};
 
 struct Announce {
     PacketHeader header;
@@ -811,13 +553,6 @@ typedef struct _SkillUpPacket {
     PacketHeader header;
     uint8 skill;
 } SkillUpPacket;
-
-class SkillUpResponse : public BasePacket {
-public:
-    SkillUpResponse(uint32 netId, uint8 skill, uint8 level, uint8 pointsLeft) : BasePacket(PKT_S2C_SkillUp, netId) {
-        buffer << skill << level << pointsLeft;
-    }
-};
 
 typedef struct _BuyItemReq {
     PacketHeader header;
@@ -852,6 +587,294 @@ typedef struct _EmotionResponse {
     PacketHeader header;
     uint8 id;
 } EmotionResponse;
+
+/* New Style Packets */
+
+class LoadScreenPlayerName : public Packet {
+public:
+   LoadScreenPlayerName(const ClientInfo& player) : Packet(PKT_S2C_LoadName) {
+      buffer << player.userId;
+      buffer << (uint32)0;
+      buffer << (uint32)player.getName().length()+1;
+      buffer << player.getName();
+      buffer << (uint8)0;
+   }
+
+    /*uint8 cmd;
+    uint64 userId;
+    uint32 skinId;
+    uint32 length;
+    uint8* description;*/
+};
+
+class LoadScreenPlayerChampion : public Packet {
+public:
+   LoadScreenPlayerChampion(const ClientInfo& player) : Packet(PKT_S2C_LoadHero) {
+      buffer << player.userId;
+      buffer << player.skinNo;
+      buffer << (uint32)player.getChampion()->getType().length()+1;
+      buffer << player.getChampion()->getType();
+      buffer << (uint8)0;
+   }
+
+    /*uint8 cmd;
+    uint64 userId;
+    uint32 skinId;
+    uint32 length;
+    uint8* description;*/
+};
+
+struct AttentionPing {
+    AttentionPing() {
+    }
+    AttentionPing(AttentionPing *ping) {
+        cmd = ping->cmd;
+        unk1 = ping->unk1;
+        x = ping->x;
+        y = ping->y;
+        z = ping->z;
+        type = ping->type;
+    }
+
+    uint8 cmd;
+    uint32 unk1;
+    float x;
+    float y;
+    float z;
+    uint8 type;
+};
+
+class AttentionPingAns : public Packet {
+public:
+   AttentionPingAns(ClientInfo *player, AttentionPing *ping) : Packet(PKT_S2C_AttentionPing){
+      buffer << (uint32)0; //unk1
+      buffer << ping->x;
+      buffer << ping->y;
+      buffer << ping->z;
+      buffer << (uint32)player->getChampion()->getNetId();
+      switch (ping->type)
+      {
+         case 0:
+            buffer << (uint8)0xb0;
+            break;
+         case 1:
+            buffer << (uint8)0xb1;
+            break;
+         case 2:
+            buffer << (uint8)0xb2; // Danger
+            break;
+         case 3:
+            buffer << (uint8)0xb3; // Enemy Missing
+            break;
+         case 4:
+            buffer << (uint8)0xb4; // On My Way
+            break;
+         case 5:
+            buffer << (uint8)0xb5; // Retreat / Fall Back
+            break;
+         case 6:
+            buffer << (uint8)0xb6; // Assistance Needed
+            break;            
+      }
+   }
+};
+
+class SetHealth : public BasePacket {
+public:
+   SetHealth(Unit* u) : BasePacket(PKT_S2C_SetHealth, u->getNetId()) {
+      buffer << (uint16)0x0000; // unk
+      buffer << u->getStats().getCurrentHealth();
+      buffer << u->getStats().getMaxHealth();
+   }
+};
+
+class SkillUpResponse : public BasePacket {
+public:
+    SkillUpResponse(uint32 netId, uint8 skill, uint8 level, uint8 pointsLeft) : BasePacket(PKT_S2C_SkillUp, netId) {
+        buffer << skill << level << pointsLeft;
+    }
+};
+
+struct CastSpell {
+    PacketHeader header;
+    uint8 spellSlot;
+    float x, y;
+    float x2, y2;
+    uint32 targetNetId; // If 0, use coordinates, else use target net id
+};
+
+class CastSpellAns : public GamePacket {
+public:
+   CastSpellAns(Spell* s, float x, float y) : GamePacket(PKT_S2C_CastSpellAns, s->getOwner()->getNetId()) {
+      buffer << (uint8)0 << (uint8)0x66 << (uint8)0x00; // unk
+      buffer << s->getId();
+      buffer << (uint32)0x400001f6; // a net ID, but what for..
+      buffer << (uint8)0 << (uint8)0 << (uint8)0;
+      buffer << (uint16)0x3f80; // unk
+      buffer << s->getOwner()->getNetId() << s->getOwner()->getNetId();
+      buffer << (uint32)0x400001f5; // Another net ID..
+      buffer << (uint32)0x9c0cb5a7; // unk
+      buffer << x << 55.f << y;
+      buffer << x << 55.f << y;
+      buffer << (uint8)0;
+      buffer << s->getCastTime();
+      buffer << (float)0.f; // unk
+      buffer << (float)1.0f; // unk
+      buffer << s->getCooldown();
+      buffer << (float)0.f; // unk
+      buffer << (uint8)0; // unk
+      buffer << s->getSlot(); 
+      buffer << (uint16)0; // unk
+      buffer << (uint16)0x41e0; // unk
+      buffer << s->getOwner()->getX() << 55.f << s->getOwner()->getY();
+      buffer << (uint64)1; // unk
+}
+};
+
+class PlayerInfo : public BasePacket{
+
+public:
+
+   PlayerInfo(uint32 _netId, uint32 summonerSpell1, uint32 summonerSpell2) : BasePacket(PKT_S2C_PlayerInfo, _netId){
+   
+   buffer << (uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x7D  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x83  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xA9  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xC5  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xD7  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xD7  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0xD7  <<(uint8) 0x14  <<(uint8) 0x00  <<(uint8) 0x00;
+
+   buffer << summonerSpell1;
+   buffer << summonerSpell2;
+ 
+   buffer <<(uint8) 0x41  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x42  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x04  <<(uint8) 0x52  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x03  <<(uint8) 0x61  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x62  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x64  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x03  <<(uint8) 0x71  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x72  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x03  <<(uint8) 0x82  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x03  <<(uint8) 0x92  <<(uint8) 0x74  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x41  <<(uint8) 0x75  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x42  <<(uint8) 0x75  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x02  <<(uint8) 0x43  <<(uint8) 0x75  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x02  <<(uint8) 0x52  <<(uint8) 0x75  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x03  <<(uint8) 0x62  <<(uint8) 0x75  <<(uint8) 0x03  <<(uint8) 0x00  <<(uint8) 0x01  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x00  <<(uint8) 0x1E  <<(uint8) 0x00;
+   
+   }
+
+
+};
+
+class SpawnProjectile : public BasePacket {
+public:
+   SpawnProjectile(uint32 projNetId, Unit* caster, float x, float y) : BasePacket(PKT_S2C_SpawnProjectile, projNetId) {
+      buffer << caster->getX() << 150.f << caster->getY();
+      buffer << caster->getX() << 150.f << caster->getY();
+      buffer << (uint64)0x000000003f510fe2; // unk
+      buffer << (float)0.577f; // unk
+      buffer << x << 150.f << y;
+      buffer << caster->getX() << 150.f << caster->getY();
+      buffer << x << 150.f << y;
+      buffer << caster->getX() << 150.f << caster->getY();
+      buffer << uint32(0); // unk
+      buffer << 2000.f; // Projectile speed
+      buffer << (uint64)0x00000000d5002fce; // unk
+      buffer << (uint32)0x7f7fffff; // unk
+      buffer << (uint8)0 << (uint8)0x66 << (uint8)0;
+      buffer << (uint32)0x0a0fe625; // Projectile unique ID ; Right now hardcoded at Mystic Shot
+      buffer << (uint32)0x400001f8; // Projectile NetID + 1 ?
+      buffer << (uint8)0; // unk
+      buffer << (uint32)0x3f800000; // unk (1.0f)
+      buffer << caster->getNetId() << caster->getNetId();
+      buffer << (uint32)0x9c0cb5a7; // unk
+      buffer << projNetId;
+      buffer << x << 150.f << y;
+      buffer << x << 150.f << y;
+      buffer << (uint32)0x80000000; // unk
+      buffer << (uint32)0x000000bf; // unk
+      buffer << (uint32)0x80000000; // unk
+      buffer << (uint32)0x2fd5843f; // unk
+      buffer << (uint32)0x00000000; // unk
+      buffer << (uint16)0x0000; // unk
+      buffer << (uint8)0x2f; // unk
+      buffer << (uint32)0x00000000; // unk
+      buffer << caster->getX() << 150.f << caster->getY();
+      buffer << (uint64)0x0000000000000000; // unk
+   }
+
+};
+
+class UpdateStats : public GamePacket {
+public:
+   UpdateStats(Unit* u) : GamePacket(PKT_S2C_CharStats, u->getNetId()) {
+      const std::multimap<uint8, uint32>& stats = u->getStats().getUpdatedStats();
+      
+      std::set<uint8> masks;
+      uint8 masterMask = 0;
+      
+      for(auto& p : stats) {
+         masterMask |= p.first;
+         masks.insert(p.first);
+      }
+      
+      buffer << (uint8)1;
+      buffer << masterMask;
+      buffer << u->getNetId();
+      
+      for(uint8 m : masks) {
+         uint32 mask = 0;
+         
+         for(auto it = stats.lower_bound(m); it != stats.upper_bound(m); ++it) {
+            mask |= it->second;
+         }
+         
+         buffer << mask;
+         buffer << (uint8)(stats.count(m)*4);
+         
+         for(int i = 0; i < 32; ++i) {
+            uint32 tmpMask = (1 << i);
+            if(tmpMask & mask) {
+               buffer << u->getStats().getStat(m, tmpMask);
+            }
+         }
+      }
+   }
+};
+
+class LevelPropSpawn : public BasePacket {
+    public:
+        LevelPropSpawn(uint32 netId, const std::string& name, const std::string& type, float x, float y, float z) : BasePacket(PKT_S2C_LevelPropSpawn) {
+            buffer << netId;
+            buffer << (uint32)0x00000040; // unk
+            buffer << (uint8)0; // unk
+            buffer << x << z << y;
+            buffer.fill(0, 41); // unk
+            buffer << name;
+            buffer.fill(0, 64-name.length());
+            buffer << type;
+            buffer.fill(0, 64-type.length());
+        }
+        
+        /*PacketHeader header;
+        uint32 netId;
+        uint32 unk1;
+        uint8 unk2;
+        float x;
+        float y;
+        float z; // unsure
+        uint8 unk3[41];
+        uint8 name[64];
+        uint8 type[64];*/
+};
+
+struct ViewRequest {
+    uint8 cmd;
+    uint32 unk1;
+    float x;
+    float zoom;
+    float y;
+    float y2;		//Unk
+    uint32 width;	//Unk
+    uint32 height;	//Unk
+    uint32 unk2;	//Unk
+    uint8 requestNo;
+};
+
+class ViewAnswer : public Packet {
+public:
+   ViewAnswer(ViewRequest *request) : Packet(PKT_S2C_ViewAns) {
+      buffer << request->unk1;
+   }
+   void setRequestNo(uint8 requestNo){
+      buffer << requestNo;
+   }
+};
+/* End New Packets */
+
 #if defined( __GNUC__ )
 #pragma pack()
 #else

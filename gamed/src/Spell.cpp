@@ -7,6 +7,10 @@ bool Spell::cast(float x, float y, Unit* u) {
    state = STATE_CASTING;
    currentCastTime = castTime;
    
+   this->x = x;
+   this->y = y;
+   this->target = u;
+   
    return true;
 }
 

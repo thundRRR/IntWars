@@ -44,9 +44,22 @@
           <in>MinionAI.h</in>
         </df>
         <df name="Champions">
+          <df name="Corki">
+          </df>
           <df name="Ezreal">
             <in>Ezreal.h</in>
             <in>MysticShot.h</in>
+          </df>
+          <df name="Jinx">
+            <in>Jinx.h</in>
+          </df>
+          <df name="Teemo">
+          </df>
+          <df name="Tryndamere">
+            <in>Tryndamere.h</in>
+          </df>
+          <df name="Vayne">
+            <in>Vayne.h</in>
           </df>
         </df>
         <df name="win">
@@ -61,8 +74,10 @@
         <in>Game.h</in>
         <in>Map.h</in>
         <in>Minion.h</in>
+        <in>MinionStats.h</in>
         <in>Object.h</in>
         <in>Packets.h</in>
+        <in>Projectile.h</in>
         <in>Spell.h</in>
         <in>Stats.h</in>
         <in>Target.h</in>
@@ -76,10 +91,13 @@
         <in>Handlers.cpp</in>
         <in>Map.cpp</in>
         <in>Minion.cpp</in>
+        <in>MysticShot.cpp</in>
         <in>Notifiers.cpp</in>
         <in>Object.cpp</in>
         <in>PacketHandler.cpp</in>
         <in>Packets.cpp</in>
+        <in>Projectile.cpp</in>
+        <in>Spell.cpp</in>
         <in>Stats.cpp</in>
         <in>Target.cpp</in>
         <in>Unit.cpp</in>

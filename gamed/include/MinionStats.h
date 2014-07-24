@@ -18,8 +18,8 @@ enum MinionFieldMaskThree : uint32
 
 enum MinionFieldMaskFour : uint32
 {
-   Minion_FM4_CurrentHp   = 0x00000001,
-   Minion_FM4_MaxHp =       0x00000002,
+   Minion_FM4_MaxHp   = 0x00000001,
+   Minion_FM4_CurrentHp =  0x00000002,
 };
 
 enum MinionFieldMaskFive : uint32
@@ -32,9 +32,19 @@ public:
    float getMaxHealth() const {
       return getStat(MM_Four, Minion_FM4_MaxHp);
    }
+   
+   float getCurrentHealth() const {
+      return getStat(MM_Four, Minion_FM4_CurrentHp);
+   }
 
    void setMaxHealth(float health) {
       setStat(MM_Four, Minion_FM4_MaxHp, health);
+      updatedHealth = true;
+   }
+   
+   void setCurrentHealth(float health) {
+      setStat(MM_Four, Minion_FM4_CurrentHp, health);
+      updatedHealth = true;
    }
 
 };
