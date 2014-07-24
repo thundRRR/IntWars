@@ -450,7 +450,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
            printf("Setting Mana to %f\n", data);
            
            peerInfo(peer)->getChampion()->getStats().setCurrentMana(data);
-		   peerInfo(peer)->getChampion()->getStats().setMaxMana(data);
+         peerInfo(peer)->getChampion()->getStats().setMaxMana(data);
            return true;
         }
         //Model
@@ -461,14 +461,14 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
             return true;
         }
         //Size
-	if(strncmp(message->getMessage(), cmd[11], strlen(cmd[11])) == 0) {
-	   float data = (float)atoi(&message->getMessage()[strlen(cmd[11])+1]);
-			
-	   printf("Setting size to %f\n", data);
-			
-	   peerInfo(peer)->getChampion()->getStats().setSize(data);
-	   return true;
-	}
+   if(strncmp(message->getMessage(), cmd[11], strlen(cmd[11])) == 0) {
+      float data = (float)atoi(&message->getMessage()[strlen(cmd[11])+1]);
+         
+      printf("Setting size to %f\n", data);
+         
+      peerInfo(peer)->getChampion()->getStats().setSize(data);
+      return true;
+   }
     }
     switch(message->type) {
         case CMT_ALL:

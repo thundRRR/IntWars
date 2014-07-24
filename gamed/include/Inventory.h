@@ -1,7 +1,7 @@
 
 
 #ifndef INVENTORY_H
-#define	INVENTORY_H
+#define   INVENTORY_H
 
 #define MAX_STACK_AMOUNT 5
 
@@ -15,10 +15,10 @@ class Inventory{
            
 public:
     
-	Inventory();
+   Inventory();
 
 
-	Item items[6];//0-5 = default items, 6 = trinket
+   Item items[6];//0-5 = default items, 6 = trinket
         
         void setItem(Item &item, Item newItem){
             item = newItem;
@@ -34,5 +34,5 @@ public:
     
 };
 
-#endif	/* INVENTORY_H */
+#endif   /* INVENTORY_H */
 

@@ -1,7 +1,7 @@
 
 
 #ifndef ITEM_H
-#define	ITEM_H
+#define   ITEM_H
 
 class Item
 {
@@ -12,7 +12,7 @@ public:
 
 
 
-	Item();
+   Item();
         
         Item(int _id, bool _isStackable){
             id = _id;
@@ -22,13 +22,13 @@ public:
 
 
 
-	int id;
-	int stackAmount = 1;
-	bool active = false;
+   int id;
+   int stackAmount = 1;
+   bool active = false;
 
         bool isStackable = false;
 
-	bool isTrinket(){ return false; }
+   bool isTrinket(){ return false; }
 
 
 };
@@ -36,5 +36,5 @@ public:
 
 
 
-#endif	/* ITEM_H */
+#endif   /* ITEM_H */
 
