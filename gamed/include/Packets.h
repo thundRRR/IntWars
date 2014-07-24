@@ -698,7 +698,7 @@ public:
 
 class SetTarget : public BasePacket {
 public:
-   Test(Unit* attacker, Unit* attacked) : BasePacket(0x6a, attacker->getNetId()) {
+   SetTarget(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_SetTarget, attacker->getNetId()) {
       buffer << attacked->getNetId();
    }
 
