@@ -45,6 +45,7 @@
         </df>
         <df name="Champions">
           <df name="Corki">
+            <in>Corki.h</in>
           </df>
           <df name="Ezreal">
             <in>Ezreal.h</in>
@@ -54,6 +55,7 @@
             <in>Jinx.h</in>
           </df>
           <df name="Teemo">
+            <in>Teemo.h</in>
           </df>
           <df name="Tryndamere">
             <in>Tryndamere.h</in>
@@ -61,6 +63,11 @@
           <df name="Vayne">
             <in>Vayne.h</in>
           </df>
+        </df>
+        <df name="Items">
+          <in>HealthPot.h</in>
+          <in>ManaPot.h</in>
+          <in>NoItem.h</in>
         </df>
         <df name="win">
           <in>platforms-time.h</in>
@@ -72,6 +79,9 @@
         <in>ChatBox.h</in>
         <in>Client.h</in>
         <in>Game.h</in>
+        <in>Inventory.h</in>
+        <in>Item.h</in>
+        <in>ItemFactory.h</in>
         <in>Map.h</in>
         <in>Minion.h</in>
         <in>MinionStats.h</in>
@@ -89,6 +99,8 @@
         <in>Champion.cpp</in>
         <in>Game.cpp</in>
         <in>Handlers.cpp</in>
+        <in>Inventory.cpp</in>
+        <in>Item.cpp</in>
         <in>Map.cpp</in>
         <in>Minion.cpp</in>
         <in>MysticShot.cpp</in>

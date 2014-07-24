@@ -21,8 +21,20 @@
       </df>
     </df>
     <df root="../../../gamed" name="1">
+      <df name="include">
+        <df name="Items">
+          <in>HealthPot.h</in>
+          <in>ManaPot.h</in>
+          <in>NoItem.h</in>
+        </df>
+        <in>Inventory.h</in>
+        <in>Item.h</in>
+        <in>ItemFactory.h</in>
+      </df>
       <df name="src">
         <in>Handlers.cpp</in>
+        <in>Inventory.cpp</in>
+        <in>Item.cpp</in>
         <in>PacketHandler.cpp</in>
         <in>Packets.cpp</in>
         <in>main.cpp</in>
@@ -97,7 +109,35 @@
             tool="1"
             flavor2="0">
       </item>
+      <item path="../../../gamed/include/Inventory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../../gamed/include/Item.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../../gamed/include/ItemFactory.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../gamed/include/Items/HealthPot.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../gamed/include/Items/ManaPot.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../gamed/include/Items/NoItem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../gamed/src/Handlers.cpp" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../../gamed/src/Inventory.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../../gamed/src/Item.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../../gamed/src/PacketHandler.cpp"
             ex="false"
