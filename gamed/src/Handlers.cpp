@@ -316,6 +316,7 @@ bool Game::handleQueryStatus(HANDLE_ARGS) {
 bool Game::handleClick(HANDLE_ARGS) {
    Click *click = reinterpret_cast<Click *>(packet->data);
    printf("Object %u clicked on %u\n", peerInfo(peer)->getChampion()->getNetId(),click->targetNetId);
+   
    return true;
 }
 

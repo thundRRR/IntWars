@@ -695,6 +695,15 @@ public:
    }
 };
 
+class AutoAttack : public BasePacket {
+public:
+   AutoAttack(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_AutoAttack, attacked->getNetId()) {
+      buffer << attacker->getNetId();
+      buffer << (uint16)0xd580; // unk
+      buffer << 12.f; // unk
+      buffer << attacked->getX() << attacked->getY();
+   }
+};
 
 class SetTarget : public BasePacket {
 public:
