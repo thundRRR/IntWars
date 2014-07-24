@@ -453,6 +453,15 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
             broadcastPacket(reinterpret_cast<uint8 *>(&modelPacket), sizeof(UpdateModel), CHL_S2C);
             return true;
         }
+        //Size
+	if(strncmp(message->getMessage(), cmd[11], strlen(cmd[11])) == 0) {
+	   float data = (float)atoi(&message->getMessage()[strlen(cmd[11])+1]);
+			
+	   printf("Setting size to %f\n", data);
+			
+	   peerInfo(peer)->getChampion()->getStats().setSize(data);
+	   return true;
+	}
     }
     switch(message->type) {
         case CMT_ALL:
