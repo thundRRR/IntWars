@@ -113,6 +113,10 @@ public:
    virtual float getMovementSpeed() const {
       return getStat(MM_Four, FM4_Speed);
    }
+   
+   virtual float getAttackSpeed() const {
+      return 0.f;
+   }
 
 
    virtual void setBaseAd(float ad) {
@@ -163,6 +167,9 @@ public:
    
    virtual void setGold(float gold) {
       setStat(MM_One, FM1_Gold, gold);
+   }
+   
+   virtual void setAttackSpeed(float speed) {
    }
 
 };
