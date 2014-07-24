@@ -457,27 +457,32 @@ struct Unk2 {
    uint32 targetNetId;
 };
 
-struct HeroSpawn {
-    HeroSpawn() {
-        header.cmd = PKT_S2C_HeroSpawn;
-        unk1 = 0;
-        memset(&name, 0, 128 + 64); //Set name + type to zero
-        x = 130880;
-        y = 502;
-    }
+class HeroSpawn : public Packet {
+public:
+	HeroSpawn(uint32 netId, uint32 gameId, const std::string& name, const std::string& type, uint32 skinNo) : Packet(PKT_S2C_HeroSpawn) {
+		buffer << (uint32)0; // ???
+		buffer << (uint32)netId;
+		buffer << (uint32)gameId;
+		buffer << (uint8)0; // netNodeID ?
+		buffer << (uint8)1; // SkillLevel
+		buffer << (uint8)1; // teamIsOrder Blue=Order=1 Purple=Choas=0
+		buffer << (uint8)0; // isBot
+		buffer << (uint8)0; // botRank
+		buffer << (uint8)0; // spawnPosIndex ?
+		buffer << (uint32)skinNo;
+		buffer << name;
+		buffer.fill(0, 128-name.length());
+		buffer << type;
+		buffer.fill(0, 40-type.length());
+		buffer << (float)0.f; // deathDurationRemaining
+		buffer << (float)0.f; // timeSinceDeath
+		buffer << (uint8)0; // bitField
+	}
+};
 
-    PacketHeader header;
-    uint32 netId; //Also found something about locking flag//Perhaps first 4 bits is type and rest is netId?? or something?? //Linked for mastery's (first uitn32, and also animation (looks like it) and possible more) often looks like XX 00 00 40 where XX is around 10-30
-    uint32 gameId; //1-number of players
-    uint32 x;       //Some coordinates, no idea how they work yet
-    uint32 y;
-    uint16 unk1;
-    uint8 name[128];
-    uint8 type[64];
-} ;
 struct HeroSpawn2 {
     HeroSpawn2() {
-        header.cmd = (PacketCmd)0xBA;
+        header.cmd = (PacketCmd)PKT_S2C_HeroSpawn2;
         memset(unk, 0, 30);
         unk[15] = 0x80;
         unk[16] = 0x3F;
