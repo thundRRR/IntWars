@@ -340,7 +340,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
     ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
     //Lets do commands
     if(message->msg == '.') {
-        const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn" };
+        const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size" };
         //Set field
         if(strncmp(message->getMessage(), cmd[0], strlen(cmd[0])) == 0) {
             uint32 blockNo, fieldNo;
