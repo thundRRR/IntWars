@@ -48,7 +48,7 @@ public:
    /**
     * Called every diff milliseconds to update the spell
     */
-   virtual void update(unsigned int diff);
+   virtual void update(int64 diff);
    
    /**
     * Called by projectiles when they land / hit

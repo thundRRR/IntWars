@@ -74,7 +74,7 @@ void Game::netLoop()
 
 	while(true)
 	{
-      while(enet_host_service(_server, & event, 1) > 0) {
+      while(enet_host_service(_server, & event, 0) > 0) {
          switch (event.type)
          {
          case ENET_EVENT_TYPE_CONNECT:
@@ -108,8 +108,8 @@ void Game::netLoop()
          }
       }
       tEnd = tStart;
-	  tStart = std::chrono::high_resolution_clock::now();
-	  tDiff = std::chrono::duration_cast<std::chrono::microseconds>(tStart - tEnd).count();
+	   tStart = std::chrono::high_resolution_clock::now();
+	   tDiff = std::chrono::duration_cast<std::chrono::microseconds>(tStart - tEnd).count();
       if(_started) {
          map->update(tDiff);
       }

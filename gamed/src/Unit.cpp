@@ -12,7 +12,7 @@ Unit::~Unit() {
    }
 }
 
-void Unit::update(unsigned int diff) {
+void Unit::update(int64 diff) {
    Object::update(diff);
    
    if(ai) {

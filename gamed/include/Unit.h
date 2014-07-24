@@ -26,7 +26,7 @@ public:
    Unit(Map* map, uint32 id, Stats* stats, float x = 0, float y = 0, AI* ai = 0) : Object(map, id, x, y, 40, 40), stats(stats), ai(ai) { }
    virtual ~Unit();
    Stats& getStats() { return *stats; }
-   virtual void update(unsigned int diff);
+   virtual void update(int64 diff);
    virtual float getMoveSpeed() const { return stats->getMovementSpeed(); }
    
    void dealDamageTo(Unit* target, float damage, DamageType type, DamageSource source);

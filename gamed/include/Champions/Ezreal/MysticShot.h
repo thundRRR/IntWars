@@ -31,13 +31,6 @@ public:
    }
    
    /**
-    * TODO : create the projectile here, and notify it to the map/game
-    */
-   virtual bool cast(float x, float y, Unit* u = 0) {
-      return Spell::cast(x, y, u);
-   }
-   
-   /**
     * This is called when the spell is finished casting, and we're supposed to
     * create the projectile
     */

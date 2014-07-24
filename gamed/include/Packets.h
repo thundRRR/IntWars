@@ -125,6 +125,7 @@ typedef struct _SynchVersionAns {
         memcpy(version, "Version 4.12.0.356 [PUBLIC]", 27);
         memcpy(gameMode, "CLASSIC", 8);
         memset(zero, 0, 2232);
+        memset(unknown, 0, 228);
         end1 = 0xE2E0;
         end2 = 0xA0;
     }
@@ -756,7 +757,7 @@ public:
 
 class SpawnProjectile : public BasePacket {
 public:
-   SpawnProjectile(uint32 projNetId, Unit* caster, float x, float y) : BasePacket(PKT_S2C_SpawnProjectile, projNetId) {
+   SpawnProjectile(uint32 projNetId, uint32 secondNetId, Unit* caster, float x, float y) : BasePacket(PKT_S2C_SpawnProjectile, projNetId) {
       buffer << caster->getX() << 150.f << caster->getY();
       buffer << caster->getX() << 150.f << caster->getY();
       buffer << (uint64)0x000000003f510fe2; // unk
@@ -771,7 +772,7 @@ public:
       buffer << (uint32)0x7f7fffff; // unk
       buffer << (uint8)0 << (uint8)0x66 << (uint8)0;
       buffer << (uint32)0x0a0fe625; // Projectile unique ID ; Right now hardcoded at Mystic Shot
-      buffer << (uint32)0x400001f8; // Projectile NetID + 1 ?
+      buffer << secondNetId;
       buffer << (uint8)0; // unk
       buffer << (uint32)0x3f800000; // unk (1.0f)
       buffer << caster->getNetId() << caster->getNetId();

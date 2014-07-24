@@ -324,13 +324,13 @@ bool Game::handleCastSpell(HANDLE_ARGS) {
       return false;
    }
 
-   /*Unk unk(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, spell->targetNetId);
-   sendPacket(peer, reinterpret_cast<uint8 *>(&unk), sizeof(unk), CHL_S2C);*/
+   Unk unk(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, spell->targetNetId);
+   sendPacket(peer, reinterpret_cast<uint8 *>(&unk), sizeof(unk), CHL_S2C);
 
    CastSpellAns response(s, spell->x, spell->y);
    sendPacket(peer, response, CHL_S2C);
 
-   SpawnProjectile sp(GetNewNetID(), peerInfo(peer)->getChampion(), spell->x, spell->y);
+   SpawnProjectile sp(GetNewNetID(), GetNewNetID(), peerInfo(peer)->getChampion(), spell->x, spell->y);
    sendPacket(peer, sp, CHL_S2C);
 
    return true;

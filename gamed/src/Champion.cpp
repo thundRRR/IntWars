@@ -37,7 +37,7 @@ Spell* Champion::levelUpSpell(uint8 slot) {
    return spells[slot];
 }
 
-void Champion::update(unsigned int diff) {
+void Champion::update(int64 diff) {
    Unit::update(diff);
    
    for(Spell* s : spells) {

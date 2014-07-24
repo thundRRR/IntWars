@@ -26,18 +26,18 @@ void Spell::finishCasting() {
 /**
  * Called every diff milliseconds to update the spell
  */
-void Spell::update(unsigned int diff) {
+void Spell::update(int64 diff) {
    switch(state) {
       case STATE_READY:
          return;
       case STATE_CASTING:
-         currentCastTime -= diff/1000.f;
+         currentCastTime -= diff/1000000.f;
          if(currentCastTime < 0) {
             finishCasting();
          }
          break;
       case STATE_COOLDOWN:
-         currentCooldown -= diff/1000.f;
+         currentCooldown -= diff/1000000.f;
          if(currentCooldown < 0) {
             state = STATE_READY;
          }

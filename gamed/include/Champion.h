@@ -21,7 +21,7 @@ public:
    Spell* castSpell(uint8 slot, float x, float y, Unit* target);
    Spell* levelUpSpell(uint8 slot);
    
-   virtual void update(unsigned int diff);
+   virtual void update(int64 diff);
    
    uint8 getSkillPoints() const { return skillPoints; }
 

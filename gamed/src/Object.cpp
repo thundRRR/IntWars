@@ -42,7 +42,7 @@ void Object::Move(int64 diff) {
 	
 	calculateVector(target->getX(), target->getY());
 
-	float factor = 0.001f*diff*getMoveSpeed();
+	float factor = 0.000001f*diff*getMoveSpeed();
 
 	x += factor*xvector;
 	y += factor*yvector;
