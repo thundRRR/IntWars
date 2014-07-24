@@ -51,10 +51,6 @@ Note: This is a very basic explanation. I am working on a more detailed explanat
 This project uses elements from C++11, like initialization lists. Visual Studio does not support initialization lists in the 2010 or 2012 versions. Therefore, I recommend installing/using CMake and MinGW's g++ compiler. Websites and download links for these are below.
 
 Step 1). CMake - [Website](http://www.cmake.org/cmake/resources/software.html) | [Direct Download to Version 3.0.0](http://www.cmake.org/files/v3.0/cmake-3.0.0-win32-x86.exe)  
-~~2). MinGW - [Website](http://www.mingw.org/) | [Download MinGW Get Setup](http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download)
-
-
-Install MinGW to C:\MinGW\. Using the MinGW Installation Manager, install the mingw32-base and mingw32-gcc-g++ packages (check the boxes, and then goto the "Installation" menu and choose "Apply Changes"). ~~
 
 Step 2). The default MinGW compiler from http://www.mingw.org/ does not support threads (which are now being used). 
 Windows developers should replace their MinGW installation (eg: C:\MinGW\) with one like this: http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.8.1/64-bit/threads-posix/sjlj/x64-4.8.1-release-posix-sjlj-rev5.7z/download
