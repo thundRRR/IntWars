@@ -316,8 +316,7 @@ bool Game::handleQueryStatus(HANDLE_ARGS) {
 bool Game::handleClick(HANDLE_ARGS) {
    Click *click = reinterpret_cast<Click *>(packet->data);
    printf("Object %u clicked on %u\n", peerInfo(peer)->getChampion()->getNetId(),click->targetNetId);
-   Unk response(peerInfo(peer)->getChampion()->getNetId(), 0, 0, click->targetNetId);
-   return sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
+   return true;
 }
 
 bool Game::handleCastSpell(HANDLE_ARGS) {

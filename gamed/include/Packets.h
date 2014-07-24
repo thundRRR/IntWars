@@ -695,6 +695,15 @@ public:
    }
 };
 
+
+class SetTarget : public BasePacket {
+public:
+   Test(Unit* attacker, Unit* attacked) : BasePacket(0x6a, attacker->getNetId()) {
+      buffer << attacked->getNetId();
+   }
+
+};
+
 class SetHealth : public BasePacket {
 public:
    SetHealth(Unit* u) : BasePacket(PKT_S2C_SetHealth, u->getNetId()) {
