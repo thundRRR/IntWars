@@ -168,7 +168,19 @@ public:
    virtual void setGold(float gold) {
       setStat(MM_One, FM1_Gold, gold);
    }
-   
+
+   virtual void setBaseAp(float AP) {
+      setStat(MM_Two, FM2_Base_Ap, AP);
+   }
+
+   virtual void setExp(float EXP) {
+	  setStat(MM_Four, FM4_exp, EXP);
+   }
+
+   virtual void setSize(float Size) {
+	  setStat(MM_Four, FM4_ModelSize, Size);
+   }
+
    virtual void setAttackSpeed(float speed) {
    }
 
