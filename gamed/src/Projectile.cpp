@@ -3,7 +3,7 @@
 #include "Map.h"
 #include "Projectile.h"
 
-void Projectile::update(unsigned int diff) {
+void Projectile::update(int64 diff) {
 
    Object::update(diff);
 
@@ -18,6 +18,8 @@ void Projectile::update(unsigned int diff) {
          if(isToRemove()) {
             return;
          }
+         
+         printf("Checking with 0x%08X (%f ; %f) !\n", it.second->getNetId(), it.second->getX(), it.second->getY());
          
          if(collide(it.second)) {
             printf("Collide with 0x%08X !\n", it.second->getNetId());

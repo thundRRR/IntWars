@@ -19,7 +19,7 @@ public:
       setTarget(target);
    }
    
-   void update(unsigned int diff);
+   void update(int64 diff) override;
    float getMoveSpeed() const { return moveSpeed; }
 
    

@@ -12,7 +12,7 @@ void MysticShot::finishCasting() {
 
    Map* m = owner->getMap();
    
-   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 40, 40, new Target(x, y), this, 2000.f);
+   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 60, 30, new Target(x, y), this, 2000.f);
    owner->getMap()->addObject(p);
 }
 

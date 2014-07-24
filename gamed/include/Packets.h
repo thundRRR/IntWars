@@ -596,6 +596,16 @@ typedef struct _EmotionResponse {
 
 /* New Style Packets */
 
+class DamageDone : public BasePacket {
+public:
+   DamageDone(Unit* source, Unit* target, float amount) : BasePacket(PKT_S2C_DamageDone, target->getNetId()) {
+      buffer << (uint8)4; // damage type ? 4 = physical ?
+      buffer << target->getNetId();
+      buffer << source->getNetId();
+      buffer << amount;
+   }
+};
+
 class LoadScreenPlayerName : public Packet {
 public:
    LoadScreenPlayerName(const ClientInfo& player) : Packet(PKT_S2C_LoadName) {
@@ -689,8 +699,8 @@ class SetHealth : public BasePacket {
 public:
    SetHealth(Unit* u) : BasePacket(PKT_S2C_SetHealth, u->getNetId()) {
       buffer << (uint16)0x0000; // unk
-      buffer << u->getStats().getCurrentHealth();
       buffer << u->getStats().getMaxHealth();
+      buffer << u->getStats().getCurrentHealth();
    }
 };
 

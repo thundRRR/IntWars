@@ -25,6 +25,8 @@ public:
    Object* getObjectById(uint32 id);
    void addObject(Object* o);
    
+   Game* getGame() const { return game; }
+   
    const std::map<uint32, Object*>& getObjects() { return objects; }
 
 };

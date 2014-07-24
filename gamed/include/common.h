@@ -60,6 +60,7 @@ enum PacketCmd : uint8
 
    PKT_S2C_StartSpawn = 0x62,
    PKT_C2S_ClientReady = 0x64,
+   PKT_S2C_DamageDone = 0x65,
    PKT_S2C_LoadHero = 0x65,    // 4.12
    PKT_S2C_LoadName = 0x66,    // 4.12
    PKT_S2C_LoadScreenInfo = 0x67,
