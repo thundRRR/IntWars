@@ -272,20 +272,20 @@ struct MovementAns {
     uint8 moveData; //bitMasks + Move Vectors
 
     MovementVector *getVector(uint32 index) {
-        if(index >= vectorNo / 2)
+        if(index >= (uint8)vectorNo / 2)
         { return NULL; }
         MovementVector *vPoints = (MovementVector *)(&moveData + maskCount());
         return &vPoints[index];
     }
 
     int maskCount() {
-        float fVal = vectorNo / 2;
-        return std::ceil((fVal - 1) / 4);
+        float fVal = (float)vectorNo / 2;
+        return (int)std::ceil((fVal - 1) / 4);
     }
 
     static uint32 size(uint8 vectorNo) {
         float fVectors = vectorNo;
-        int maskCount = std::ceil((fVectors - 1) / 4);
+        int maskCount = (int)std::ceil((fVectors - 1) / 4);
         return sizeof(MovementAns) + (vectorNo * sizeof(MovementVector)) + maskCount; //-1 since struct already has first moveData byte
     }
 

@@ -26,7 +26,7 @@ public:
    }
    
    void fill(uint8 data, uint32 length) {
-      for(int i = 0; i < length; ++i) {
+      for(uint32 i = 0; i < length; ++i) {
          buffer.push_back(data);
       }
    }

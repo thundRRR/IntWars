@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Game.h"
 #include "Packets.h"
+#undef min
 #define min(a, b)       ((a) < (b) ? (a) : (b))
 
 void Game::initHandlers()

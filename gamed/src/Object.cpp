@@ -1,5 +1,6 @@
 #include "Object.h"
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ void Object::calculateVector(float xtarget, float ytarget) {
    if(xvector == 0 && yvector == 0)
     return;
 
-   float tmp = std::max(abs(xvector), abs(yvector));
+   float tmp = max(abs(xvector), abs(yvector));
    xvector /= tmp;
    yvector /= tmp;
 }
@@ -34,7 +35,7 @@ void Object::setTarget(Target* target) {
 
 }
 
-void Object::Move(unsigned int diff) {
+void Object::Move(int64 diff) {
 
 	if(!target)
 	  return;
@@ -56,14 +57,14 @@ void Object::Move(unsigned int diff) {
 	}
 }
 
-void Object::update(unsigned int diff) {
+void Object::update(int64 diff) {
    Move(diff);
 }
 
 void Object::setWaypoints(const std::vector<MovementVector>& newWaypoints) {
    waypoints = newWaypoints;
    
-   setPosition(2.0 * waypoints[0].x + MAP_WIDTH, 2.0 * waypoints[0].y + MAP_HEIGHT);
+   setPosition(2.0f * waypoints[0].x + MAP_WIDTH, 2.0f * waypoints[0].y + MAP_HEIGHT);
    movementUpdated = true;
    if(waypoints.size() == 1) {
       setTarget(0);

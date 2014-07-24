@@ -173,9 +173,9 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
     bool p4 = sendPacket(peer, reinterpret_cast<uint8 *>(&recall), sizeof(BuyItemAns), CHL_S2C); //activate recall slot
     GameTimer timer(0); //0xC0
     sendPacket(peer, reinterpret_cast<uint8 *>(&timer), sizeof(GameTimer), CHL_S2C);
-    GameTimer timer2(0.4); //0xC0
+    GameTimer timer2(0.4f); //0xC0
     sendPacket(peer, reinterpret_cast<uint8 *>(&timer2), sizeof(GameTimer), CHL_S2C);
-    GameTimerUpdate timer3(0.4); //0xC1
+    GameTimerUpdate timer3(0.4f); //0xC1
     sendPacket(peer, reinterpret_cast<uint8 *>(&timer3), sizeof(GameTimerUpdate), CHL_S2C);
     //lvl 1 R for elise
     for(int i = 0; i < 4; i++) {

@@ -1,7 +1,7 @@
 #include "Map.h"
 #include "Game.h"
 
-void Map::update(unsigned int diff) {
+void Map::update(int64 diff) {
    for(std::map<uint32, Object*>::iterator kv = objects.begin(); kv != objects.end();) {
       kv->second->update(diff);
       

@@ -22,7 +22,7 @@ struct MovementVector {
     
     MovementVector() : x(0), y(0){ }
     MovementVector(uint16 x, uint16 y) : x(x), y(x) { }
-    Target* toTarget() { return new Target(2.0*x + MAP_WIDTH, 2.0*y + MAP_HEIGHT); }
+    Target* toTarget() { return new Target(2.0f*x + MAP_WIDTH, 2.0f*y + MAP_HEIGHT); }
 };
 
 class Object : public Target {
@@ -50,7 +50,7 @@ public:
     * Moves the object depending on its target, updating its coordinate.
     * @param diff the amount of milliseconds the object is supposed to move
     */
-    void Move(unsigned int diff);
+    void Move(int64 diff);
     
     void calculateVector(float xtarget, float ytarget);
 
@@ -61,7 +61,7 @@ public:
     void setSide(unsigned int side) { this->side = side; }
     unsigned int getSide() { return side; }
 
-    virtual void update(unsigned int diff);
+    virtual void update(int64 diff);
     virtual float getMoveSpeed() const = 0;
 
     virtual bool isSimpleTarget() { return false; }
