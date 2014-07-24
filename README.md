@@ -2,10 +2,11 @@ IntWars
 ==================
 About
 ------
+New: Website to provide a central location to discuss the project! http://leaguesandbox.com/
+
 Fork of the 2 year old (outdated project), IntWars. Emulates LoL server environment.  
-This is a fork of [Elyotna's fork](https://github.com/Elyotna/IntWars).   
 If you want to contribute to the project, please fork the repo and upload any progress to GitHub.  
-If you need help compiling the source on Windows, [check here](#notes-for-compiling-on-windows).
+If you need help compiling the source on Windows, [check here](http://leaguesandbox.com/forum/viewtopic.php?f=6&t=4).
 
 Content:
 * Load Screen: http://puu.sh/8cbhW.jpg
@@ -42,21 +43,12 @@ GPLv3 as sharing is caring, and when ever you extend/use/modify/fix any of this 
 Contact
 -------
 For information relating to this fork, contact me on reddit: chutch1122  
-I'm working on setting up a website where we can organize this better.
+I'm working on setting up a website where we can organize this better. http://leaguesandbox.com/
 
 Notes for Compiling on Windows
 ---------
 Note: This is a very basic explanation. I am working on a more detailed explanation, but don't have the time right now.
 
-This project uses elements from C++11, like initialization lists. Visual Studio does not support initialization lists in the 2010 or 2012 versions. Therefore, I recommend installing/using CMake and MinGW's g++ compiler. Websites and download links for these are below.
+This project uses elements from C++11, like initialization lists. Visual Studio does not support initialization lists in the 2010 or 2012 versions. Therefore, I recommend installing/using CMake and MinGW's g++ compiler.
 
-Step 1). CMake - [Website](http://www.cmake.org/cmake/resources/software.html) | [Direct Download to Version 3.0.0](http://www.cmake.org/files/v3.0/cmake-3.0.0-win32-x86.exe)  
-
-Step 2). The default MinGW compiler from http://www.mingw.org/ does not support threads (which are now being used). 
-Windows developers should replace their MinGW installation (eg: C:\MinGW\) with one like this: http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.8.1/64-bit/threads-posix/sjlj/x64-4.8.1-release-posix-sjlj-rev5.7z/download
-
-Add C:\MinGW\bin to your PATH enviornment variable so you can use g++ anywhere ([Guide](http://www.computerhope.com/issues/ch000549.htm)).
-
-After CMake and MinGW are installed and configured. Generate the makefiles using GenerateMakefiles.bat and compile the source using CompileServer.bat
-
-The executable (intwars.exe) will be located in the /build/gamed/ directory.
+[You can find a guide for setting that all up here!](http://leaguesandbox.com/forum/viewtopic.php?f=6&t=4)
