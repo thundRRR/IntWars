@@ -47,4 +47,7 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
       stats->setBaseAd(40.0f);
       break;
    }
+   
+   stats->setMovementSpeed(325.f);
+   stats->setAttackSpeed(0.625f);
 }
