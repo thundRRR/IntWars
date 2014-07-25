@@ -528,7 +528,7 @@ bool Game::handleBuyItem(HANDLE_ARGS) {
     }
 
 
-    
+	return true;
 }
 
 bool Game::handleEmotion(HANDLE_ARGS) {
