@@ -479,6 +479,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
 	if(strncmp(message->getMessage(), cmd[0], strlen(cmd[0])) == 0) {
 		LevelPropSpawn lpSpawn5(GetNewNetID(), "Worm", "Worm", 4569, 10193, -63.1034774f);
 		sendPacket(peer, lpSpawn5, CHL_S2C);
+        return true;
 	}
 	if(strncmp(message->getMessage(), cmd[1], strlen(cmd[1])) == 0) {
 		LevelPropSpawn lpSpawn7(GetNewNetID(), "Wolf", "Wolf",  3524, 6223, 56);
@@ -487,6 +488,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
 		sendPacket(peer, lpSpawn8, CHL_S2C);
 		LevelPropSpawn lpSpawn9(GetNewNetID(), "Wolf", "Wolf", 3324, 6373, 56);
 		sendPacket(peer, lpSpawn9, CHL_S2C);
+        return true;
 	}
 	if(strncmp(message->getMessage(), cmd[2], strlen(cmd[2])) == 0) {
 		LevelPropSpawn lpSpawn10(GetNewNetID(), "YoungLizard", "YoungLizard", 7273, 3887, 55);
@@ -495,6 +497,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
 		sendPacket(peer, lpSpawn11, CHL_S2C);
 		LevelPropSpawn lpSpawn12(GetNewNetID(), "YoungLizard", "YoungLizard", 7433, 3657, 54);
 		sendPacket(peer, lpSpawn12, CHL_S2C);
+        return true;
 	}
 	if(strncmp(message->getMessage(), cmd[3], strlen(cmd[3])) == 0) {
 		LevelPropSpawn lpSpawn13(GetNewNetID(), "YoungLizard", "YoungLizard", 3521, 7751, 54);
@@ -503,10 +506,12 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
 		sendPacket(peer, lpSpawn14, CHL_S2C);
 		LevelPropSpawn lpSpawn15(GetNewNetID(), "YoungLizard", "YoungLizard",  3437, 7641, 55);
 		sendPacket(peer, lpSpawn15, CHL_S2C);
+        return true;
 	}
 	if(strncmp(message->getMessage(), cmd[4], strlen(cmd[4])) == 0) {
 		LevelPropSpawn lpSpawn16(GetNewNetID(), "redDragon", "redDragon", 9447, 4155, -61);
 		sendPacket(peer, lpSpawn16, CHL_S2C);
+        return true;
 	}
 	if(strncmp(message->getMessage(), cmd[5], strlen(cmd[5])) == 0) {
 	LevelPropSpawn lpSpawn17(GetNewNetID(), "LesserWraith", "LesserWraith", 6697, 5215, 57);
@@ -517,12 +522,14 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
 	sendPacket(peer, lpSpawn19, CHL_S2C);
 	LevelPropSpawn lpSpawn20(GetNewNetID(), "Wraith", "Wraith", 6447, 5165, 54);
 	sendPacket(peer, lpSpawn20, CHL_S2C);
+    return true;
 	}
 	if(strncmp(message->getMessage(), cmd[6], strlen(cmd[6])) == 0) {
 		LevelPropSpawn lpSpawn21(GetNewNetID(), "Golem", "Golem", 8195, 2615, 54);
 		sendPacket(peer, lpSpawn21, CHL_S2C);
 		LevelPropSpawn lpSpawn22(GetNewNetID(), "SmallGolem", "SmallGolem", 7887, 2461, 54);
 		sendPacket(peer, lpSpawn22, CHL_S2C);
+        return true;
 	}
     }
 
