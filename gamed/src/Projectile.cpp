@@ -29,6 +29,7 @@ void Projectile::update(int64 diff) {
             originSpell->applyEffects(u, this);
          } else { // auto attack
             owner->autoAttackHit(u);
+            setToRemove();
          }
       }
    }
