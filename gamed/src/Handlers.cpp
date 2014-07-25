@@ -339,15 +339,27 @@ bool Game::handleCastSpell(HANDLE_ARGS) {
    if(!s) {
       return false;
    }
+   
+   int spellSlot = spell->spellSlot & 0x3F;
+   
+   CastSpellAns response(s, spell->x, spell->y);
+   
+   if(spellSlot != 2){ //todo: proper system for sending these
 
    Unk unk(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, spell->targetNetId);
    sendPacket(peer, reinterpret_cast<uint8 *>(&unk), sizeof(unk), CHL_S2C);
-
-   CastSpellAns response(s, spell->x, spell->y);
+   
    sendPacket(peer, response, CHL_S2C);
 
    SpawnProjectile sp(GetNewNetID(), GetNewNetID(), peerInfo(peer)->getChampion(), spell->x, spell->y);
    sendPacket(peer, sp, CHL_S2C);
+   }
+   if(spellSlot == 2){
+ 
+   CastSpellAns response(s, spell->x, spell->y);
+   sendPacket(peer, response, CHL_S2C);
+
+   }
 
    return true;
 }
@@ -356,7 +368,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
     ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
     //Lets do commands
     if(message->msg == '.') {
-        const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size" };
+        const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".spawnjungle", ".skillpoints" };
         //Set field
         if(strncmp(message->getMessage(), cmd[0], strlen(cmd[0])) == 0) {
             uint32 blockNo, fieldNo;
@@ -474,10 +486,19 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
       peerInfo(peer)->getChampion()->getStats().setSize(data);
       return true;
    }
-    }
+        
+   if(strncmp(message->getMessage(), cmd[13], strlen(cmd[13])) == 0) {
+       
+       peerInfo(peer)->getChampion()->setSkillPoints(17);
+        
+    SkillUpResponse skillUpResponse(peerInfo(peer)->getChampion()->getNetId(), 0, 0, 17);
+    sendPacket(peer, skillUpResponse, CHL_GAMEPLAY);
+    
+   }
+    
     // Mob Spawning-Creating
-    if(message->msg == 'c') {
-	const char *cmd[] = { "c baron" , "c wolves", "c red", "c blue", "c dragon", "c wraiths", "c golems"};
+  if(strncmp(message->getMessage(), cmd[12], strlen(cmd[12])) == 0) {
+	const char *cmd[] = { "baron" , "wolves", "red", "blue", "dragon", "wraiths", "golems"};
 	if(strncmp(message->getMessage(), cmd[0], strlen(cmd[0])) == 0) {
 		LevelPropSpawn lpSpawn5(GetNewNetID(), "Worm", "Worm", 4569, 10193, -63.1034774f);
 		sendPacket(peer, lpSpawn5, CHL_S2C);
@@ -526,6 +547,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
 		LevelPropSpawn lpSpawn22(GetNewNetID(), "SmallGolem", "SmallGolem", 7887, 2461, 54);
 		sendPacket(peer, lpSpawn22, CHL_S2C);
 	}
+    }
     }
 
 
