@@ -45,3 +45,8 @@ void Game::notifyDamageDone(Unit* source, Unit* target, float amount) {
    DamageDone dd(source, target, amount);
    sendPacket(currentPeer, dd, CHL_S2C);
 }
+
+void Game::notifyAutoAttack(Unit* attacker, Unit* victim) {
+   AutoAttack aa(attacker, victim);
+   broadcastPacket(aa, CHL_S2C);
+}

@@ -255,7 +255,7 @@ struct MovementReq {
     MoveType type;
     float x;
     float y;
-    uint32 zero;
+    uint32 targetNetId;
     uint8 vectorNo;
     uint32 netId;
     uint8 moveData;

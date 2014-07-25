@@ -24,10 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define REFRESH_RATE 5
 
 uint32 GetNewNetID() {
-	static uint32 dwStart = 0x40000019;
-	uint32 dwRet = dwStart;
-	dwStart++;
-	return dwRet;
+	static uint32 dwStart = 0x40000001;
+	return dwStart++;
 }
 
 Game::Game() : _started(false)

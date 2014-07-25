@@ -288,6 +288,13 @@ bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
    }
    
    peerInfo(peer)->getChampion()->setWaypoints(vMoves);
+   Unit* u = dynamic_cast<Unit*>(map->getObjectById(request->targetNetId));
+   if(!u) {
+      peerInfo(peer)->getChampion()->setUnitTarget(0);
+      return true;
+   }
+   
+   peerInfo(peer)->getChampion()->setUnitTarget(u);
 
    return true;
 }
@@ -355,17 +362,13 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
             sscanf(&message->getMessage()[strlen(cmd[0])+1], "%u %u %f", &blockNo, &fieldNo, &value);
             blockNo = 1 << (blockNo - 1);
             uint32 mask = 1 << (fieldNo - 1);
-            CharacterStats stats(blockNo, peerInfo(peer)->getChampion()->getNetId(), mask, value);
-            sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats), CHL_LOW_PRIORITY, 2);
+            peerInfo(peer)->getChampion()->getStats().setStat(blockNo, mask, value);
             return true;
         }
         // Set Gold
         if(strncmp(message->getMessage(), cmd[1], strlen(cmd[1])) == 0) {
             float gold = (float)atoi(&message->getMessage()[strlen(cmd[1]) + 1]);
-            CharacterStats stats(MM_One, peerInfo(peer)->getChampion()->getNetId(), FM1_Gold, gold);
-            sendPacket(peer, reinterpret_cast<uint8 *>(&stats), sizeof(stats), CHL_LOW_PRIORITY, 2);
-            /*CharacterStats stats2(MM_One, peerInfo(peer)->netId, FM1_Gold_2, gold);
-            sendPacket(peer, reinterpret_cast<uint8 *>(&stats2), sizeof(stats), CHL_LOW_PRIORITY, 2);*/
+            peerInfo(peer)->getChampion()->getStats().setGold(gold);
             return true;
         }
        

@@ -44,7 +44,7 @@ public:
       return getStat(MM_Two, Minion_FM2_Ad);
    }
    
-   float getAttackSpeed() const override {
+   float getBaseAttackSpeed() const override {
       return getStat(MM_Two, Minion_FM2_Atks);
    }
    
@@ -67,7 +67,7 @@ public:
       setStat(MM_Two, Minion_FM2_Ad, ad);
    }
    
-   void setAttackSpeed(float speed) override {
+   void setBaseAttackSpeed(float speed) override {
       setStat(MM_Two, Minion_FM2_Atks, speed);
    }
    

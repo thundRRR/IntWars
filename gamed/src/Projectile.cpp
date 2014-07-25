@@ -5,8 +5,6 @@
 
 void Projectile::update(int64 diff) {
 
-   Object::update(diff);
-
    if(!target) {
       setToRemove();
       return;
@@ -24,6 +22,17 @@ void Projectile::update(int64 diff) {
             originSpell->applyEffects(it.second, this);
          }
       }
+   } else {
+      Unit* u = static_cast<Unit*>(target);
+      if(collide(u)) { // Autoguided spell
+         if(originSpell) {
+            originSpell->applyEffects(u, this);
+         } else { // auto attack
+            owner->autoAttackHit(u);
+         }
+      }
    }
+   
+   Object::update(diff);
    
 }
