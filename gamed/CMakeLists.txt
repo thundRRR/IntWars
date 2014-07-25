@@ -14,10 +14,6 @@ ELSEIF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   SET(CMAKE_CXX_FLAGS "-std=c++11")
 ENDIF()
 
-IF(WIN32)
-	set(CMAKE_EXE_LINKER_FLAGS "-static")
-ENDIF()
-
 include_directories(include ../dep/include ../dep/include/intlib)
 add_executable(intwars ${src})
 target_link_libraries(intwars enet intlib)
