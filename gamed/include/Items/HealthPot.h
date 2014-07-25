@@ -14,6 +14,7 @@ class HealthPot : public Item{
         id =2003;
         isStackable = true;
         active=true;
+        price = 35;
     }
     
     

@@ -10,6 +10,7 @@ class ManaPot : public Item{
         id =2004;
         isStackable = true;
         active=true;
+        price = 35;
     }
     
     

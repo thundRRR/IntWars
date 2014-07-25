@@ -322,6 +322,8 @@ bool Game::handleClick(HANDLE_ARGS) {
 
 bool Game::handleCastSpell(HANDLE_ARGS) {
    CastSpell *spell = reinterpret_cast<CastSpell *>(packet->data);
+   
+ 
 
    printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %08X\n", spell->spellSlot & 0x3F, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
 
@@ -513,10 +515,13 @@ bool Game::handleBuyItem(HANDLE_ARGS) {
     
    // todo: trinket support
     
-     
-    peerInfo(peer)->getChampion()->inventory.addItemNew(newItem);
+    if(peerInfo(peer)->getChampion()->getStats().getGold() >= newItem.price){//if we can afford item
+        peerInfo(peer)->getChampion()->inventory.addItemNew(newItem);//add it to inventory
+        peerInfo(peer)->getChampion()->getStats().setGold(peerInfo(peer)->getChampion()->getStats().getGold() - newItem.price); 
+    }
+    
       
-    for(int i=0;i<5;i++){
+    for(int i=0;i<6;i++){//loop through all inventory slots, and update them
         if(peerInfo(peer)->getChampion()->inventory.items[i].id != -1){
         BuyItemAns response;
         response.header.netId = request->header.netId;

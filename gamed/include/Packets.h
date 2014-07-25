@@ -700,6 +700,31 @@ public:
     }
 };
 
+class TeleportRequest : public BasePacket {
+    
+public:
+    TeleportRequest(int netId,int x, int y, bool first) : BasePacket(PKT_S2C_MoveAns, (uint32) 0x0){
+      buffer << (uint32) clock();//not 100% sure
+      buffer << (uint8) 0x01;
+      buffer << (uint8) 0x00;
+      if(first == true){
+      buffer << (uint8) 0x02;
+      }else{
+          buffer << (uint8) 0x03;
+      }///      }//seems to be id, 02 = before teleporting, 03 = do teleport
+      buffer << (uint32)netId;
+      if(first == false){
+          buffer << (uint8) 0x01; // if it is the second part, send 0x01 before coords
+      }
+      buffer << (uint16)x;
+      buffer << (uint16)y;
+    }
+    
+};
+
+
+
+
 struct CastSpell {
     PacketHeader header;
     uint8 spellSlot; // 2 first bits seem to be unknown flags
