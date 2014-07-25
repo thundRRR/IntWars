@@ -92,7 +92,7 @@ typedef struct _SynchBlock {
     _SynchBlock() {
         userId = 0xFFFFFFFFFFFFFFFF;
         unk = 0x1E;
-        teamId = 0x64;
+        teamId = 0x00006400;
         bot = 0;
         memset(name, 0, 64);
         memset(type, 0, 64);
@@ -119,7 +119,7 @@ struct ClientReady {
 typedef struct _SynchVersionAns {
     _SynchVersionAns() {
         header.cmd = PKT_S2C_SynchVersion;
-        ok = 1;
+        ok = 9;
         mapId = 1;
         memset(version, 0, 2958);
         memcpy(version, "Version 4.12.0.356 [PUBLIC]", 28);
