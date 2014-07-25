@@ -2,7 +2,7 @@
 #include "Game.h"
 
 void Map::update(int64 diff) {
-   for(std::map<uint32, Object*>::iterator kv = objects.begin(); kv != objects.end();) {
+   for(auto kv = objects.begin(); kv != objects.end();) {
       kv->second->update(diff);
       
       if(kv->second->isMovementUpdated()) {

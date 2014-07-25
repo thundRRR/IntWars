@@ -40,3 +40,13 @@ void Game::notifyMovement(Object* o) {
    broadcastPacket(reinterpret_cast<uint8 *>(answer), answer->size(), 4);
    MovementAns::destroy(answer);
 }
+
+void Game::notifyDamageDone(Unit* source, Unit* target, float amount) {
+   DamageDone dd(source, target, amount);
+   sendPacket(currentPeer, dd, CHL_S2C);
+}
+
+void Game::notifyAutoAttack(Unit* attacker, Unit* victim) {
+   AutoAttack aa(attacker, victim);
+   broadcastPacket(aa, CHL_S2C);
+}

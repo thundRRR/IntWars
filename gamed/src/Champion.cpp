@@ -4,6 +4,7 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    stats->setCurrentHealth(666.0f);
    stats->setMaxHealth(1337.0f);
    stats->setGold(475.0f);
+   stats->setAttackSpeedMultiplier(1.0f);
 }
 
 Spell* Champion::castSpell(uint8 slot, float x, float y, Unit* target) {
@@ -37,7 +38,7 @@ Spell* Champion::levelUpSpell(uint8 slot) {
    return spells[slot];
 }
 
-void Champion::update(unsigned int diff) {
+void Champion::update(int64 diff) {
    Unit::update(diff);
    
    for(Spell* s : spells) {

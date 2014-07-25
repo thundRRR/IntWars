@@ -25,12 +25,23 @@ struct MovementVector {
     Target* toTarget() { return new Target(2.0f*x + MAP_WIDTH, 2.0f*y + MAP_HEIGHT); }
 };
 
+class Unit;
+
 class Object : public Target {
 protected:
   	uint32 id;
 
 	float xvector, yvector;
+   
+   /**
+    * Current target the object running to (can be coordinates or an object)
+    */
 	Target* target;
+   
+   /**
+    * Unit we want to attack as soon as in range
+    */
+   Unit* unitTarget;
    std::vector<MovementVector> waypoints;
    uint32 curWaypoint;
    Map* map;
@@ -68,6 +79,7 @@ public:
 
     Target* getTarget() { return target; }
     void setTarget(Target* target);
+    void setUnitTarget(Unit* target) { unitTarget = target; }
     void setWaypoints(const std::vector<MovementVector>& waypoints);
     
     const std::vector<MovementVector>& getWaypoints() { return waypoints; }

@@ -3,9 +3,7 @@
 #include "Map.h"
 #include "Projectile.h"
 
-void Projectile::update(unsigned int diff) {
-
-   Object::update(diff);
+void Projectile::update(int64 diff) {
 
    if(!target) {
       setToRemove();
@@ -24,6 +22,17 @@ void Projectile::update(unsigned int diff) {
             originSpell->applyEffects(it.second, this);
          }
       }
+   } else {
+      Unit* u = static_cast<Unit*>(target);
+      if(collide(u)) { // Autoguided spell
+         if(originSpell) {
+            originSpell->applyEffects(u, this);
+         } else { // auto attack
+            owner->autoAttackHit(u);
+         }
+      }
    }
+   
+   Object::update(diff);
    
 }

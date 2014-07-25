@@ -24,10 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define REFRESH_RATE 5
 
 uint32 GetNewNetID() {
-	static uint32 dwStart = 0x40000019;
-	uint32 dwRet = dwStart;
-	dwStart++;
-	return dwRet;
+	static uint32 dwStart = 0x40000001;
+	return dwStart++;
 }
 
 Game::Game() : _started(false)
@@ -74,7 +72,7 @@ void Game::netLoop()
 
 	while(true)
 	{
-      while(enet_host_service(_server, & event, 1) > 0) {
+      while(enet_host_service(_server, & event, 0) > 0) {
          switch (event.type)
          {
          case ENET_EVENT_TYPE_CONNECT:
@@ -108,8 +106,8 @@ void Game::netLoop()
          }
       }
       tEnd = tStart;
-	  tStart = std::chrono::high_resolution_clock::now();
-	  tDiff = std::chrono::duration_cast<std::chrono::microseconds>(tStart - tEnd).count();
+	   tStart = std::chrono::high_resolution_clock::now();
+	   tDiff = std::chrono::duration_cast<std::chrono::microseconds>(tStart - tEnd).count();
       if(_started) {
          map->update(tDiff);
       }

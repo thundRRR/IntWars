@@ -34,6 +34,7 @@ enum PacketCmd : uint8
    PKT_C2S_QueryStatusReq = 0x14,
    PKT_S2C_SkillUp = 0x15,   // 4.12
    PKT_C2S_Ping_Load_Info = 0x16,
+   PKT_S2C_AutoAttack = 0x1A,
    
    PKT_S2C_PlayerInfo = 0x2A,
 
@@ -60,10 +61,12 @@ enum PacketCmd : uint8
 
    PKT_S2C_StartSpawn = 0x62,
    PKT_C2S_ClientReady = 0x64,
+   PKT_S2C_DamageDone = 0x65,
    PKT_S2C_LoadHero = 0x65,    // 4.12
    PKT_S2C_LoadName = 0x66,    // 4.12
    PKT_S2C_LoadScreenInfo = 0x67,
    PKT_ChatBoxMessage = 0x68,
+   PKT_S2C_SetTarget = 0x6A,
    PKT_S2C_Unk2 = 0x6E,
    PKT_S2C_BuyItemAns = 0x6F,
 

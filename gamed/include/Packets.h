@@ -125,6 +125,7 @@ typedef struct _SynchVersionAns {
         memcpy(version, "Version 4.12.0.356 [PUBLIC]", 27);
         memcpy(gameMode, "CLASSIC", 8);
         memset(zero, 0, 2232);
+        memset(unknown, 0, 228);
         end1 = 0xE2E0;
         end2 = 0xA0;
     }
@@ -254,7 +255,7 @@ struct MovementReq {
     MoveType type;
     float x;
     float y;
-    uint32 zero;
+    uint32 targetNetId;
     uint8 vectorNo;
     uint32 netId;
     uint8 moveData;
@@ -595,6 +596,16 @@ typedef struct _EmotionResponse {
 
 /* New Style Packets */
 
+class DamageDone : public BasePacket {
+public:
+   DamageDone(Unit* source, Unit* target, float amount) : BasePacket(PKT_S2C_DamageDone, target->getNetId()) {
+      buffer << (uint8)4; // damage type ? 4 = physical ?
+      buffer << target->getNetId();
+      buffer << source->getNetId();
+      buffer << amount;
+   }
+};
+
 class LoadScreenPlayerName : public Packet {
 public:
    LoadScreenPlayerName(const ClientInfo& player) : Packet(PKT_S2C_LoadName) {
@@ -684,12 +695,30 @@ public:
    }
 };
 
+class AutoAttack : public BasePacket {
+public:
+   AutoAttack(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_AutoAttack, attacked->getNetId()) {
+      buffer << attacker->getNetId();
+      buffer << (uint16)0xd580; // unk
+      buffer << 12.f; // unk
+      buffer << attacked->getX() << attacked->getY();
+   }
+};
+
+class SetTarget : public BasePacket {
+public:
+   SetTarget(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_SetTarget, attacker->getNetId()) {
+      buffer << attacked->getNetId();
+   }
+
+};
+
 class SetHealth : public BasePacket {
 public:
    SetHealth(Unit* u) : BasePacket(PKT_S2C_SetHealth, u->getNetId()) {
       buffer << (uint16)0x0000; // unk
-      buffer << u->getStats().getCurrentHealth();
       buffer << u->getStats().getMaxHealth();
+      buffer << u->getStats().getCurrentHealth();
    }
 };
 
@@ -781,7 +810,7 @@ public:
 
 class SpawnProjectile : public BasePacket {
 public:
-   SpawnProjectile(uint32 projNetId, Unit* caster, float x, float y) : BasePacket(PKT_S2C_SpawnProjectile, projNetId) {
+   SpawnProjectile(uint32 projNetId, uint32 secondNetId, Unit* caster, float x, float y) : BasePacket(PKT_S2C_SpawnProjectile, projNetId) {
       buffer << caster->getX() << 150.f << caster->getY();
       buffer << caster->getX() << 150.f << caster->getY();
       buffer << (uint64)0x000000003f510fe2; // unk
@@ -796,7 +825,7 @@ public:
       buffer << (uint32)0x7f7fffff; // unk
       buffer << (uint8)0 << (uint8)0x66 << (uint8)0;
       buffer << (uint32)0x0a0fe625; // Projectile unique ID ; Right now hardcoded at Mystic Shot
-      buffer << (uint32)0x400001f8; // Projectile NetID + 1 ?
+      buffer << secondNetId;
       buffer << (uint8)0; // unk
       buffer << (uint32)0x3f800000; // unk (1.0f)
       buffer << caster->getNetId() << caster->getNetId();

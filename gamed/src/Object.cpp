@@ -18,9 +18,9 @@ void Object::calculateVector(float xtarget, float ytarget) {
    if(xvector == 0 && yvector == 0)
     return;
 
-   float tmp = max(abs(xvector), abs(yvector));
-   xvector /= tmp;
-   yvector /= tmp;
+   float toDivide = xvector + yvector;
+   xvector /= toDivide;
+   yvector /= toDivide;
 }
 
 void Object::setTarget(Target* target) {
@@ -42,7 +42,7 @@ void Object::Move(int64 diff) {
 	
 	calculateVector(target->getX(), target->getY());
 
-	float factor = 0.001f*diff*getMoveSpeed();
+	float factor = 0.000001f*diff*getMoveSpeed();
 
 	x += factor*xvector;
 	y += factor*yvector;

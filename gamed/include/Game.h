@@ -72,6 +72,8 @@ class Game
       void notifySetHealth(Unit* u);
       void notifyUpdatedStats(Unit* u);
       void notifyMovement(Object* o);
+      void notifyDamageDone(Unit* source, Unit* target, float amount);
+      void notifyAutoAttack(Unit* attacker, Unit* victim);
    
    protected:
 		// Tools
