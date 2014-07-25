@@ -18,7 +18,7 @@ void Object::calculateVector(float xtarget, float ytarget) {
    if(xvector == 0 && yvector == 0)
     return;
 
-   float toDivide = xvector + yvector;
+   float toDivide = abs(xvector) + abs(yvector);
    xvector /= toDivide;
    yvector /= toDivide;
 }
