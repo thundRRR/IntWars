@@ -33,7 +33,7 @@ void Game::notifyTeleport(Unit* u){
     
     u->needsToTeleport = false;
        
-    //todo check for vision?
+    //todo check for vision? and send to each player 
     
 }
 

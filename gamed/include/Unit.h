@@ -25,7 +25,7 @@ protected:
 
 public:
     
-           bool needsToTeleport;
+           bool needsToTeleport = false;
            float teleportToX= 0, teleportToY = 0;
     
    Unit(Map* map, uint32 id, Stats* stats, float x = 0, float y = 0, AI* ai = 0) : Object(map, id, x, y, 40, 40), stats(stats), ai(ai) { }
