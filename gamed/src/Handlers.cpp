@@ -348,6 +348,16 @@ bool Game::handleCastSpell(HANDLE_ARGS) {
 
    SpawnProjectile sp(GetNewNetID(), GetNewNetID(), peerInfo(peer)->getChampion(), spell->x, spell->y);
    sendPacket(peer, sp, CHL_S2C);
+   
+   //stop moving on spell cast. TODO: handle this invividually with each spell
+   
+   peerInfo(peer)->getChampion()->setUnitTarget(0);
+   peerInfo(peer)->getChampion()->setPosition(peerInfo(peer)->getChampion()->getX(), peerInfo(peer)->getChampion()->getY());
+   
+   std::vector<MovementVector> vMoves;
+       
+   peerInfo(peer)->getChampion()->setWaypoints(vMoves);
+   
 
    return true;
 }
