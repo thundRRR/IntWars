@@ -3,6 +3,12 @@
 
 void Map::update(int64 diff) {
    for(auto kv = objects.begin(); kv != objects.end();) {
+      if(kv->second->isToRemove()) {
+         delete kv->second;
+         kv = objects.erase(kv);
+         continue;
+      }
+   
       kv->second->update(diff);
       
       if(kv->second->isMovementUpdated()) {
@@ -26,12 +32,7 @@ void Map::update(int64 diff) {
          u->getStats().clearUpdatedHealth();
       }
       
-      if(kv->second->isToRemove()) {
-         delete kv->second;
-         kv = objects.erase(kv);
-      } else {
-         ++kv;
-      }
+      ++kv;
    }
 }
 

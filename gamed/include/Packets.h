@@ -91,25 +91,23 @@ struct GameHeader {
 typedef struct _SynchBlock {
     _SynchBlock() {
         userId = 0xFFFFFFFFFFFFFFFF;
-        netId = 0x1E;
-        teamId = 0x64;
-        unk2 = 0;
-        flag = 0; //1 for bot?
-        memset(data1, 0, 64);
-        memset(data2, 0, 64);
-        unk3 = 0x19;
+        unk = 0x1E;
+        teamId = 0x00006400;
+        bot = 0;
+        memset(name, 0, 64);
+        memset(type, 0, 64);
+        memcpy(rank, "GOLD", 30);
     }
 
     uint64 userId;
-    uint16 netId;
+    uint16 unk;
     uint32 skill1;
     uint32 skill2;
-    uint8 flag;
+    uint8 bot;
     uint32 teamId;
-    uint8 data1[64];
-    uint8 data2[64];
-    uint32 unk2;
-    uint32 unk3;
+    uint8 name[64];
+    uint8 type[64];
+    uint8 rank[30];
 } SynchBlock;
 
 struct ClientReady {
@@ -121,26 +119,39 @@ struct ClientReady {
 typedef struct _SynchVersionAns {
     _SynchVersionAns() {
         header.cmd = PKT_S2C_SynchVersion;
-        ok = ok2 = 1;
-        memcpy(version, "Version 4.12.0.356 [PUBLIC]", 27);
+        ok = 9;
+        mapId = 1;
+        memset(version, 0, 2958);
+        memcpy(version, "Version 4.12.0.356 [PUBLIC]", 28);
         memcpy(gameMode, "CLASSIC", 8);
-        memset(zero, 0, 2232);
-        memset(unknown, 0, 228);
-        end1 = 0xE2E0;
-        end2 = 0xA0;
+        //dwOpt = 0x377192;
     }
 
     PacketHeader header;
     uint8 ok;
     uint32 mapId;
     SynchBlock players[12];
-    uint8 version[27];      //Ending zero so size 26+0x00
-    uint8 ok2;              //1
-    uint8 unknown[228];     //Really strange shit
-    uint8 gameMode[8];
-    uint8 zero[2232];
-    uint16 end1;            //0xE2E0
-    uint8 end2;             //0xA0 || 0x08
+    uint8 version[256]; 
+    uint8 gameMode[128];
+    uint8 unk1[512];
+    uint8 unk2[245];
+
+    uint8 ekg1[256]; //ekg.riotgames.net
+    uint8 msg1[256]; //"/messages"
+
+    uint16 wUnk1; //0x50?
+    uint8 ekg2[256]; //ekg.riotgames.net
+    uint8 msg2[256]; //"/messages"
+
+    uint16 wUnk2; //0x50?
+    uint8 ekg3[256]; //ekg.riotgames.net
+    uint8 msg3[256]; //"/messages"
+
+    uint16 wUnk3; //0x50?
+    uint32 dwUnk1;
+    uint32 dwOpt; //0x377192
+    uint8 bUnk1[0x100];
+    uint8 bUnk2[11];
 } SynchVersionAns;
 
 typedef struct _PingLoadInfo {
@@ -697,11 +708,11 @@ public:
 
 class AutoAttack : public BasePacket {
 public:
-   AutoAttack(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_AutoAttack, attacked->getNetId()) {
-      buffer << attacker->getNetId();
+   AutoAttack(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_AutoAttack, attacker->getNetId()) {
+      buffer << attacked->getNetId();
       buffer << (uint16)0xd580; // unk
       buffer << 12.f; // unk
-      buffer << attacked->getX() << attacked->getY();
+      buffer << attacker->getX() << attacker->getY();
    }
 };
 

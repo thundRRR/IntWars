@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Object::Object(Map* map, uint32 id, float x, float y, int hitboxWidth, int hitboxHeight) : Target(x, y), map(map), id(id), target(0), hitboxWidth(hitboxWidth), hitboxHeight(hitboxHeight), side(0), movementUpdated(false), toRemove(false) {
+Object::Object(Map* map, uint32 id, float x, float y, int hitboxWidth, int hitboxHeight) : Target(x, y), map(map), id(id), target(0), hitboxWidth(hitboxWidth), hitboxHeight(hitboxHeight), side(0), movementUpdated(false), toRemove(false), unitTarget(0) {
 }
 
 Object::~Object() {
@@ -18,7 +18,7 @@ void Object::calculateVector(float xtarget, float ytarget) {
    if(xvector == 0 && yvector == 0)
     return;
 
-   float toDivide = xvector + yvector;
+   float toDivide = abs(xvector) + abs(yvector);
    xvector /= toDivide;
    yvector /= toDivide;
 }
