@@ -92,11 +92,11 @@ typedef struct _SynchBlock {
     _SynchBlock() {
         userId = 0xFFFFFFFFFFFFFFFF;
         unk = 0x1E;
-        teamId = 0x00006400;
+        teamId = 0x00000064;
         bot = 0;
         memset(name, 0, 64);
         memset(type, 0, 64);
-        memcpy(rank, "GOLD", 30);
+        memcpy(rank, "GOLD", 5);
     }
 
     uint64 userId;
@@ -116,18 +116,40 @@ struct ClientReady {
     uint32 teamId;
 };
 
-typedef struct _SynchVersionAns {
-    _SynchVersionAns() {
-        header.cmd = PKT_S2C_SynchVersion;
-        ok = 9;
-        mapId = 1;
-        memset(version, 0, 2958);
-        memcpy(version, "Version 4.12.0.356 [PUBLIC]", 28);
-        memcpy(gameMode, "CLASSIC", 8);
-        //dwOpt = 0x377192;
+class SynchVersionAns : public BasePacket {
+public:
+
+   SynchVersionAns(const std::vector<ClientInfo*>& players, const std::string& version, const std::string& gameMode) : BasePacket(PKT_S2C_SynchVersion) {
+      buffer << (uint8)9;
+      buffer << (uint32)1;
+      for(auto p : players) {
+         buffer << p->userId;
+         buffer << (uint16)0x1E;
+         buffer << p->summonerSkills[0];
+         buffer << p->summonerSkills[1];
+         buffer << (uint8)0;
+         buffer << p->getTeam();
+         buffer << p->getName();
+         buffer.fill(0, 64-p->getName().length());
+         buffer.fill(0, 64);
+         buffer << p->getRank();
+         buffer.fill(0, 30-p->getRank().length());
+      }
+      
+      for(int i = 0; i < 12-players.size(); ++i) {
+         buffer << (int64)-1;
+         buffer.fill(0, 173);
+      }
+            
+        buffer << version;
+        buffer.fill(0, 256-version.length());
+        buffer << gameMode;
+        buffer.fill(0, 128-gameMode.length());
+        
+        buffer.fill(0, 2574);
     }
 
-    PacketHeader header;
+   /* PacketHeader header;
     uint8 ok;
     uint32 mapId;
     SynchBlock players[12];
@@ -151,8 +173,8 @@ typedef struct _SynchVersionAns {
     uint32 dwUnk1;
     uint32 dwOpt; //0x377192
     uint8 bUnk1[0x100];
-    uint8 bUnk2[11];
-} SynchVersionAns;
+    uint8 bUnk2[11];*/
+};
 
 typedef struct _PingLoadInfo {
     PacketHeader header;

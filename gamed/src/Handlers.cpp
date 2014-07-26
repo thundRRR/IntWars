@@ -32,31 +32,26 @@ bool Game::handleNull(HANDLE_ARGS) {
 }
 
 bool Game::handleKeyCheck(ENetPeer *peer, ENetPacket *packet) {
-    KeyCheck *keyCheck = (KeyCheck *)packet->data;
-    uint64 userId = _blowfish->Decrypt(keyCheck->checkId);
-    /*
-    uint64 enc = _blowfish->Encrypt(keyCheck->userId);
-    char buffer[255];
-    unsigned char *p = (unsigned char*)&enc;
-    for(int i = 0; i < 8; i++)
-    {
-    sprintf(&buffer[i*3], "%02X ", p[i]);
-    }
-    PDEBUG_LOG_LINE(//Logging," Enc id: %s\n", buffer);*/
-    if(userId == keyCheck->userId) {
-       // PDEBUG_LOG_LINE(//Logging, " User got the same key as i do, go on!\n");
-        peerInfo(peer)->keyChecked = true;
-        peerInfo(peer)->userId = userId;
-    } else {
-        //Logging->errorLine(" WRONG KEY, GTFO!!!\n");
-        return false;
-    }
-    //Send response as this is correct (OFC DO SOME ID CHECKS HERE!!!)
-    KeyCheck response;
-    response.userId = keyCheck->userId;
-    bool bRet = sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(KeyCheck), CHL_HANDSHAKE);
-    handleGameNumber(peer, NULL);//Send 0x91 Packet?
-    return bRet;
+   KeyCheck *keyCheck = (KeyCheck *)packet->data;
+   uint64 userId = _blowfish->Decrypt(keyCheck->checkId);
+
+   if(userId != keyCheck->userId) {
+      return false;
+   }
+
+   for(ClientInfo* player : players) {
+      if(player->userId == userId) {
+         peer->data = player;
+         KeyCheck response;
+         response.userId = keyCheck->userId;
+         bool bRet = sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(KeyCheck), CHL_HANDSHAKE);
+         handleGameNumber(peer, NULL);//Send 0x91 Packet?
+         return true;
+      }
+   }
+
+   return false;
+
 }
 
 bool Game::handleGameNumber(ENetPeer *peer, ENetPacket *packet) {
@@ -70,12 +65,9 @@ bool Game::handleGameNumber(ENetPeer *peer, ENetPacket *packet) {
 bool Game::handleSynch(ENetPeer *peer, ENetPacket *packet) {
     SynchVersion *version = reinterpret_cast<SynchVersion *>(packet->data);
     //Logging->writeLine("Client version: %s\n", version->version);
-    SynchVersionAns answer;
-    answer.mapId = 1;
-    answer.players[0].userId = peerInfo(peer)->userId;
-    answer.players[0].skill1 = SPL_Ignite;
-    answer.players[0].skill2 = SPL_Flash;
-    return sendPacket(peer, reinterpret_cast<uint8 *>(&answer), sizeof(SynchVersionAns), 3);
+    SynchVersionAns answer(players, "Version 4.12.0.356 [PUBLIC]", "CLASSIC");
+    printPacket(reinterpret_cast<uint8 *>(&answer), sizeof(answer));
+    return sendPacket(peer, answer, 3);
 }
 
 bool Game::handleMap(ENetPeer *peer, ENetPacket *packet) {

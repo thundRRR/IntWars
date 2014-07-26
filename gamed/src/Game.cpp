@@ -59,6 +59,18 @@ bool Game::initialize(ENetAddress *address, const char *baseKey)
 	initHandlers();
    
    map = new Map(this);
+   
+   // TODO : put the following in a config file !
+   ClientInfo* player = new ClientInfo();
+   player->setName("Test");
+   Champion* c = ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID());
+   map->addObject(c);
+   player->setChampion(c);
+   player->setSkinNo(6);
+   player->userId = 47917791; // same as StartClient.bat
+   player->setSummoners(SPL_Ignite, SPL_Flash);
+   
+   players.push_back(player);
 	
 	return _isAlive = true;
 }
@@ -80,12 +92,7 @@ void Game::netLoop()
 
             /* Set some defaults */
             event.peer->mtu = PEER_MTU;
-
-            event.peer->data = new ClientInfo();
-            peerInfo(event.peer)->setName("Test");
-            peerInfo(event.peer)->setChampion(ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID()));
-            peerInfo(event.peer)->setSkinNo(6);
-            map->addObject(peerInfo(event.peer)->getChampion());
+            event.data = 0;
 
             break;
 

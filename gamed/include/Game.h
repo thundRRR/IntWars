@@ -89,6 +89,7 @@ class Game
 		ENetHost *_server;
 		BlowFish *_blowfish;
       ENetPeer* currentPeer;
+      std::vector<ClientInfo*> players;
       
       void registerHandler(bool (Game::*handler)(HANDLE_ARGS), PacketCmd pktcmd,Channel c);
       bool (Game::*_handlerTable[0x100][0x7])(HANDLE_ARGS);

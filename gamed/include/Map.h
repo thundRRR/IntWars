@@ -6,7 +6,6 @@
 
 #include "stdafx.h"
 #include "Object.h"
-#include "Client.h"
 
 class Game;
 
@@ -14,7 +13,6 @@ class Map {
 
 private:
    std::map<uint32, Object*> objects;
-   std::vector<ClientInfo*> players;
    Game* game;
    
 public:
