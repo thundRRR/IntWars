@@ -88,85 +88,60 @@ bool Game::handleMap(ENetPeer *peer, ENetPacket *packet) {
 
 //building the map
 bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
-    StatePacket2 start(PKT_S2C_StartSpawn);
-    bool p1 = sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket2), CHL_S2C);
-    printf("Spawning map\r\n");
+   StatePacket2 start(PKT_S2C_StartSpawn);
+   bool p1 = sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket2), CHL_S2C);
+   printf("Spawning map\r\n");
+
+   HeroSpawn spawn(peerInfo(peer)->getChampion()->getNetId(), 0, peerInfo(peer)->getName(), peerInfo(peer)->getChampion()->getType(), peerInfo(peer)->getSkinNo());
+   bool p2 = sendPacket(peer, spawn, CHL_S2C);
+
+   PlayerInfo info(peerInfo(peer)->getChampion()->getNetId(), peerInfo(peer)->summonerSkills[0], peerInfo(peer)->summonerSkills[1]);
+   sendPacket(peer, info, CHL_S2C);
+
+   HeroSpawn2 h2;
+   h2.header.netId = peerInfo(peer)->getChampion()->getNetId();
+   sendPacket(peer, reinterpret_cast<uint8 *>(&h2), sizeof(HeroSpawn2), CHL_S2C);
+   notifySetHealth(peerInfo(peer)->getChampion());
+   
+   const std::map<uint32, Object*>& objects = map->getObjects();
+ 
+   for(auto kv : objects) {
+      Turret* t = dynamic_cast<Turret*>(kv.second);
+      if(!t) {
+         continue;
+      }
+   
+      TurretSpawn turretSpawn(t);
+      sendPacket(peer, turretSpawn, CHL_S2C);
+   }
     
-    HeroSpawn spawn(peerInfo(peer)->getChampion()->getNetId(), 0, peerInfo(peer)->getName(), peerInfo(peer)->getChampion()->getType(), peerInfo(peer)->getSkinNo());
-    bool p2 = sendPacket(peer, spawn, CHL_S2C);
-    
-    PlayerInfo info(peerInfo(peer)->getChampion()->getNetId(), SPL_Ignite, SPL_Flash);
-   // sendPacket(peer, reinterpret_cast<uint8 *>(&info), sizeof(PlayerInfo), CHL_S2C);
-    
-    sendPacket(peer, info, CHL_S2C);
-    
-    HeroSpawn2 h2;
-    h2.header.netId = peerInfo(peer)->getChampion()->getNetId();
-    sendPacket(peer, reinterpret_cast<uint8 *>(&h2), sizeof(HeroSpawn2), CHL_S2C);
-    notifySetHealth(peerInfo(peer)->getChampion());
-    //Spawn Turrets
-    vector<string> szTurrets = {
-        "@Turret_T1_R_03_A",
-        "@Turret_T1_R_02_A",
-        "@Turret_T1_C_07_A",
-        "@Turret_T2_R_03_A",
-        "@Turret_T2_R_02_A",
-        "@Turret_T2_R_01_A",
-        "@Turret_T1_C_05_A",
-        "@Turret_T1_C_04_A",
-        "@Turret_T1_C_03_A",
-        "@Turret_T1_C_01_A",
-        "@Turret_T1_C_02_A",
-        "@Turret_T2_C_05_A",
-        "@Turret_T2_C_04_A",
-        "@Turret_T2_C_03_A",
-        "@Turret_T2_C_01_A",
-        "@Turret_T2_C_02_A",
-        "@Turret_OrderTurretShrine_A",
-        "@Turret_ChaosTurretShrine_A",
-        "@Turret_T1_L_03_A",
-        "@Turret_T1_L_02_A",
-        "@Turret_T1_C_06_A",
-        "@Turret_T2_L_03_A",
-        "@Turret_T2_L_02_A",
-        "@Turret_T2_L_01_A"
-    };
-    for(unsigned int i = 0; i < 24; i++) {
-        TurretSpawn turretSpawn;
-        turretSpawn.tID = GetNewNetID();
-        strcpy((char *)turretSpawn.name, szTurrets[i].c_str());
-        sendPacket(peer, reinterpret_cast<uint8 *>(&turretSpawn), sizeof(TurretSpawn), CHL_S2C);
-    }
-    //Spawn Props
-    LevelPropSpawn lpSpawn(GetNewNetID(), "LevelProp_Yonkey", "Yonkey", 12465, 14422.257f, 101);
-    sendPacket(peer, lpSpawn, CHL_S2C);
-    LevelPropSpawn lpSpawn2(GetNewNetID(), "LevelProp_Yonkey1", "Yonkey", -76, 1769.1589f, 94);
-    sendPacket(peer, lpSpawn2, CHL_S2C);
-    LevelPropSpawn lpSpawn3(GetNewNetID(), "LevelProp_ShopMale", "ShopMale", 13374, 14245.673f, 194);
-    sendPacket(peer, lpSpawn3, CHL_S2C);
-    LevelPropSpawn lpSpawn4(GetNewNetID(), "LevelProp_ShopMale1", "ShopMale", -99, 855.6632f, 191);
-    sendPacket(peer, lpSpawn4, CHL_S2C);
-    
-    StatePacket end(PKT_S2C_EndSpawn);
-    bool p3 = sendPacket(peer, reinterpret_cast<uint8 *>(&end), sizeof(StatePacket), CHL_S2C);
-    BuyItemAns recall;
-    recall.header.netId = peerInfo(peer)->getChampion()->getNetId();
-    recall.itemId = 2001;
-    recall.slotId = 7;
-    recall.stack = 1;
-    bool p4 = sendPacket(peer, reinterpret_cast<uint8 *>(&recall), sizeof(BuyItemAns), CHL_S2C); //activate recall slot
-    GameTimer timer(0); //0xC0
-    sendPacket(peer, reinterpret_cast<uint8 *>(&timer), sizeof(GameTimer), CHL_S2C);
-    GameTimer timer2(0.4f); //0xC0
-    sendPacket(peer, reinterpret_cast<uint8 *>(&timer2), sizeof(GameTimer), CHL_S2C);
-    GameTimerUpdate timer3(0.4f); //0xC1
-    sendPacket(peer, reinterpret_cast<uint8 *>(&timer3), sizeof(GameTimerUpdate), CHL_S2C);
-    //lvl 1 R for elise
-    for(int i = 0; i < 4; i++) {
-        SpellSet spell(peerInfo(peer)->getChampion()->getNetId(), i, 1);
-        sendPacket(peer, reinterpret_cast<uint8 *>(&spell), sizeof(SpellSet), CHL_S2C);
-    }
-    return p1 & p2 & p3;
+   //Spawn Props
+   LevelPropSpawn lpSpawn(GetNewNetID(), "LevelProp_Yonkey", "Yonkey", 12465, 14422.257f, 101);
+   sendPacket(peer, lpSpawn, CHL_S2C);
+   LevelPropSpawn lpSpawn2(GetNewNetID(), "LevelProp_Yonkey1", "Yonkey", -76, 1769.1589f, 94);
+   sendPacket(peer, lpSpawn2, CHL_S2C);
+   LevelPropSpawn lpSpawn3(GetNewNetID(), "LevelProp_ShopMale", "ShopMale", 13374, 14245.673f, 194);
+   sendPacket(peer, lpSpawn3, CHL_S2C);
+   LevelPropSpawn lpSpawn4(GetNewNetID(), "LevelProp_ShopMale1", "ShopMale", -99, 855.6632f, 191);
+   sendPacket(peer, lpSpawn4, CHL_S2C);
+
+   StatePacket end(PKT_S2C_EndSpawn);
+   bool p3 = sendPacket(peer, reinterpret_cast<uint8 *>(&end), sizeof(StatePacket), CHL_S2C);
+   BuyItemAns recall;
+   recall.header.netId = peerInfo(peer)->getChampion()->getNetId();
+   recall.itemId = 2001;
+   recall.slotId = 7;
+   recall.stack = 1;
+   
+   bool p4 = sendPacket(peer, reinterpret_cast<uint8 *>(&recall), sizeof(BuyItemAns), CHL_S2C); //activate recall slot
+   GameTimer timer(0); //0xC0
+   sendPacket(peer, reinterpret_cast<uint8 *>(&timer), sizeof(GameTimer), CHL_S2C);
+   GameTimer timer2(0.4f); //0xC0
+   sendPacket(peer, reinterpret_cast<uint8 *>(&timer2), sizeof(GameTimer), CHL_S2C);
+   GameTimerUpdate timer3(0.4f); //0xC1
+   sendPacket(peer, reinterpret_cast<uint8 *>(&timer3), sizeof(GameTimerUpdate), CHL_S2C);
+
+   return p1 & p2 & p3;
 }
 
 bool Game::handleStartGame(HANDLE_ARGS) {

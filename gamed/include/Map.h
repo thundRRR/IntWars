@@ -20,6 +20,7 @@ public:
    
    virtual ~Map() { }
    virtual void update(long long diff);
+   
    Object* getObjectById(uint32 id);
    void addObject(Object* o);
    

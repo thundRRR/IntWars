@@ -29,6 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Buffer.h"
 #include "Client.h"
 #include "Minion.h"
+#include "Turret.h"
 
 #if defined( __GNUC__ )
 #pragma pack(1)
@@ -88,17 +89,7 @@ struct GameHeader {
     uint32 ticks;
 };
 
-typedef struct _SynchBlock {
-    _SynchBlock() {
-        userId = 0xFFFFFFFFFFFFFFFF;
-        unk = 0x1E;
-        teamId = 0x00000064;
-        bot = 0;
-        memset(name, 0, 64);
-        memset(type, 0, 64);
-        memcpy(rank, "GOLD", 5);
-    }
-
+/*typedef struct _SynchBlock {
     uint64 userId;
     uint16 unk;
     uint32 skill1;
@@ -108,7 +99,7 @@ typedef struct _SynchBlock {
     uint8 name[64];
     uint8 type[64];
     uint8 rank[30];
-} SynchBlock;
+} SynchBlock;*/
 
 struct ClientReady {
     uint32 cmd;
@@ -120,14 +111,14 @@ class SynchVersionAns : public BasePacket {
 public:
 
    SynchVersionAns(const std::vector<ClientInfo*>& players, const std::string& version, const std::string& gameMode) : BasePacket(PKT_S2C_SynchVersion) {
-      buffer << (uint8)9;
-      buffer << (uint32)1;
+      buffer << (uint8)9; // unk
+      buffer << (uint32)1; // mapId
       for(auto p : players) {
          buffer << p->userId;
-         buffer << (uint16)0x1E;
+         buffer << (uint16)0x1E; // unk
          buffer << p->summonerSkills[0];
          buffer << p->summonerSkills[1];
-         buffer << (uint8)0;
+         buffer << (uint8)0; // bot boolean
          buffer << p->getTeam();
          buffer << p->getName();
          buffer.fill(0, 64-p->getName().length());
@@ -538,18 +529,20 @@ struct HeroSpawn2 {
     uint32 f4;
 };
 
-struct TurretSpawn {
-    TurretSpawn() {
-        header.cmd = PKT_S2C_TurretSpawn;
-        tID = 0;
-        memset(&name, 0, 29 + 42); //Set name + type to zero
-    }
+class TurretSpawn : public BasePacket {
+public:
+   TurretSpawn(Turret* t) : BasePacket(PKT_S2C_TurretSpawn) {
+      buffer << t->getNetId();
+      buffer << t->getName();
+      buffer.fill(0, 28-t->getName().length()+42);
+   }
 
-    PacketHeader header;
-    uint32 tID;
-    uint8 name[28];
-    uint8 type[42];
+   /*PacketHeader header;
+   uint32 tID;
+   uint8 name[28];
+   uint8 type[42];*/
 };
+
 struct GameTimer {
     GameTimer(float fTime) {
         header.cmd = PKT_S2C_GameTimer;

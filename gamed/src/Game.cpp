@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <algorithm>
 #include "stdafx.h"
 #include "Game.h"
+#include "SummonersRift.h"
 
 #define REFRESH_RATE 5
 
@@ -58,7 +59,7 @@ bool Game::initialize(ENetAddress *address, const char *baseKey)
 	_blowfish = new BlowFish((uint8*)key.c_str(), 16);
 	initHandlers();
    
-   map = new Map(this);
+   map = new SummonersRift(this);
    
    // TODO : put the following in a config file !
    ClientInfo* player = new ClientInfo();
