@@ -18,6 +18,12 @@ void Map::update(int64 diff) {
       
       Unit* u = dynamic_cast<Unit*>(kv->second);
       
+      
+      if(u && u->needsToTeleport == true){
+          game->notifyTeleport(u);
+         
+      }
+      
       if(u && !u->getStats().getUpdatedStats().empty()) {
          game->notifyUpdatedStats(u);
          u->getStats().clearUpdatedStats();

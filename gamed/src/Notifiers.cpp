@@ -22,6 +22,21 @@ void Game::notifyUpdatedStats(Unit* u) {
    sendPacket(currentPeer, us, CHL_LOW_PRIORITY, 2);
 }
 
+void Game::notifyTeleport(Unit* u){
+    
+   // TeleportRequest first(u->getNetId(), u->teleportToX, u->teleportToY, true);
+    
+   // sendPacket(currentPeer, first, CHL_S2C);
+       
+    TeleportRequest second(u->getNetId(), u->teleportToX, u->teleportToY, false);
+    sendPacket(currentPeer, second, CHL_S2C);
+    
+    u->needsToTeleport = false;
+       
+    //todo check for vision? and send to each player 
+    
+}
+
 void Game::notifyMovement(Object* o) {
    const std::vector<MovementVector>& waypoints = o->getWaypoints();
    MovementAns *answer = MovementAns::create(waypoints.size()*2);

@@ -129,6 +129,13 @@ public:
    virtual float getAttackSpeedMultiplier() const {
       return getStat(MM_Two, FM2_Atks_multiplier);
    }
+   
+      
+   virtual float getGold(){
+       return getStat(MM_One, FM1_Gold);
+       
+   }
+
 
 
    virtual void setBaseAd(float ad) {
@@ -179,6 +186,10 @@ public:
    
    virtual void setGold(float gold) {
       setStat(MM_One, FM1_Gold, gold);
+   }
+   
+     virtual void setGoldPer5(float gold) {
+      setStat(MM_One, FM1_Gold_2, gold);
    }
 
    virtual void setBaseAp(float AP) {

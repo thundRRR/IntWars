@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include "Projectile.h"
+#include <vector>
+
 
 class Unit;
 class Champion;
@@ -21,13 +23,14 @@ protected:
    uint8 slot;
    SpellState state;
    
+
    float castTime;
    float cooldown[5];
    float cost[5];
    
    float currentCooldown;
    float currentCastTime;
-
+   
    Unit* target;
    float x, y;
    
@@ -44,6 +47,8 @@ public:
     * such as projectile spawning, etc.
     */
    virtual void finishCasting();
+   
+
    
    /**
     * Called every diff milliseconds to update the spell

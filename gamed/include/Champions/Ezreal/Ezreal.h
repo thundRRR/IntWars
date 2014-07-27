@@ -3,6 +3,7 @@
 
 #include "Champion.h"
 #include "MysticShot.h"
+#include "ArcaneShift.h"
 
 class Ezreal : public Champion {
 
@@ -10,7 +11,7 @@ public:
    Ezreal(Map* map, uint32 id) : Champion("Ezreal", map, id) {
       spells.push_back(new MysticShot(this));
       spells.push_back(new MysticShot(this));
-      spells.push_back(new MysticShot(this));
+      spells.push_back(new ArcaneShift(this));
       spells.push_back(new MysticShot(this));
       
       stats->setCurrentHealth(430.0f);

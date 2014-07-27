@@ -26,6 +26,8 @@ public:
    int stackAmount = 1;
    bool active = false;
 
+   int price = 0;
+   
         bool isStackable = false;
 
    bool isTrinket(){ return false; }

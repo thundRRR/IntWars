@@ -4,8 +4,12 @@
 #include "Inventory.h"
 #include "Unit.h"
 #include "Spell.h"
-
 #include <vector>
+
+
+
+
+
 
 class Champion : public Unit {
 
@@ -15,6 +19,7 @@ protected:
    uint8 skillPoints;
    uint8 level;
    float xp;
+
    
 public:
 
@@ -28,6 +33,10 @@ public:
    
    Inventory inventory;
 
+   void setSkillPoints(int _skillPoints){
+       skillPoints = (uint8)_skillPoints;
+   }
+   
    uint8 getSkillPoints() const { return skillPoints; }
 
 };
