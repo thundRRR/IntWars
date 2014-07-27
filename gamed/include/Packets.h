@@ -412,12 +412,15 @@ struct ChatMessage {
 
     uint32 playerNo;
     ChatType type;
-    uint32 lenght;
+    uint32 length;
     uint8 unk3[32];
     int8 msg;
 
     int8 *getMessage() {
         return &msg;
+    }
+    uint32 *getLength() {
+       return &length;
     }
 };
 

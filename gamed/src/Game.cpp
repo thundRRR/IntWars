@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <chrono>
 #include <thread>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
 #include "stdafx.h"
 #include "Game.h"
 #include "SummonersRift.h"
@@ -62,12 +64,35 @@ bool Game::initialize(ENetAddress *address, const char *baseKey)
    map = new SummonersRift(this);
    
    // TODO : put the following in a config file !
+   std::string summonerName = "Test";
+   std::string championName = "Ezreal";
+   std::string skinNo = "6";
+
+   std::ifstream fin("player1.txt");
+   if (fin.good())
+   {
+      std::getline(fin, summonerName);
+      std::getline(fin, championName);
+      std::getline(fin, skinNo);
+      fin.close();
+   }
+   else
+   {
+      fin.close();
+      std::ofstream fout("player1.txt");
+      fout << summonerName << '\n';
+      fout << championName << '\n';
+      fout << skinNo << '\n';
+      fout.close();
+   }
+   
+
    ClientInfo* player = new ClientInfo();
-   player->setName("Test");
-   Champion* c = ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID());
+   player->setName(summonerName);
+   Champion* c = ChampionFactory::getChampionFromType(championName, map, GetNewNetID());
    map->addObject(c);
    player->setChampion(c);
-   player->setSkinNo(6);
+   player->setSkinNo( atoi(skinNo.c_str()) );
    player->userId = 47917791; // same as StartClient.bat
    player->setSummoners(SPL_Ignite, SPL_Flash);
    
