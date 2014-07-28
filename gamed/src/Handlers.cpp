@@ -92,16 +92,16 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
    bool p1 = sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket2), CHL_S2C);
    printf("Spawning map\r\n");
 
-   HeroSpawn spawn(peerInfo(peer)->getChampion()->getNetId(), 0, peerInfo(peer)->getName(), peerInfo(peer)->getChampion()->getType(), peerInfo(peer)->getSkinNo());
-   bool p2 = sendPacket(peer, spawn, CHL_S2C);
+   for(auto p : players) {
+      HeroSpawn spawn(p);
+      sendPacket(peer, spawn, CHL_S2C);
 
-   PlayerInfo info(peerInfo(peer)->getChampion()->getNetId(), peerInfo(peer)->summonerSkills[0], peerInfo(peer)->summonerSkills[1]);
+      HeroSpawn2 h2(p->getChampion());
+      sendPacket(peer, h2, CHL_S2C);
+   }
+   
+   PlayerInfo info(peerInfo(peer));
    sendPacket(peer, info, CHL_S2C);
-
-   HeroSpawn2 h2;
-   h2.header.netId = peerInfo(peer)->getChampion()->getNetId();
-   sendPacket(peer, reinterpret_cast<uint8 *>(&h2), sizeof(HeroSpawn2), CHL_S2C);
-   notifySetHealth(peerInfo(peer)->getChampion());
    
    const std::map<uint32, Object*>& objects = map->getObjects();
  
@@ -136,7 +136,7 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
    GameTimerUpdate timer3(0.4f); //0xC1
    sendPacket(peer, reinterpret_cast<uint8 *>(&timer3), sizeof(GameTimerUpdate), CHL_S2C);
 
-   return p1 & p2 & p3;
+   return true;
 }
 
 bool Game::handleStartGame(HANDLE_ARGS) {
@@ -150,17 +150,7 @@ bool Game::handleStartGame(HANDLE_ARGS) {
    test.y = 0;
    test.radius = 1;
    test.unk1 = 2;
-   //uint8 p[] = {0xC5, 0x19, 0x00, 0x00, 0x40, 0x00, 0x00, 0x50};
-   //sendPacket(peer, reinterpret_cast<uint8*>(p), sizeof(p), 3);
-   //sendPacket(peer, reinterpret_cast<uint8 *>(&test), sizeof(FogUpdate2), 3);
-   //playing around 8-)
 
-   /*CharacterStats stats(FM1_Gold, 0, 0, 0, 0);
-   stats->netId = peerInfo(peer)->netId;
-   stats->setValue(1, FM1_Gold, gold);*/
-   //Logging->writeLine("Set gold to %f\n", gold);
-   //sendPacket(peer, reinterpret_cast<uint8 *>(stats), stats->getSize(), CHL_LOW_PRIORITY, 2);
-   //stats->destroy();
    return true;
 }
 
@@ -300,26 +290,8 @@ bool Game::handleCastSpell(HANDLE_ARGS) {
       return false;
    }
    
-   int spellSlot = spell->spellSlot & 0x3F;
-   
-   CastSpellAns response(s, spell->x, spell->y);
-   
-   if(spellSlot != 2){ //todo: proper system for sending these
-
-   Unk unk(peerInfo(peer)->getChampion()->getNetId(), spell->x, spell->y, spell->targetNetId);
-   sendPacket(peer, reinterpret_cast<uint8 *>(&unk), sizeof(unk), CHL_S2C);
-   
-   sendPacket(peer, response, CHL_S2C);
-
-   SpawnProjectile sp(GetNewNetID(), GetNewNetID(), peerInfo(peer)->getChampion(), spell->x, spell->y);
-   sendPacket(peer, sp, CHL_S2C);
-   }
-   if(spellSlot == 2){
- 
    CastSpellAns response(s, spell->x, spell->y);
    sendPacket(peer, response, CHL_S2C);
-
-   }
 
    return true;
 }

@@ -65,3 +65,8 @@ void Game::notifyAutoAttack(Unit* attacker, Unit* victim) {
    AutoAttack aa(attacker, victim);
    broadcastPacket(aa, CHL_S2C);
 }
+
+void Game::notifyProjectileSpawn(Projectile* p ) {
+   SpawnProjectile sp(p);
+   broadcastPacket(sp, CHL_S2C);
+}

@@ -75,6 +75,7 @@ class Game
       void notifyDamageDone(Unit* source, Unit* target, float amount);
       void notifyAutoAttack(Unit* attacker, Unit* victim);
       void notifyTeleport(Unit* u);
+      void notifyProjectileSpawn(Projectile* p);
    
    protected:
 		// Tools

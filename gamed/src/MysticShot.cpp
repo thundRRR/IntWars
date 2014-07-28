@@ -14,6 +14,7 @@ void MysticShot::finishCasting() {
    
    Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 60, 30, owner, new Target(x, y), this, 2000.f);
    owner->getMap()->addObject(p);
+   owner->getMap()->getGame()->notifyProjectileSpawn(p);
 }
 
 /**
