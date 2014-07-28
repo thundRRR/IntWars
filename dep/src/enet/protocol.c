@@ -822,13 +822,12 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event)
 
     header = (ENetProtocolHeader *) host -> receivedData;
 
-	peerID = header->peerID;
-	peerID = peerID - 0x29; //HARDCORE FIX?
+    peerID = header->flag; //HARDCORE FIX?
+    if((peerID & 0x80) == 0x80) { peerID &= ~0x80; }
+    flags = header->flag & ENET_PROTOCOL_HEADER_FLAG_MASK;
 
-	flags = header->flag & ENET_PROTOCOL_HEADER_FLAG_MASK;
-
-	if (header->flag & 0x7F == ENET_PROTOCOL_MAXIMUM_PEER_ID)
-      peer = NULL;
+    if((header->flag & 0x7F) == ENET_PROTOCOL_MAXIMUM_PEER_ID)
+    { peer = NULL; }
     else
     if (peerID >= host -> peerCount)
       return 0;
