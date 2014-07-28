@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Client.h"
 #include "Minion.h"
 #include "Turret.h"
+#include "LevelProp.h"
 
 #if defined( __GNUC__ )
 #pragma pack(1)
@@ -918,6 +919,19 @@ public:
 
 class LevelPropSpawn : public BasePacket {
     public:
+        LevelPropSpawn(LevelProp* lp) : BasePacket(PKT_S2C_LevelPropSpawn) {
+            buffer << lp->getNetId();
+            buffer << (uint32)0x00000040; // unk
+            buffer << (uint8)0; // unk
+            buffer << lp->getX() << lp->getZ() << lp->getY();
+            buffer.fill(0, 41); // unk
+            buffer << lp->getName();
+            buffer.fill(0, 64-lp->getName().length());
+            buffer << lp->getType();
+            buffer.fill(0, 64-lp->getType().length());
+        }
+        
+        // TODO : remove this once we find a better solution for jungle camp spawning command
         LevelPropSpawn(uint32 netId, const std::string& name, const std::string& type, float x, float y, float z) : BasePacket(PKT_S2C_LevelPropSpawn) {
             buffer << netId;
             buffer << (uint32)0x00000040; // unk
@@ -929,17 +943,7 @@ class LevelPropSpawn : public BasePacket {
             buffer << type;
             buffer.fill(0, 64-type.length());
         }
-        
-        /*PacketHeader header;
-        uint32 netId;
-        uint32 unk1;
-        uint8 unk2;
-        float x;
-        float y;
-        float z; // unsure
-        uint8 unk3[41];
-        uint8 name[64];
-        uint8 type[64];*/
+
 };
 
 struct ViewRequest {

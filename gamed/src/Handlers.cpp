@@ -107,23 +107,18 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
  
    for(auto kv : objects) {
       Turret* t = dynamic_cast<Turret*>(kv.second);
-      if(!t) {
+      if(t) {
+         TurretSpawn turretSpawn(t);
+         sendPacket(peer, turretSpawn, CHL_S2C);
          continue;
       }
    
-      TurretSpawn turretSpawn(t);
-      sendPacket(peer, turretSpawn, CHL_S2C);
+      LevelProp* lp = dynamic_cast<LevelProp*>(kv.second);
+      if(lp) {
+         LevelPropSpawn lpsPacket(lp);
+         sendPacket(peer, lpsPacket, CHL_S2C);
+      }
    }
-    
-   //Spawn Props
-   LevelPropSpawn lpSpawn(GetNewNetID(), "LevelProp_Yonkey", "Yonkey", 12465, 14422.257f, 101);
-   sendPacket(peer, lpSpawn, CHL_S2C);
-   LevelPropSpawn lpSpawn2(GetNewNetID(), "LevelProp_Yonkey1", "Yonkey", -76, 1769.1589f, 94);
-   sendPacket(peer, lpSpawn2, CHL_S2C);
-   LevelPropSpawn lpSpawn3(GetNewNetID(), "LevelProp_ShopMale", "ShopMale", 13374, 14245.673f, 194);
-   sendPacket(peer, lpSpawn3, CHL_S2C);
-   LevelPropSpawn lpSpawn4(GetNewNetID(), "LevelProp_ShopMale1", "ShopMale", -99, 855.6632f, 191);
-   sendPacket(peer, lpSpawn4, CHL_S2C);
 
    StatePacket end(PKT_S2C_EndSpawn);
    bool p3 = sendPacket(peer, reinterpret_cast<uint8 *>(&end), sizeof(StatePacket), CHL_S2C);
