@@ -75,6 +75,18 @@ bool Game::initialize(ENetAddress *address, const char *baseKey)
    player->setSummoners(SPL_Ignite, SPL_Flash);
    
    players.push_back(player);
+   
+   ClientInfo* player2 = new ClientInfo();
+   player2->setName("tseT");
+   Champion* c2 = ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID());
+   c2->setPosition(100.f, 273.55f);
+   map->addObject(c2);
+   player2->setChampion(c2);
+   player2->setSkinNo(5);
+   player2->userId = 47917792; // same as StartClient.bat
+   player2->setSummoners(SPL_Ignite, SPL_Flash);
+   
+   players.push_back(player2);
 	
 	return _isAlive = true;
 }

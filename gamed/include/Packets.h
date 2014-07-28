@@ -488,10 +488,10 @@ struct Unk2 {
 
 class HeroSpawn : public Packet {
 public:
-	HeroSpawn(ClientInfo* player) : Packet(PKT_S2C_HeroSpawn) {
+	HeroSpawn(ClientInfo* player, int playerId) : Packet(PKT_S2C_HeroSpawn) {
 		buffer << (uint32)0; // ???
 		buffer << (uint32)player->getChampion()->getNetId();
-		buffer << (uint32)0; // gameId
+		buffer << (uint32)playerId; // +1 for each player ?
 		buffer << (uint8)0; // netNodeID ?
 		buffer << (uint8)1; // SkillLevel
 		buffer << (uint8)1; // teamIsOrder Blue=Order=1 Purple=Choas=0

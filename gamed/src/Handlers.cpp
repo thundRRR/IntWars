@@ -92,17 +92,19 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
    bool p1 = sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket2), CHL_S2C);
    printf("Spawning map\r\n");
 
-   for(auto p : players) {
-      HeroSpawn spawn(p);
-      sendPacket(peer, spawn, CHL_S2C);
+   int playerId = 0;
 
+   for(auto p : players) {
+      HeroSpawn spawn(p, playerId++);
+      sendPacket(peer, spawn, CHL_S2C);
+      
       HeroSpawn2 h2(p->getChampion());
       sendPacket(peer, h2, CHL_S2C);
+      
+      PlayerInfo info(p);
+      sendPacket(peer, info, CHL_S2C); 
    }
-   
-   PlayerInfo info(peerInfo(peer));
-   sendPacket(peer, info, CHL_S2C);
-   
+
    const std::map<uint32, Object*>& objects = map->getObjects();
  
    for(auto kv : objects) {
