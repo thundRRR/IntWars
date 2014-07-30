@@ -39,15 +39,19 @@ bool Game::handleKeyCheck(ENetPeer *peer, ENetPacket *packet) {
       return false;
    }
 
+   uint32 playerNo = 0;
+
    for(ClientInfo* player : players) {
       if(player->userId == userId) {
          peer->data = player;
          KeyCheck response;
          response.userId = keyCheck->userId;
+         response.playerNo = playerNo;
          bool bRet = sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(KeyCheck), CHL_HANDSHAKE);
          handleGameNumber(peer, NULL);//Send 0x91 Packet?
          return true;
       }
+      ++playerNo;
    }
 
    return false;

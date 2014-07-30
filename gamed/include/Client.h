@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 enum TeamId {
    TEAM_BLUE = 0x64,
-   TEAM_PURPLE = 0x65
+   TEAM_PURPLE = 0xC8
 };
 
 struct ClientInfo
