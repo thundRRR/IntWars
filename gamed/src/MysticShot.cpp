@@ -25,7 +25,7 @@ void MysticShot::finishCasting() {
    sub = sub.Normalize(); 
    trueCoords = cur + (sub * MYSTICSHOT_RANGE);
    
-   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 60, 30, owner, new Target(trueCoords.X, trueCoords.Y), this, 2000.f);
+   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(trueCoords.X, trueCoords.Y), this, 2000.f);
    owner->getMap()->addObject(p);
    owner->getMap()->getGame()->notifyProjectileSpawn(p);
 }

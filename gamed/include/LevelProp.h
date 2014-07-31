@@ -11,7 +11,7 @@ private:
    float z;
 
 public:
-   LevelProp(Map* map, uint32 id, float x, float y, float z, const std::string& name, const std::string& type) : Object(map, id, x, y, 0, 0), z(z), name(name), type(type) { }
+   LevelProp(Map* map, uint32 id, float x, float y, float z, const std::string& name, const std::string& type) : Object(map, id, x, y, 0), z(z), name(name), type(type) { }
    float getZ() const { return z; }
 
    float getMoveSpeed() const override { return 0.f; }
