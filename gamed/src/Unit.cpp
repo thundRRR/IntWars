@@ -34,6 +34,12 @@ void Unit::update(int64 diff) {
    if(ai) {
       ai->update(diff);
    }
+   
+   statUpdateTimer += diff;
+   if(statUpdateTimer >= 1000000) { // update stats (hpregen, manaregen) every seconds
+      stats->update(statUpdateTimer);
+      statUpdateTimer = 0;
+   }
 }
 
 void Unit::autoAttackHit(Unit* target) {
