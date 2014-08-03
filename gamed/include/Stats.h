@@ -149,8 +149,6 @@ public:
        
    }
 
-
-
    virtual void setBaseAd(float ad) {
       setStat(MM_Two, FM2_Base_Ad, ad);
    }

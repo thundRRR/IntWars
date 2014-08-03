@@ -69,7 +69,7 @@ bool Game::handleGameNumber(ENetPeer *peer, ENetPacket *packet) {
 bool Game::handleSynch(ENetPeer *peer, ENetPacket *packet) {
     SynchVersion *version = reinterpret_cast<SynchVersion *>(packet->data);
     //Logging->writeLine("Client version: %s\n", version->version);
-    SynchVersionAns answer(players, "Version 4.12.0.356 [PUBLIC]", "CLASSIC");
+    SynchVersionAns answer(players, "Version 4.13.0.262 [PUBLIC]", "CLASSIC");
     printPacket(reinterpret_cast<uint8 *>(&answer), sizeof(answer));
     return sendPacket(peer, answer, 3);
 }
