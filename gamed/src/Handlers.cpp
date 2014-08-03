@@ -78,11 +78,8 @@ bool Game::handleMap(ENetPeer *peer, ENetPacket *packet) {
     LoadScreenPlayerName loadName(*peerInfo(peer));
     LoadScreenPlayerChampion loadChampion(*peerInfo(peer));
     //Builds team info
-    LoadScreenInfo screenInfo;
-    screenInfo.bluePlayerNo = 1;
-    screenInfo.redPlayerNo = 0;
-    screenInfo.bluePlayerIds[0] = peerInfo(peer)->userId;
-    bool pInfo = sendPacket(peer, reinterpret_cast<uint8 *>(&screenInfo), sizeof(LoadScreenInfo), CHL_LOADING_SCREEN);
+    LoadScreenInfo screenInfo(players);
+    bool pInfo = sendPacket(peer, screenInfo, CHL_LOADING_SCREEN);
     //For all players send this info
     bool pName = sendPacket(peer, loadName, CHL_LOADING_SCREEN);
     bool pHero = sendPacket(peer, loadChampion, CHL_LOADING_SCREEN);
@@ -146,10 +143,13 @@ bool Game::handleSpawn(ENetPeer *peer, ENetPacket *packet) {
 }
 
 bool Game::handleStartGame(HANDLE_ARGS) {
-   StatePacket start(PKT_S2C_StartGame);
-   sendPacket(peer, reinterpret_cast<uint8 *>(&start), sizeof(StatePacket), CHL_S2C);
+
+   if(++playersReady == players.size()) {
+      StatePacket start(PKT_S2C_StartGame);
+      broadcastPacket(reinterpret_cast<uint8 *>(&start), sizeof(StatePacket), CHL_S2C);
    
-   _started = true;
+      _started = true;
+   }
    
    FogUpdate2 test;
    test.x = 0;

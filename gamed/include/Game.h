@@ -88,6 +88,7 @@ class Game
 
 	private:
 		bool _isAlive, _started;
+      int playersReady;
 		ENetHost *_server;
 		BlowFish *_blowfish;
       ENetPeer* currentPeer;

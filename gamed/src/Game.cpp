@@ -31,7 +31,7 @@ uint32 GetNewNetID() {
 	return dwStart++;
 }
 
-Game::Game() : _started(false)
+Game::Game() : _started(false), playersReady(0)
 {
 
 }
@@ -64,30 +64,31 @@ bool Game::initialize(ENetAddress *address, const char *baseKey)
    map = new SummonersRift(this);
    
    // TODO : put the following in a config file !
-   ClientInfo* player = new ClientInfo();
+   ClientInfo* player = new ClientInfo("GOLD", TEAM_BLUE);
    player->setName("Test");
    Champion* c = ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID());
    c->setPosition(35.90f, 273.55f);
    map->addObject(c);
    player->setChampion(c);
    player->setSkinNo(6);
-   player->userId = 47917791; // same as StartClient.bat
+   player->userId = 1; // same as StartClient.bat
    player->setSummoners(SPL_Ignite, SPL_Flash);
    
    players.push_back(player);
    
    // Uncomment the following to get 2-players
-   /*ClientInfo* player2 = new ClientInfo();
+   ClientInfo* player2 = new ClientInfo("GOLD", TEAM_PURPLE);
    player2->setName("tseT");
-   Champion* c2 = ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID());
+   Champion* c2 = ChampionFactory::getChampionFromType("Caitlyn", map, GetNewNetID());
    c2->setPosition(100.f, 273.55f);
+   c2->setSide(1);
    map->addObject(c2);
    player2->setChampion(c2);
-   player2->setSkinNo(5);
-   player2->userId = 47917792; // same as StartClient.bat
+   player2->setSkinNo(4);
+   player2->userId = 2; // same as StartClient.bat
    player2->setSummoners(SPL_Ignite, SPL_Flash);
    
-   players.push_back(player2);*/
+   players.push_back(player2);
 	
 	return _isAlive = true;
 }

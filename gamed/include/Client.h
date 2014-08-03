@@ -22,14 +22,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "ChampionFactory.h"
 #include <string>
 
-enum TeamId {
+enum TeamId : uint32 {
    TEAM_BLUE = 0x64,
    TEAM_PURPLE = 0xC8
 };
 
 struct ClientInfo
 {
-	ClientInfo() : keyChecked(false), ticks(0), skinNo(0), rank("GOLD"), team(TEAM_BLUE)
+	ClientInfo(const std::string& rank, TeamId team) : keyChecked(false), ticks(0), skinNo(0), rank(rank), team(team)
 	{
 	}
 

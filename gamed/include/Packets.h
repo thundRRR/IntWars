@@ -179,15 +179,45 @@ typedef struct _PingLoadInfo {
 
 uint8 *createDynamicPacket(uint8 *str, uint32 size);
 
-typedef struct _LoadScreenInfo {
-    _LoadScreenInfo() {
+class LoadScreenInfo : public Packet {
+public:
+    LoadScreenInfo(const std::vector<ClientInfo*>& players) : Packet(PKT_S2C_LoadScreenInfo) {
         //Zero this complete buffer
-        memset(this, 0, sizeof(_LoadScreenInfo));
-        cmd = PKT_S2C_LoadScreenInfo;
-        blueMax = redMax = 6;
+        buffer << (uint32)6; // blueMax
+        buffer << (uint32)6; // redMax
+        
+        uint32 currentBlue = 0;
+        for(ClientInfo* player : players) {
+           if(player->getTeam() == TEAM_BLUE) {
+              buffer << player->userId;
+              currentBlue++;
+           }
+        }
+        
+        for(int i = 0; i < 6-currentBlue; ++i) {
+           buffer << (uint64)0;
+        }
+        
+        buffer.fill(0, 144);
+        
+        uint32 currentPurple = 0;
+        for(ClientInfo* player : players) {
+           if(player->getTeam() == TEAM_PURPLE) {
+              buffer << player->userId;
+              currentPurple++;
+           }
+        }
+        
+        for(int i = 0; i < 6-currentPurple; ++i) {
+           buffer << (uint64)0;
+        }
+        
+        buffer.fill(0, 144);
+        buffer << currentBlue;
+        buffer << currentPurple;
     }
 
-    uint8 cmd;
+    /*uint8 cmd;
     uint32 blueMax;
     uint32 redMax;
     uint64 bluePlayerIds[6]; //Team 1, 6 players max
@@ -195,8 +225,8 @@ typedef struct _LoadScreenInfo {
     uint64 redPlayersIds[6]; //Team 2, 6 players max
     uint8 redData[144];
     uint32 bluePlayerNo;
-    uint32 redPlayerNo;
-} LoadScreenInfo;
+    uint32 redPlayerNo;*/
+};
 
 typedef struct _KeyCheck {
     _KeyCheck() {
@@ -494,7 +524,11 @@ public:
 		buffer << (uint32)playerId; // +1 for each player ?
 		buffer << (uint8)0; // netNodeID ?
 		buffer << (uint8)1; // SkillLevel
-		buffer << (uint8)1; // teamIsOrder Blue=Order=1 Purple=Choas=0
+      if(player->getTeam() == TEAM_BLUE) {
+         buffer << (uint8)1; // teamIsOrder Blue=Order=1 Purple=Choas=0
+      } else {
+         buffer << (uint8)0; // teamIsOrder Blue=Order=1 Purple=Choas=0
+      }
 		buffer << (uint8)0; // isBot
 		buffer << (uint8)0; // botRank
 		buffer << (uint8)0; // spawnPosIndex ?
