@@ -258,30 +258,24 @@ bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
 }
 
 bool Game::handleLoadPing(ENetPeer *peer, ENetPacket *packet) {
-    PingLoadInfo *loadInfo = reinterpret_cast<PingLoadInfo *>(packet->data);
-    PingLoadInfo response;
-    memcpy(&response, packet->data, sizeof(PingLoadInfo));
-    response.header.cmd = PKT_S2C_Ping_Load_Info;
-    response.userId = peerInfo(peer)->userId;
-    //Logging->writeLine("loaded: %f, ping: %f, %f\n", loadInfo->loaded, loadInfo->ping, loadInfo->f3);
-    bool bRet = broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(PingLoadInfo), CHL_LOW_PRIORITY, UNRELIABLE);
-    static bool bLoad = false;
-    if(!bLoad) {
-        handleMap(peer, NULL);
-        bLoad = true;
-    }
-    return bRet;
+   PingLoadInfo *loadInfo = reinterpret_cast<PingLoadInfo *>(packet->data);
+   PingLoadInfo response;
+   memcpy(&response, packet->data, sizeof(PingLoadInfo));
+   response.header.cmd = PKT_S2C_Ping_Load_Info;
+   response.userId = peerInfo(peer)->userId;
+   //Logging->writeLine("loaded: %f, ping: %f, %f\n", loadInfo->loaded, loadInfo->ping, loadInfo->f3);
+   return broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(PingLoadInfo), CHL_LOW_PRIORITY, UNRELIABLE);
 }
 
 bool Game::handleQueryStatus(HANDLE_ARGS) {
-    QueryStatus response;
-    return sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(QueryStatus), CHL_S2C);
+   QueryStatus response;
+   return sendPacket(peer, reinterpret_cast<uint8 *>(&response), sizeof(QueryStatus), CHL_S2C);
 }
 
 bool Game::handleClick(HANDLE_ARGS) {
    Click *click = reinterpret_cast<Click *>(packet->data);
    printf("Object %u clicked on %u\n", peerInfo(peer)->getChampion()->getNetId(),click->targetNetId);
-   
+
    return true;
 }
 
