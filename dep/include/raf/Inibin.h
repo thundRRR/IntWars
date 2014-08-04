@@ -79,7 +79,7 @@ public:
       return hash;
    }
    
-   void readUint32Values(std::vector<uint32> keys) {
+   void readUint32Values(const std::vector<uint32>& keys) {
       for(uint32 key : keys) {
          Value value;
          buffer >> value.longV;
@@ -88,7 +88,7 @@ public:
       }
    }
    
-   void readUint16Values(std::vector<uint32> keys) {
+   void readUint16Values(const std::vector<uint32>& keys) {
       for(uint32 key : keys) {
          Value value;
          buffer >> value.shortV;
@@ -97,7 +97,7 @@ public:
       }
    }
    
-   void readUint8Values(std::vector<uint32> keys) {
+   void readUint8Values(const std::vector<uint32>& keys) {
       for(uint32 key : keys) {
          Value value;
          buffer >> value.charV;
@@ -106,7 +106,7 @@ public:
       }
    }
    
-   void readUint10Values(std::vector<uint32> keys) {
+   void readUint10Values(const std::vector<uint32>& keys) {
       for(uint32 key : keys) {
          uint8 v;
          buffer >> v;
@@ -117,7 +117,7 @@ public:
       }
    }
    
-   void readFloatValues(std::vector<uint32> keys) {
+   void readFloatValues(const std::vector<uint32>& keys) {
       for(uint32 key : keys) {
          Value value;
          buffer >> value.floatV;
