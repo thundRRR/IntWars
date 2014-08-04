@@ -69,8 +69,8 @@ bool Game::initialize(ENetAddress *address, const char *baseKey)
    Champion* c = ChampionFactory::getChampionFromType("Ezreal", map, GetNewNetID());
    c->setPosition(35.90f, 273.55f);
    map->addObject(c);
-   player->setChampion(c);
    player->setSkinNo(6);
+   player->setChampion(c);
    player->userId = 1; // same as StartClient.bat
    player->setSummoners(SPL_Ignite, SPL_Flash);
    

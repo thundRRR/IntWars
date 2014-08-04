@@ -45,3 +45,20 @@ void Champion::update(int64 diff) {
       s->update(diff);
    }
 }
+
+uint32 Champion::getChampionHash() {
+   char szSkin[4];
+   sprintf(szSkin, "%02d", skin);
+   uint32 hash = 0;
+   const char *gobj = "[Character]";
+   for(unsigned int i = 0; i < strlen(gobj); i++) {
+     hash = tolower(gobj[i]) + (0x1003F * hash);
+   }
+   for(unsigned int i = 0; i < type.length(); i++) {
+     hash = tolower(type[i]) + (0x1003F * hash);
+   }
+   for(unsigned int i = 0; i < strlen(szSkin); i++) {
+     hash = tolower(szSkin[i]) + (0x1003F * hash);
+   }
+   return hash;
+}

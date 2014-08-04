@@ -8,6 +8,15 @@
 #define MYSTICSHOT_RANGE 1150
 
 /**
+ * Called when the character casts the spell
+ */
+bool MysticShot::cast(float x, float y, Unit* u) {
+   
+   owner->setTarget(0); // stop movement
+   return Spell::cast(x, y, u);
+}
+
+/**
  * This is called when the spell is finished casting, and we're supposed to
  * create the projectile
  */

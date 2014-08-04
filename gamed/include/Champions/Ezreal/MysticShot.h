@@ -40,6 +40,8 @@ public:
     * This will be called when Mystic's Shot projectile hits a unit
     */
    virtual void applyEffects(Target* t, Projectile* p = 0);
+   
+   virtual bool cast(float x, float y, Unit* u = 0);
 
 
 };
