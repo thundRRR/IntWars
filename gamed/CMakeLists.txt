@@ -14,6 +14,6 @@ ELSEIF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   SET(CMAKE_CXX_FLAGS "-std=c++11")
 ENDIF()
 
-include_directories(include ../dep/include ../dep/include/intlib)
+include_directories(include ../dep/include ../dep/include/intlib ../dep/include/raf)
 add_executable(intwars ${src})
-target_link_libraries(intwars enet intlib)
+target_link_libraries(intwars enet intlib raf)

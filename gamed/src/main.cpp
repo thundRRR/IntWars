@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
 #include "Game.h"
+#include "RAFFile.h"
+#include "Inibin.h"
 
 #define SERVER_HOST ENET_HOST_ANY 
 #define SERVER_PORT 5119
@@ -27,6 +29,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 int main(int argc, char ** argv) 
 {
+   /*RAFFile raf("Archive_2.raf");
+   std::vector<unsigned char> testFile;
+   
+   raf.readFile("DATA/Characters/Yasuo/Yasuo.inibin", testFile);
+   
+   printf("size : %d\n", testFile.size());
+   printf("%s\n", &testFile[0]);
+   
+   Inibin yasuo(testFile);*/
 
 	Game g;
 	ENetAddress address;
