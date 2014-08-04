@@ -23,7 +23,7 @@ RAFFile::RAFFile(const std::string& filename) : rafHeaderFile(filename), rafData
       uint32 hash;
       
       rafHeaderFile >> hash >> entry;
-      printf("Hash : %08X ; Offset : %08X ; Size : %08X ; Index : %08x\n", hash, entry.offset, entry.size, entry.fileNameStringTableIndex);
+      //printf("Hash : %08X ; Offset : %08X ; Size : %08X ; Index : %08x\n", hash, entry.offset, entry.size, entry.fileNameStringTableIndex);
       fileEntries[hash] = entry;
    }   
 }

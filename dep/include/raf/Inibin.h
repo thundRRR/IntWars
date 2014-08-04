@@ -35,6 +35,21 @@ public:
          buffer >> nbKeys;
          readFloatValues(readKeys(nbKeys));
       }
+      
+      if(bitmask & 0x0004) {
+         buffer >> nbKeys;
+         readUint10Values(readKeys(nbKeys));
+      }
+      
+      if(bitmask & 0x0008) {
+         buffer >> nbKeys;
+         readUint16Values(readKeys(nbKeys));
+      }
+      
+      if(bitmask & 0x0010) {
+         buffer >> nbKeys;
+         readUint8Values(readKeys(nbKeys));
+      }
    }
    
    std::vector<uint32> readKeys(uint8 nbKeys) {
@@ -69,6 +84,35 @@ public:
          Value value;
          buffer >> value.longV;
          printf("%08x : %u\n", key, value.longV);
+         values[key] = value;
+      }
+   }
+   
+   void readUint16Values(std::vector<uint32> keys) {
+      for(uint32 key : keys) {
+         Value value;
+         buffer >> value.shortV;
+         printf("%08x : %u\n", key, value.shortV);
+         values[key] = value;
+      }
+   }
+   
+   void readUint8Values(std::vector<uint32> keys) {
+      for(uint32 key : keys) {
+         Value value;
+         buffer >> value.charV;
+         printf("%08x : %u\n", key, value.charV);
+         values[key] = value;
+      }
+   }
+   
+   void readUint10Values(std::vector<uint32> keys) {
+      for(uint32 key : keys) {
+         uint8 v;
+         buffer >> v;
+         Value value;
+         value.floatV = v*0.1f;
+         printf("%08x : %f\n", key, value.floatV);
          values[key] = value;
       }
    }
