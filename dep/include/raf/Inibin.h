@@ -10,13 +10,13 @@
 using namespace std;
 
 struct Value {
-   Value() {
-      memset(this, 0, sizeof(Value));
+   Value() : floatV(0), boolV(0) {
+   
    }
 
    float floatV;
    bool boolV;
-   char stringV[64];
+   std::string stringV;
 };
 
 class Inibin {
@@ -170,8 +170,7 @@ public:
          uint16 offset;
          
          buffer >> offset;
-         string s(reinterpret_cast<const char*>(&buffer.getBytes()[offset+keys.size()*2-i*2]));
-         memcpy(value.stringV, s.c_str(), s.length()+1);
+         value.stringV = reinterpret_cast<const char*>(&buffer.getBytes()[offset+keys.size()*2-i*2]);
          
          values[key] = value;
          ++i;
@@ -180,7 +179,7 @@ public:
          
    float getFloatValue(const std::string& sectionName, const std::string& varName) {
       if(values[getKeyHash(sectionName, varName)].floatV == 0 && values[getKeyHash(sectionName, varName)].stringV[0] != 0) {
-         return atof(values[getKeyHash(sectionName, varName)].stringV);
+         return atof(values[getKeyHash(sectionName, varName)].stringV.c_str());
       }
       return values[getKeyHash(sectionName, varName)].floatV;
    }
@@ -189,8 +188,8 @@ public:
       return values[getKeyHash(sectionName, varName)].boolV;
    }
    
-   std::string getStringValue(const std::string& sectionName, const std::string& varName) {
-      return std::string(values[getKeyHash(sectionName, varName)].stringV);
+   const std::string& getStringValue(const std::string& sectionName, const std::string& varName) {
+      return values[getKeyHash(sectionName, varName)].stringV;
    }
 
 private:

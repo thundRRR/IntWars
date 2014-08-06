@@ -21,10 +21,25 @@ bool RAFManager::init(const string& rootDirectory) {
          continue;
       }
       
-      string rafPath = rootDirectory + '/' + file.name + "/Archive_2.raf";
-      RAFFile* raf = new RAFFile(rafPath);
+      tinydir_dir subDir;
+      tinydir_open_sorted(&subDir, (rootDirectory + '/' + file.name).c_str());
       
-      files.push_back(raf);
+      for (int j = 0; j < subDir.n_files; j++)
+      {
+         tinydir_file subFile;
+         tinydir_readfile_n(&subDir, &subFile, j);
+      
+         string filename(subFile.name);
+         string check = ".raf";
+         
+         if(filename.length() >= 5 && filename.find(check) && filename[filename.length()-1] == 'f') {
+            string rafPath = rootDirectory + '/' + file.name + '/' + filename;
+            RAFFile* raf = new RAFFile(rafPath);
+            files.push_back(raf);
+         }
+      }
+      
+      tinydir_close(&subDir);
    }
    
    printf("Loaded %lu RAF files\n", files.size());
