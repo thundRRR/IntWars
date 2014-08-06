@@ -13,18 +13,6 @@ public:
       spells.push_back(new MysticShot(this));
       spells.push_back(new ArcaneShift(this));
       spells.push_back(new MysticShot(this));
-      
-      stats->setCurrentHealth(430.0f);
-      stats->setMaxHealth(430.0f);
-      stats->setCurrentMana(280.0f);
-      stats->setMaxMana(280.0f);
-      stats->setBaseAd(50.2f);
-      stats->setRange(550.f);
-      stats->setMovementSpeed(325.f);
-      stats->setArmor(19.5f);
-      stats->setMagicArmor(30.f);
-      stats->setHp5(5.5f);
-      stats->setMp5(7.0f);
    }
 
 

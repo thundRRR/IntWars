@@ -31,6 +31,21 @@ public:
       
       return *this;
    }
+   
+   void skip(uint32 toSkip) {
+      if(toSkip > buffer.size()) {
+         return;
+      }
+      buffer.erase(buffer.begin(), buffer.begin()+toSkip);
+   }
+   
+   uint32 size() {
+      return buffer.size();
+   }
+   
+   const std::vector<unsigned char>& getBytes() {
+      return buffer;
+   }
 
 private:
    std::vector<unsigned char> buffer;

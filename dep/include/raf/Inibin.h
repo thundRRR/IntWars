@@ -7,21 +7,19 @@
 
 #include "MemoryReader.h"
 
+using namespace std;
+
 union Value {
-   uint8 charV;
-   uint16 shortV;
-   uint32 longV;
    float floatV;
+   bool boolV;
    char stringV[128];
 };
 
 class Inibin {
 public:
    Inibin(const std::vector<unsigned char>& file) : buffer(file) {
-      uint8 version;
-      uint16 oldLength;
-      uint16 bitmask;
       
+      size = buffer.size();
       buffer >> version >> oldLength >> bitmask;
       
       uint16 nbKeys;
@@ -49,6 +47,16 @@ public:
       if(bitmask & 0x0010) {
          buffer >> nbKeys;
          readUint8Values(readKeys(nbKeys));
+      }
+      
+      if(bitmask & 0x0020) {
+         buffer >> nbKeys;
+         readBooleanValues(readKeys(nbKeys));
+      }
+      
+      if(bitmask & 0x1000) {
+         buffer >> nbKeys;
+         readStringValues(readKeys(nbKeys));
       }
    }
    
@@ -81,27 +89,33 @@ public:
    
    void readUint32Values(const std::vector<uint32>& keys) {
       for(uint32 key : keys) {
+         uint32 v;
+         buffer >> v;
+      
          Value value;
-         buffer >> value.longV;
-         printf("%08x : %u\n", key, value.longV);
+         value.floatV = v;
          values[key] = value;
       }
    }
    
    void readUint16Values(const std::vector<uint32>& keys) {
       for(uint32 key : keys) {
+         uint16 v;
+         buffer >> v;
+         
          Value value;
-         buffer >> value.shortV;
-         printf("%08x : %u\n", key, value.shortV);
+         value.floatV = v;
          values[key] = value;
       }
    }
    
    void readUint8Values(const std::vector<uint32>& keys) {
       for(uint32 key : keys) {
+         uint8 v;
+         buffer >> v;
+                  
          Value value;
-         buffer >> value.charV;
-         printf("%08x : %u\n", key, value.charV);
+         value.floatV = v;
          values[key] = value;
       }
    }
@@ -112,7 +126,6 @@ public:
          buffer >> v;
          Value value;
          value.floatV = v*0.1f;
-         printf("%08x : %f\n", key, value.floatV);
          values[key] = value;
       }
    }
@@ -121,31 +134,68 @@ public:
       for(uint32 key : keys) {
          Value value;
          buffer >> value.floatV;
-         printf("%08x : %f\n", key, value.floatV);
+         
          values[key] = value;
       }
    }
    
-   uint32 getUint32Value(const std::string& sectionName, const std::string& varName) {
-      return values[getKeyHash(sectionName, varName)].longV;
+   void readBooleanValues(const std::vector<uint32>& keys) {      
+      int index = 0;
+      uint8 boolean;
+      
+      for(uint32 key : keys) {
+         Value value;
+      
+         if(index % 8 == 0) {
+            buffer >> boolean;
+         } else {
+            boolean >>= 1;
+         }
+         
+         value.boolV = boolean & 0x01;
+         values[key] = value;
+         ++index;
+      }
    }
    
-   uint16 getUint16Value(const std::string& sectionName, const std::string& varName) {
-      return values[getKeyHash(sectionName, varName)].shortV;
+   void readStringValues(const std::vector<uint32>& keys) {
+      uint32 i = 1;
+      for(uint32 key : keys) {
+         Value value;
+  
+         uint16 offset;
+         
+         buffer >> offset;
+         string s(reinterpret_cast<const char*>(&buffer.getBytes()[offset+keys.size()*2-i*2]));
+         memcpy(value.stringV, s.c_str(), s.length()+1);
+         
+         printf("%08X : %s\n", key, s.c_str());
+         
+         values[key] = value;
+         ++i;
+      }
    }
-   
-   uint8 getUint8Value(const std::string& sectionName, const std::string& varName) {
-      return values[getKeyHash(sectionName, varName)].charV;
-   }
-   
+         
    float getFloatValue(const std::string& sectionName, const std::string& varName) {
       return values[getKeyHash(sectionName, varName)].floatV;
+   }
+   
+   bool getBoolValue(const std::string& sectionName, const std::string& varName) {
+      return values[getKeyHash(sectionName, varName)].boolV;
+   }
+   
+   std::string getStringValue(const std::string& sectionName, const std::string& varName) {
+      return std::string(values[getKeyHash(sectionName, varName)].stringV);
    }
 
 private:
    
    std::map<uint32, Value> values;
    MemoryReader buffer;
+   uint8 version;
+   uint16 oldLength;
+   uint16 bitmask;
+   uint32 size;
 
 
 };
