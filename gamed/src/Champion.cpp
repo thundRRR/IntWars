@@ -13,18 +13,6 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    }
    
    Inibin inibin(iniFile);
-   
-   /*stats->setCurrentHealth(430.0f);
-      stats->setMaxHealth(430.0f);
-      stats->setCurrentMana(280.0f);
-      stats->setMaxMana(280.0f);
-      stats->setBaseAd(50.2f);
-      stats->setRange(550.f);
-      stats->setMovementSpeed(325.f);
-      stats->setArmor(19.5f);
-      stats->setMagicArmor(30.f);
-      stats->setHp5(5.5f);
-      stats->setMp5(7.0f);*/
 
    stats->setCurrentHealth(atoi(inibin.getStringValue("Data", "BaseHP").c_str())); // Why rito ? why maxHP as a string and mana as a float ?
    stats->setMaxHealth(atoi(inibin.getStringValue("Data", "BaseHP").c_str()));

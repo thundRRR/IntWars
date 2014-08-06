@@ -169,8 +169,6 @@ public:
          string s(reinterpret_cast<const char*>(&buffer.getBytes()[offset+keys.size()*2-i*2]));
          memcpy(value.stringV, s.c_str(), s.length()+1);
          
-         printf("%08X : %s\n", key, s.c_str());
-         
          values[key] = value;
          ++i;
       }
