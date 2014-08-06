@@ -17,9 +17,11 @@ bool RAFManager::init(const string& rootDirectory) {
       tinydir_file file;
       tinydir_readfile_n(&dir, &file, i);
 
-      if (!file.is_dir) {
+      if (!file.is_dir || strcmp(file.name, ".") == 0 || strcmp(file.name, "..") == 0) {
          continue;
       }
+      
+      printf("%s\n", file.name);
       
       string rafPath = rootDirectory + '/' + file.name + "/Archive_2.raf";
       RAFFile* raf = new RAFFile(rafPath);
@@ -27,7 +29,7 @@ bool RAFManager::init(const string& rootDirectory) {
       files.push_back(raf);
    }
    
-   printf("Loaded %d RAF files\n", dir.n_files);
+   printf("Loaded %d RAF files\n", files.size());
 
    tinydir_close(&dir);
    
