@@ -7,6 +7,7 @@
 #include <vector>
 
 
+
 class Unit;
 class Champion;
 
@@ -15,6 +16,8 @@ enum SpellState {
    STATE_CASTING,
    STATE_COOLDOWN
 };
+
+
 
 class Spell {
 protected:
@@ -27,6 +30,8 @@ protected:
    float cooldown[5];
    float cost[5];
    
+   float range = 0;
+   
    SpellState state;
    float currentCooldown;
    float currentCastTime;
@@ -36,6 +41,8 @@ protected:
    
 public:
    Spell(Champion* owner, const std::string& spellName, uint8 slot);
+   
+   
    
    /**
     * Called when the character casts the spell
@@ -66,6 +73,17 @@ public:
     */
    uint32 getId() const;
    float getCastTime() const { return castTime; }
+   
+   std::string getStringForSlot();
+   
+   /*
+    * does spell effects in lua if defined.
+    */
+   void doLua();
+   
+   void setSlot(int _slot){
+       slot=_slot;
+   }
    
    /**
     * TODO : Add in CDR % from champion's stat

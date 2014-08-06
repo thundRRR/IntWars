@@ -31,20 +31,29 @@ int main(int argc, char ** argv)
 {
    printf("Yorick %s\n", SERVER_VERSION);
    puts("Loading RAF files in filearchives/ ..");
+   
+   std::string basePath = RAFManager::getInstance()->findGameBasePath();
 
-   if(!RAFManager::getInstance()->init("filearchives")) {
+   if(!RAFManager::getInstance()->init(basePath + "filearchives")) {
       puts("ERR : Couldn't load RAF files. Make sure you have a 'filearchives' directory in the server's root directory");
       puts("This directory is to be taken from RADS/projects/lol_game_client/");
       return EXIT_FAILURE;
    }
+   
+   printf("Game started");
 
 	Game g;
 	ENetAddress address;
 	address.host = SERVER_HOST;
 	address.port = SERVER_PORT;
+   
+   
 
 	g.initialize(&address, SERVER_KEY);
+  
+    printf("Init\n");
 	g.netLoop();
+   
 	
    return EXIT_SUCCESS;
 }

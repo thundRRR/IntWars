@@ -125,7 +125,8 @@ public:
          buffer.fill(0, 64-p->getName().length());
          buffer.fill(0, 64);
          buffer << p->getRank();
-         buffer.fill(0, 30-p->getRank().length());
+         buffer.fill(0, 28-p->getRank().length());
+         buffer << (uint16)p->getRibbon();
       }
       
       for(int i = 0; i < 12-players.size(); ++i) {
