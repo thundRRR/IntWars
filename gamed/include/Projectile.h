@@ -14,15 +14,19 @@ protected:
    Spell* originSpell;
    Unit* owner;
    float moveSpeed;
+   uint32 projectileId;
 
 public:
-   Projectile(Map* map, uint32 id, float x, float y, uint32 collisionRadius, Unit* owner, Target* target, Spell* originSpell, float moveSpeed) : Object(map, id, x, y, collisionRadius), originSpell(originSpell), moveSpeed(moveSpeed), owner(owner) {
+   Projectile(Map* map, uint32 id, float x, float y, uint32 collisionRadius, Unit* owner, Target* target, Spell* originSpell, float moveSpeed, uint32 projectileId) : Object(map, id, x, y, collisionRadius), originSpell(originSpell), moveSpeed(moveSpeed), owner(owner), projectileId(projectileId) {
       setTarget(target);
    }
    
    void update(int64 diff) override;
    float getMoveSpeed() const { return moveSpeed; }
    Unit* getOwner() const { return owner; }
+   
+   uint32 getProjectileId() const { return projectileId;}
+   
 
 };
 

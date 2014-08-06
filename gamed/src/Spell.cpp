@@ -107,10 +107,15 @@ void Spell::doLua(){
    return;
    });
    
+   std::string projectileName = spellName +"Missile";
    
-   script.lua.set_function("addProjectile", [this](float toX, float toY, float projectileSpeed) { 
+
+   uint32 projectileId = RAFFile::getHash(projectileName);
+   
+   
+   script.lua.set_function("addProjectile", [this, &projectileId](float toX, float toY, float projectileSpeed) { 
    owner->setPosition(owner->getX(), owner->getY()); // stop moving
-   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projectileSpeed);
+   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projectileSpeed, projectileId);
    owner->getMap()->addObject(p);
    owner->getMap()->getGame()->notifyProjectileSpawn(p);
 
