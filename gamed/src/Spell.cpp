@@ -24,9 +24,8 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
       cooldown[i] = inibin.getFloatValue("SpellData", string("Cooldown")+c);
    }
    
-   castTime = ((1.f+inibin.getFloatValue("SpellData", "DelayCastOffsetPercent")))/2.f;
-
-   printf("CastTime is %f for spell : %s", castTime, spellName.c_str() );
+   castTime = ((1.f+inibin.getFloatValue("SpellData", "DelayCastOffsetPercent")));
+;
 }
 
 
@@ -145,8 +144,7 @@ void Spell::update(int64 diff) {
          return;
       case STATE_CASTING:
           
-    printf("Update spell %s , currentCastTime %f\n" , getStringForSlot().c_str(), (float)currentCastTime);
-         currentCastTime -= diff/1000000.f;
+       currentCastTime -= diff/1000000.f;
          if(currentCastTime <= 0) {
             finishCasting();
          }
