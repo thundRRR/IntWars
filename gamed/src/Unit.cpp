@@ -15,20 +15,28 @@ Unit::~Unit() {
 }
 
 void Unit::update(int64 diff) {
-   if(unitTarget && distanceWith(unitTarget) <= stats->getRange()) {
-      if(autoAttackCooldown <= 0) {
-         map->getGame()->notifyAutoAttack(this, unitTarget);
-         Projectile* p = new Projectile(map, GetNewNetID(), x, y, 10, this, unitTarget, 0, getAttackProjectileSpeed());
+   if(isAttacking) {
+      autoAttackCurrentDelay += diff/1000000.f;
+      if(autoAttackCurrentDelay >= autoAttackDelay) {
+         Projectile* p = new Projectile(map, GetNewNetID(), x, y, 10, this, unitTarget, 0, autoAttackProjectileSpeed);
          map->addObject(p);
-         autoAttackCooldown = 1.f/(stats->getTotalAttackSpeed());
+         autoAttackCurrentCooldown = 1.f/(stats->getTotalAttackSpeed());
+         isAttacking = false;
+      }
+   }
+   else if(unitTarget && distanceWith(unitTarget) <= stats->getRange()) {
+      if(autoAttackCurrentCooldown <= 0) {
+         isAttacking = true;
+         autoAttackCurrentDelay = 0;
+         map->getGame()->notifyAutoAttack(this, unitTarget);
       }
    }
    else {
       Object::update(diff);
    }
    
-   if(autoAttackCooldown > 0) {
-      autoAttackCooldown -= diff/1000000.f;
+   if(autoAttackCurrentCooldown > 0) {
+      autoAttackCurrentCooldown -= diff/1000000.f;
    }
    
    if(ai) {

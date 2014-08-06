@@ -8,7 +8,7 @@ using namespace std;
 Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0) {
    std::vector<unsigned char> iniFile;
    if(!RAFManager::getInstance()->readFile("DATA/Spells/"+spellName+".inibin", iniFile)) {
-      if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+".inibin", iniFile)) {
+      if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/Spells/"+spellName+".inibin", iniFile)) {
          printf("ERR : couldn't find spell stats for %s\n", spellName.c_str());
          return;
       }
@@ -21,7 +21,7 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
       cooldown[i] = inibin.getFloatValue("SpellData", string("Cooldown")+c);
    }
    
-   castTime = (1+inibin.getFloatValue("SpellData", "DelayCastOffsetPercent")) * 500;
+   castTime = (1+inibin.getFloatValue("SpellData", "DelayCastOffsetPercent")) * 0.5f;
 }
 
 /**

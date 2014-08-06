@@ -823,6 +823,7 @@ struct CastSpell {
 class CastSpellAns : public GamePacket {
 public:
    CastSpellAns(Spell* s, float x, float y) : GamePacket(PKT_S2C_CastSpellAns, s->getOwner()->getNetId()) {
+      printf("%08X ; %08X ; %f\n", s->getId(), s->getOwner()->getChampionHash(), s->getCastTime());
       buffer << (uint8)0 << (uint8)0x66 << (uint8)0x00; // unk
       buffer << s->getId(); // Spell hash, for example hash("EzrealMysticShot")
       buffer << (uint32)0x400001f6; // a net ID, but what for..
