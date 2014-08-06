@@ -12,8 +12,13 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
       return;
    }
    
+   
+   
    Inibin inibin(iniFile);
 
+   printf("Loading champion type %s", type.c_str());
+   
+   
    stats->setCurrentHealth(inibin.getFloatValue("Data", "BaseHP")); // Why rito ? why maxHP as a string and mana as a float ?
    stats->setMaxHealth(inibin.getFloatValue("Data", "BaseHP"));
    stats->setCurrentMana(inibin.getFloatValue("Data", "BaseMP"));
@@ -25,6 +30,8 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    stats->setMagicArmor(inibin.getFloatValue("DATA", "SpellBlock"));
    stats->setHp5(inibin.getFloatValue("DATA", "BaseStaticHPRegen"));
    stats->setMp5(inibin.getFloatValue("DATA", "BaseStaticMPRegen"));
+   
+   
    
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell1"), 0));
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell2"), 1));
@@ -38,6 +45,8 @@ Spell* Champion::castSpell(uint8 slot, float x, float y, Unit* target) {
    }
    
    Spell* s = spells[slot];
+   
+   s->setSlot(slot);//temporary hack until we redo spells to be almost fully lua-based
    
    if(s->getCost() > stats->getCurrentMana() || s->getState() != STATE_READY) {
       return 0;

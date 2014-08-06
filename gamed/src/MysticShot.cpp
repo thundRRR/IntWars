@@ -23,7 +23,8 @@
 /*void MysticShot::finishCasting() {
    Spell::finishCasting();
 
-   Map* m = owner->getMap();
+  
+  /* Map* m = owner->getMap();
    
    Vector2 trueCoords;
    Vector2 cur(owner->getX(), owner->getY());

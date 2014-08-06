@@ -39,6 +39,8 @@ class Game
 	public:
 		Game();
 		~Game();
+                
+                uint32 strToId(std::string str);
 
 		bool initialize(ENetAddress *address, const char *baseKey);
 		void netLoop();
