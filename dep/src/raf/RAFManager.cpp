@@ -21,15 +21,13 @@ bool RAFManager::init(const string& rootDirectory) {
          continue;
       }
       
-      printf("%s\n", file.name);
-      
       string rafPath = rootDirectory + '/' + file.name + "/Archive_2.raf";
       RAFFile* raf = new RAFFile(rafPath);
       
       files.push_back(raf);
    }
    
-   printf("Loaded %d RAF files\n", files.size());
+   printf("Loaded %lu RAF files\n", files.size());
 
    tinydir_close(&dir);
    

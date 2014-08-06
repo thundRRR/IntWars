@@ -1,4 +1,28 @@
 #include "Spell.h"
+#include "RAFManager.h"
+#include "Champion.h"
+#include "Inibin.h"
+
+using namespace std;
+
+Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0) {
+   std::vector<unsigned char> iniFile;
+   if(!RAFManager::getInstance()->readFile("DATA/Spells/"+spellName+".inibin", iniFile)) {
+      if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+".inibin", iniFile)) {
+         printf("ERR : couldn't find spell stats for %s\n", spellName.c_str());
+         return;
+      }
+   }
+   
+   Inibin inibin(iniFile);
+   
+   for(int i = 0; i < 5; ++i) {
+      char c = '0'+i+1;
+      cooldown[i] = inibin.getFloatValue("SpellData", string("Cooldown")+c);
+   }
+   
+   castTime = (1+inibin.getFloatValue("SpellData", "DelayCastOffsetPercent")) * 500;
+}
 
 /**
  * Called when the character casts the spell
@@ -43,4 +67,12 @@ void Spell::update(int64 diff) {
          }
          break;
    }
+}
+
+uint32 Spell::getId() const {
+   return RAFFile::getHash(owner->getType()+spellName);
+}
+
+void Spell::applyEffects(Target* t, Projectile* p) {
+   
 }

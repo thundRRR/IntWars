@@ -14,17 +14,22 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    
    Inibin inibin(iniFile);
 
-   stats->setCurrentHealth(atoi(inibin.getStringValue("Data", "BaseHP").c_str())); // Why rito ? why maxHP as a string and mana as a float ?
-   stats->setMaxHealth(atoi(inibin.getStringValue("Data", "BaseHP").c_str()));
+   stats->setCurrentHealth(inibin.getFloatValue("Data", "BaseHP")); // Why rito ? why maxHP as a string and mana as a float ?
+   stats->setMaxHealth(inibin.getFloatValue("Data", "BaseHP"));
    stats->setCurrentMana(inibin.getFloatValue("Data", "BaseMP"));
    stats->setMaxMana(inibin.getFloatValue("Data", "BaseMP"));
    stats->setBaseAd(inibin.getFloatValue("DATA", "BaseDamage"));
-   stats->setRange(atoi(inibin.getStringValue("DATA", "AttackRange").c_str()));
+   stats->setRange(inibin.getFloatValue("DATA", "AttackRange"));
    stats->setMovementSpeed(inibin.getFloatValue("DATA", "MoveSpeed"));
    stats->setArmor(inibin.getFloatValue("DATA", "Armor"));
    stats->setMagicArmor(inibin.getFloatValue("DATA", "SpellBlock"));
    stats->setHp5(inibin.getFloatValue("DATA", "BaseStaticHPRegen"));
    stats->setMp5(inibin.getFloatValue("DATA", "BaseStaticMPRegen"));
+   
+   spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell1"), 0));
+   spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell2"), 1));
+   spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell3"), 2));
+   spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell4"), 3));
 }
 
 Spell* Champion::castSpell(uint8 slot, float x, float y, Unit* target) {

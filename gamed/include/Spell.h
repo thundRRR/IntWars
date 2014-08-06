@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Projectile.h"
+#include "RAFFile.h"
 #include <vector>
 
 
@@ -17,17 +18,16 @@ enum SpellState {
 
 class Spell {
 protected:
-   uint32 id;
    Champion* owner;
    uint8 level;
    uint8 slot;
-   SpellState state;
-   
+   std::string spellName;
 
    float castTime;
    float cooldown[5];
    float cost[5];
    
+   SpellState state;
    float currentCooldown;
    float currentCastTime;
    
@@ -35,7 +35,7 @@ protected:
    float x, y;
    
 public:
-   Spell(uint32 id, Champion* owner, float castTime, uint8 slot) : id(id), owner(owner), level(0), slot(slot), state(STATE_READY), castTime(castTime), currentCooldown(0), currentCastTime(0) { }
+   Spell(Champion* owner, const std::string& spellName, uint8 slot);
    
    /**
     * Called when the character casts the spell
@@ -48,8 +48,6 @@ public:
     */
    virtual void finishCasting();
    
-
-   
    /**
     * Called every diff milliseconds to update the spell
     */
@@ -59,14 +57,14 @@ public:
     * Called by projectiles when they land / hit
     * In here we apply the effects : damage, buffs, debuffs...
     */
-   virtual void applyEffects(Target* t, Projectile* p = 0) = 0;
+   virtual void applyEffects(Target* t, Projectile* p = 0);
    
    Champion* getOwner() const { return owner; }
    
    /**
     * @return Spell's unique ID
     */
-   uint32 getId() const { return id; }
+   uint32 getId() const;
    float getCastTime() const { return castTime; }
    
    /**

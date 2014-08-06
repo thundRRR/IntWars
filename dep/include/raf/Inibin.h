@@ -9,10 +9,14 @@
 
 using namespace std;
 
-union Value {
+struct Value {
+   Value() {
+      memset(this, 0, sizeof(Value));
+   }
+
    float floatV;
    bool boolV;
-   char stringV[128];
+   char stringV[64];
 };
 
 class Inibin {
@@ -175,6 +179,9 @@ public:
    }
          
    float getFloatValue(const std::string& sectionName, const std::string& varName) {
+      if(values[getKeyHash(sectionName, varName)].floatV == 0 && values[getKeyHash(sectionName, varName)].stringV[0] != 0) {
+         return atof(values[getKeyHash(sectionName, varName)].stringV);
+      }
       return values[getKeyHash(sectionName, varName)].floatV;
    }
    
