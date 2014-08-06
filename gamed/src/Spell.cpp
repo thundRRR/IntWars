@@ -70,7 +70,7 @@ void Spell::update(int64 diff) {
 }
 
 uint32 Spell::getId() const {
-   return RAFFile::getHash(owner->getType()+spellName);
+   return RAFFile::getHash(spellName);
 }
 
 void Spell::applyEffects(Target* t, Projectile* p) {
