@@ -884,7 +884,7 @@ public:
       buffer << (uint64)0x00000000d5002fce; // unk
       buffer << (uint32)0x7f7fffff; // unk
       buffer << (uint8)0 << (uint8)0x66 << (uint8)0;
-      buffer << (uint32)0x0a0fe625; // unk
+      buffer << (uint32)0x0a0fe625; // unk (projectile ID)
       buffer << (uint32)0; // Second net ID
       buffer << (uint8)0; // unk
       buffer << (uint32)0x3f800000; // unk (1.0f)
