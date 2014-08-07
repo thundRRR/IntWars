@@ -46,3 +46,21 @@ bool Stats::isFloat(uint8 blockId, uint32 stat) {
 
    return true;
 }
+
+void Stats::update(int64 diff) {
+   if(getHp5() > 0 && getCurrentHealth() != getMaxHealth()) {
+      float newHealth = getCurrentHealth()+(getHp5()/5.f)*(diff*0.000001);
+      newHealth = std::min(getMaxHealth(), newHealth);
+      setCurrentHealth(newHealth);
+   }
+   
+   if(getMana5() > 0 && getCurrentMana() != getMaxMana()) {
+      float newMana = getCurrentMana()+(getMana5()/5.f)*(diff*0.000001);
+      newMana = std::min(getMaxMana(), newMana);
+      setCurrentMana(newMana);
+   }
+   if(getGoldPer5() > 0){//todo: only generate gold if time > whatever time gold starts generating
+     float newGold = getGold()+(getGoldPer5()/5.f)*(diff*0.000001);
+     setGold(newGold);
+   }
+}

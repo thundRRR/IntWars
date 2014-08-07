@@ -252,23 +252,7 @@ public:
       return setStat(MM_Two, FM2_Atks_multiplier, multiplier);
    }
    
-   void update(int64 diff) {
-      if(getHp5() > 0 && getCurrentHealth() != getMaxHealth()) {
-         float newHealth = getCurrentHealth()+(getHp5()/5.f)*(diff*0.000001);
-         newHealth = std::min(getMaxHealth(), newHealth);
-         setCurrentHealth(newHealth);
-      }
-      
-      if(getMana5() > 0 && getCurrentMana() != getMaxMana()) {
-         float newMana = getCurrentMana()+(getMana5()/5.f)*(diff*0.000001);
-         newMana = std::min(getMaxMana(), newMana);
-         setCurrentMana(newMana);
-      }
-      if(getGoldPer5() > 0){//todo: only generate gold if time > whatever time gold starts generating
-        float newGold = getGold()+(getGoldPer5()/5.f)*(diff*0.000001);
-        setGold(newGold);
-      }
-   }
+   void update(int64 diff);
    
    /**
     * Meta-stats, relying on other stats
