@@ -28,7 +28,9 @@ protected:
    
   LuaScript script;
 
-   float castTime = 1.f; //fail to load spell data? then cast time is 1
+   float castTime;
+   float castRange;
+   float projectileSpeed;
    float cooldown[5] = {1.f,1.f,1.f,1.f,1.f};//same as above
    float cost[5];
    

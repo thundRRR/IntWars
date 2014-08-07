@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0) {
+Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0), castTime(1.f), castRange(1000.f), projectileSpeed(2000.f) {
    std::vector<unsigned char> iniFile;
    if(!RAFManager::getInstance()->readFile("DATA/Spells/"+spellName+".inibin", iniFile)) {
       if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+".inibin", iniFile)) {
@@ -25,6 +25,8 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
    }
    
    castTime = ((1.f+inibin.getFloatValue("SpellData", "DelayCastOffsetPercent")))/2.f;
+   castRange = inibin.getFloatValue("SpellData", "CastRange");
+   projectileSpeed = inibin.getFloatValue("SpellData", "MissileSpeed");
    coefficient = inibin.getFloatValue("SpellData", "Coefficient");
    
    char i = 1;
