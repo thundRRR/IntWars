@@ -191,6 +191,10 @@ public:
    const std::string& getStringValue(const std::string& sectionName, const std::string& varName) {
       return values[getKeyHash(sectionName, varName)].stringV;
    }
+   
+   bool keyExists(const std::string& sectionName, const std::string& varName) {
+      return values.find(getKeyHash(sectionName, varName)) != values.end();
+   }
 
 private:
    

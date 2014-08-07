@@ -25,6 +25,27 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
    }
    
    castTime = ((1.f+inibin.getFloatValue("SpellData", "DelayCastOffsetPercent")))/2.f;
+   coefficient = inibin.getFloatValue("SpellData", "Coefficient");
+   
+   char i = 1;
+   while(true) {
+      char effectNumber = '0'+i;
+      string key = string("Effect")+effectNumber+"Level0Amount";
+      if(!inibin.keyExists("SpellData", key)) {
+         break;
+      }
+      
+      vector<float> effectValues;
+      for(char j = 0; j < 6; ++j) {
+         char level = '0'+j; 
+         key = string("Effect")+effectNumber+"Level"+level+"Amount";
+         effectValues.push_back(inibin.getFloatValue("SpellData", key));
+      }
+      
+      effects.push_back(effectValues);
+      
+      ++i;
+   }
 }
 
 

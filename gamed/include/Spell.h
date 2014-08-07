@@ -6,8 +6,6 @@
 #include "RAFFile.h"
 #include <vector>
 
-
-
 class Unit;
 class Champion;
 
@@ -16,8 +14,6 @@ enum SpellState {
    STATE_CASTING,
    STATE_COOLDOWN
 };
-
-
 
 class Spell {
 protected:
@@ -29,6 +25,12 @@ protected:
    float castTime;
    float cooldown[5];
    float cost[5];
+   
+   // Warning : this value usually contains one of the "ad/ap" bonus coefficient, as seen in "deals 50 (+{coefficient}%) damage"
+   // However, it may not be accurate and there's no way to tell whether it's the ad or ap bonus for hybrid spells
+   // Sometimes, it is also stored as an effect value instead of the coefficient
+   float coefficient;
+   std::vector< std::vector<float> > effects;
    
    float range = 0;
    
