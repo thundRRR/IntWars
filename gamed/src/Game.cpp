@@ -129,8 +129,6 @@ bool Game::initialize(ENetAddress *address, const char *baseKey){
 
             ClientInfo* player = new ClientInfo(rank, ((team == "BLUE") ? TEAM_BLUE : TEAM_PURPLE), ribbon);
 
-           // TODO : put the following in a config file !
-
            player->setName(name);
 
 
