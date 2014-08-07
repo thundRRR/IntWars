@@ -59,6 +59,7 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
  * Called when the character casts the spell
  */
 bool Spell::cast(float x, float y, Unit* u) {
+   owner->setPosition(owner->getX(), owner->getY());//stop moving serverside too. TODO: check for each spell if they stop movement or not
    state = STATE_CASTING;
    currentCastTime = castTime;
    
@@ -128,12 +129,15 @@ void Spell::loadLua(){
 
 void Spell::doLua(){
 
-   float ownerX = owner->getX();
+   float ownerX = owner->getX(); //we need to do this for each variable exposed to Lua or we get a compiler error
    float ownerY = owner->getY();
    
    float spellX = x;
   
    float spellY = y;
+   
+   float range = castRange;
+   
    
     
    script.lua.set_function("getOwnerX", [&ownerX]() { return ownerX; });
@@ -143,6 +147,12 @@ void Spell::doLua(){
    script.lua.set_function("getSpellToX", [&spellX]() { return spellX; });
       
    script.lua.set_function("getSpellToY", [&spellY]() { return spellY; });
+   
+   script.lua.set_function("getRange", [&range]() { return range; });
+   
+
+   
+   
    
    
    script.lua.set_function("teleportTo", [this](float _x, float _y) { // expose teleport to lua
@@ -157,13 +167,16 @@ void Spell::doLua(){
    
    std::string projectileName = spellName +"Missile";
    
+   float projSpeed = projectileSpeed;
+   script.lua.set_function("getProjectileSpeed", [&projSpeed]() { return projSpeed; });
+   
 
    uint32 projectileId = RAFFile::getHash(projectileName);
    
    
-   script.lua.set_function("addProjectile", [this, &projectileId](float toX, float toY, float projectileSpeed) { 
+   script.lua.set_function("addProjectile", [this, &projectileId, &projSpeed](float toX, float toY) { 
    owner->setPosition(owner->getX(), owner->getY()); // stop moving
-   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projectileSpeed, projectileId);
+   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, projectileId);
    owner->getMap()->addObject(p);
    owner->getMap()->getGame()->notifyProjectileSpawn(p);
 
@@ -212,8 +225,13 @@ uint32 Spell::getId() const {
 
 void Spell::applyEffects(Target* t, Projectile* p) {
           Unit* u = static_cast<Unit*>(t);
-       script.lua.set_function("setTargetHp", [this, &u](float _hp) { // expose teleport to lua
-           u->getStats().setCurrentHealth(_hp);
+       script.lua.set_function("dealPhysicalDamage", [this, &u](float amount) { // expose teleport to lua
+    u->dealDamageTo(u, amount, DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_SPELL);
+   return;
+   });
+   
+          script.lua.set_function("dealMagicalDamage", [this, &u](float amount) { // expose teleport to lua
+    u->dealDamageTo(u, amount, DAMAGE_TYPE_MAGICAL, DAMAGE_SOURCE_SPELL);
    return;
    });
        try{

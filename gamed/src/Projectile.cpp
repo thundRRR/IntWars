@@ -19,7 +19,7 @@ void Projectile::update(int64 diff) {
             return;
          }
          
-         if(collide(it.second)) {
+         if(collide(it.second) && it.second->getNetId() != getNetId()) {//projectile shouldn't collide with itself
             printf("Collide with 0x%08X !\n", it.second->getNetId());
             originSpell->applyEffects(it.second, this);
          }

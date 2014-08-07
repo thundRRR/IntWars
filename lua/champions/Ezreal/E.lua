@@ -1,7 +1,5 @@
 Vector2 = require 'Vector2' -- include 2d vector lib 
 
-print("Path is " .. debug.getinfo(1).short_src)
-
 
 function finishCasting()
 local current = Vector2:new(getOwnerX(), getOwnerY())

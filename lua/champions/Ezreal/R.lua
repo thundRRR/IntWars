@@ -8,10 +8,10 @@ local to = Vector2:new(getSpellToX(), getSpellToY())
 to:sub(current)
 
 to:normalize()
-local range = Vector2:Mult(to,1000)
+local range = Vector2:Mult(to,99999)
 local trueCoords = Vector2:Add(current, range)
 
-addProjectile(trueCoords.x, trueCoords.y ,2000)
+addProjectile(trueCoords.x, trueCoords.y)
 
 end
 
