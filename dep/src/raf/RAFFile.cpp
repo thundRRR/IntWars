@@ -6,7 +6,8 @@
 
 using namespace std;
 
-RAFFile::RAFFile(const std::string& filename) : rafHeaderFile(filename), rafDataFile(filename+".dat") {
+RAFFile::RAFFile(const std::string& filename) : rafDataFile(filename+".dat") {
+   FileReader rafHeaderFile(filename);
    rafHeaderFile >> header;
    
    if(header.magicNumber != 0x18be0ef0) {
