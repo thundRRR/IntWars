@@ -302,176 +302,177 @@ bool Game::handleCastSpell(HANDLE_ARGS) {
 }
 
 bool Game::handleChatBoxMessage(HANDLE_ARGS) {
-    ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
-    //Lets do commands
-    if(message->msg == '.') {
-        const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".junglespawn", ".skillpoints", ".gold" };
-        // help command
-        if (strncmp(message->getMessage(), cmd[9], strlen(cmd[9])) == 0){
-           return true;
-        }
-        //Set field
-        if(strncmp(message->getMessage(), cmd[0], strlen(cmd[0])) == 0) {
-            uint32 blockNo, fieldNo;
-            float value;
-            sscanf(&message->getMessage()[strlen(cmd[0])+1], "%u %u %f", &blockNo, &fieldNo, &value);
-            blockNo = 1 << (blockNo - 1);
-            uint32 mask = 1 << (fieldNo - 1);
-            peerInfo(peer)->getChampion()->getStats().setStat(blockNo, mask, value);
-            return true;
-        }
-        // Set Gold
-        if(strncmp(message->getMessage(), cmd[1], strlen(cmd[1])) == 0) {
-            float gold = (float)atoi(&message->getMessage()[strlen(cmd[1]) + 1]);
-            peerInfo(peer)->getChampion()->getStats().setGold(gold);
-            return true;
-        }
-       
-        //movement
-        if(strncmp(message->getMessage(), cmd[2], strlen(cmd[2])) == 0)
-        {
-           float data = (float)atoi(&message->getMessage()[strlen(cmd[2])+1]);
+   ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
+   //Lets do commands
+   if(message->msg == '.') {
+      const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".junglespawn", ".skillpoints", ".level" };
+      
+      // help command
+      if (strncmp(message->getMessage(), cmd[9], strlen(cmd[9])) == 0) {
+         return true;
+      }
+      
+      // set
+      if(strncmp(message->getMessage(), cmd[0], strlen(cmd[0])) == 0) {
+         uint32 blockNo, fieldNo;
+         float value;
+         sscanf(&message->getMessage()[strlen(cmd[0])+1], "%u %u %f", &blockNo, &fieldNo, &value);
+         blockNo = 1 << (blockNo - 1);
+         uint32 mask = 1 << (fieldNo - 1);
+         peerInfo(peer)->getChampion()->getStats().setStat(blockNo, mask, value);
+         return true;
+      }
+      
+      // gold
+      if(strncmp(message->getMessage(), cmd[1], strlen(cmd[1])) == 0) {
+         float gold = (float)atoi(&message->getMessage()[strlen(cmd[1]) + 1]);
+         peerInfo(peer)->getChampion()->getStats().setGold(gold);
+         return true;
+      }
+
+      // speed
+      if(strncmp(message->getMessage(), cmd[2], strlen(cmd[2])) == 0)
+      {
+         float data = (float)atoi(&message->getMessage()[strlen(cmd[2])+1]);
+
+         printf("Setting speed to %f\n", data);
+
+         peerInfo(peer)->getChampion()->getStats().setMovementSpeed(data);
+         return true;
+      }
+
+      // spawn
+      if(strncmp(message->getMessage(), cmd[10], strlen(cmd[10])) == 0)
+      {
+         static const MinionSpawnPosition positions[] = {   SPAWN_BLUE_TOP,
+                                                            SPAWN_BLUE_BOT,
+                                                            SPAWN_BLUE_MID,
+                                                            SPAWN_RED_TOP,
+                                                            SPAWN_RED_BOT,
+                                                            SPAWN_RED_MID, 
+                                                         };
            
-           printf("Setting speed to %f\n", data);
-           
-           peerInfo(peer)->getChampion()->getStats().setMovementSpeed(data);
-           return true;
-        }
-        
-         //spawn
-         if(strncmp(message->getMessage(), cmd[10], strlen(cmd[10])) == 0)
-         {
-            static const MinionSpawnPosition positions[] = {   SPAWN_BLUE_TOP,
-                                                               SPAWN_BLUE_BOT,
-                                                               SPAWN_BLUE_MID,
-                                                               SPAWN_RED_TOP,
-                                                               SPAWN_RED_BOT,
-                                                               SPAWN_RED_MID, 
-                                                            };
-                          
-            for(int i = 0; i < 6; ++i) {                                     
-               Minion* m = new Minion(map, GetNewNetID(), MINION_TYPE_MELEE, positions[i]);
-               map->addObject(m);
-               notifyMinionSpawned(m);
-            }
-            return true;
+         for(int i = 0; i < 6; ++i) {                                     
+            Minion* m = new Minion(map, GetNewNetID(), MINION_TYPE_MELEE, positions[i]);
+            map->addObject(m);
+            notifyMinionSpawned(m);
          }
-         
-        //health
-        if(strncmp(message->getMessage(), cmd[3], strlen(cmd[3])) == 0)
-        {
-           float data = (float)atoi(&message->getMessage()[strlen(cmd[3])+1]);
-           
-           peerInfo(peer)->getChampion()->getStats().setCurrentHealth(data);
-           peerInfo(peer)->getChampion()->getStats().setMaxHealth(data);
-           
-           notifySetHealth(peerInfo(peer)->getChampion());
-           
-           return true;
-        }
-        
-        //experience
-        if(strncmp(message->getMessage(), cmd[4], strlen(cmd[4])) == 0)
-        {
-           float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
-           
-           printf("Setting experience to %f\n", data);
-           
-           peerInfo(peer)->getChampion()->getStats().setExp(data);
-           return true;
-        }
-        //AbilityPower
-        if(strncmp(message->getMessage(), cmd[5], strlen(cmd[5])) == 0)
-        {
-           float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
-           
-           printf("Setting AP to %f\n", data);
-           
-           peerInfo(peer)->getChampion()->getStats().setBaseAp(data);
-           return true;
-        }
-        //Attack damage
-        if(strncmp(message->getMessage(), cmd[6], strlen(cmd[6])) == 0)
-        {
-           float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
-           
-           printf("Setting AD to %f\n", data);
-           
-           peerInfo(peer)->getChampion()->getStats().setBaseAd(data);
-           return true;
-        }
-        //Mana
-        if(strncmp(message->getMessage(), cmd[7], strlen(cmd[7])) == 0)
-        {
-           float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
-           
-           printf("Setting Mana to %f\n", data);
-           
-           peerInfo(peer)->getChampion()->getStats().setCurrentMana(data);
+         return true;
+      }
+
+      //health
+      if(strncmp(message->getMessage(), cmd[3], strlen(cmd[3])) == 0)
+      {
+         float data = (float)atoi(&message->getMessage()[strlen(cmd[3])+1]);
+
+         peerInfo(peer)->getChampion()->getStats().setCurrentHealth(data);
+         peerInfo(peer)->getChampion()->getStats().setMaxHealth(data);
+
+         notifySetHealth(peerInfo(peer)->getChampion());
+
+         return true;
+      }
+
+      // xp
+      if(strncmp(message->getMessage(), cmd[4], strlen(cmd[4])) == 0)
+      {
+         float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
+
+         printf("Setting experience to %f\n", data);
+
+         peerInfo(peer)->getChampion()->getStats().setExp(data);
+         return true;
+      }
+      
+      // ap
+      if(strncmp(message->getMessage(), cmd[5], strlen(cmd[5])) == 0)
+      {
+         float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
+
+         printf("Setting AP to %f\n", data);
+
+         peerInfo(peer)->getChampion()->getStats().setBaseAp(data);
+         return true;
+      }
+      
+      // ad
+      if(strncmp(message->getMessage(), cmd[6], strlen(cmd[6])) == 0)
+      {
+         float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
+
+         printf("Setting AD to %f\n", data);
+
+         peerInfo(peer)->getChampion()->getStats().setBaseAd(data);
+         return true;
+      }
+      
+      // Mana
+      if(strncmp(message->getMessage(), cmd[7], strlen(cmd[7])) == 0)
+      {
+         float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
+
+         printf("Setting Mana to %f\n", data);
+
+         peerInfo(peer)->getChampion()->getStats().setCurrentMana(data);
          peerInfo(peer)->getChampion()->getStats().setMaxMana(data);
-           return true;
-        }
-        //Model
-        if(strncmp(message->getMessage(), cmd[8], strlen(cmd[8])) == 0) {
-            std::string sModel = (char *)&message->getMessage()[strlen(cmd[8]) + 1];
-            UpdateModel modelPacket(peerInfo(peer)->getChampion()->getNetId(), (char *)sModel.c_str()); //96
-            broadcastPacket(reinterpret_cast<uint8 *>(&modelPacket), sizeof(UpdateModel), CHL_S2C);
-            return true;
-        }
-        //Size
-   if(strncmp(message->getMessage(), cmd[11], strlen(cmd[11])) == 0) {
-      float data = (float)atoi(&message->getMessage()[strlen(cmd[11])+1]);
-         
-      printf("Setting size to %f\n", data);
-         
-            peerInfo(peer)->getChampion()->getStats().setSize(data);
-            return true;
-         }
-    
-   // Mob Spawning-Creating, updated
-  if(strncmp(message->getMessage(), cmd[12], strlen(cmd[12])) == 0) {
-	   const char *cmd[] = { "c baron" , "c wolves", "c red", "c blue", "c dragon", "c wraiths", "c golems"};
-   return true;
+         return true;
+      }
+      
+      // Model
+      if(strncmp(message->getMessage(), cmd[8], strlen(cmd[8])) == 0) {
+         std::string sModel = (char *)&message->getMessage()[strlen(cmd[8]) + 1];
+         UpdateModel modelPacket(peerInfo(peer)->getChampion()->getNetId(), (char *)sModel.c_str()); //96
+         broadcastPacket(reinterpret_cast<uint8 *>(&modelPacket), sizeof(UpdateModel), CHL_S2C);
+         return true;
+      }
+      
+      // Size
+      if(strncmp(message->getMessage(), cmd[11], strlen(cmd[11])) == 0) {
+         float data = (float)atoi(&message->getMessage()[strlen(cmd[11])+1]);
+
+         printf("Setting size to %f\n", data);
+
+         peerInfo(peer)->getChampion()->getStats().setSize(data);
+         return true;
+      }
+
+      // Mob Spawning-Creating, updated
+      if(strncmp(message->getMessage(), cmd[12], strlen(cmd[12])) == 0) {
+         const char *cmd[] = { "c baron" , "c wolves", "c red", "c blue", "c dragon", "c wraiths", "c golems"};
+         return true;
+      }
+
+      // Skillpoints
+      if(strncmp(message->getMessage(), cmd[13], strlen(cmd[13])) == 0) {
+         peerInfo(peer)->getChampion()->setSkillPoints(17);
+
+         SkillUpResponse skillUpResponse(peerInfo(peer)->getChampion()->getNetId(), 0, 0, 17);
+         sendPacket(peer, skillUpResponse, CHL_GAMEPLAY);
+         return true;
+      }
+      
+      // Level
+      if(strncmp(message->getMessage(), cmd[14], strlen(cmd[14])) == 0) {
+         float data = (float)atoi(&message->getMessage()[strlen(cmd[14])+1]);
+
+         peerInfo(peer)->getChampion()->getStats().setLevel(data);
+         return true;
+      }
+
+   }
+
+   switch(message->type) {
+   case CMT_ALL:
+      return broadcastPacket(packet->data, packet->dataLength, CHL_COMMUNICATION);
+   case CMT_TEAM:
+      //!TODO make a team class and foreach player in the team send the message
+      return sendPacket(peer, packet->data, packet->dataLength, CHL_COMMUNICATION);
+   default:
+      //Logging->errorLine("Unknown ChatMessageType\n");
+      return sendPacket(peer, packet->data, packet->dataLength, CHL_COMMUNICATION); 
+   }
    
-      }
-	  
-	     if(strncmp(message->getMessage(), cmd[13], strlen(cmd[13])) == 0) {
-       
-       peerInfo(peer)->getChampion()->setSkillPoints(17);
-        
-    SkillUpResponse skillUpResponse(peerInfo(peer)->getChampion()->getNetId(), 0, 0, 17);
-    sendPacket(peer, skillUpResponse, CHL_GAMEPLAY);
-    return true;
-        
-   if(strncmp(message->getMessage(), cmd[14], strlen(cmd[14])) == 0){
-    float data = (float)atoi(&message->getMessage()[strlen(cmd[14])+1]);
-           
-    printf("Setting gold to %f\n", data);
-           
-    peerInfo(peer)->getChampion()->getStats().setGold(data);
-    return true;
-      }
-      
-      }
-      }
-      
-     
-
-
-    switch(message->type) {
-        case CMT_ALL:
-            return broadcastPacket(packet->data, packet->dataLength, CHL_COMMUNICATION);
-            break;
-        case CMT_TEAM:
-            //!TODO make a team class and foreach player in the team send the message
-            return sendPacket(peer, packet->data, packet->dataLength, CHL_COMMUNICATION);
-            break;
-        default:
-            //Logging->errorLine("Unknown ChatMessageType\n");
-            return sendPacket(peer, packet->data, packet->dataLength, CHL_COMMUNICATION);
-            break;
-    }
-    return false;
+   return false;
 }
 
 bool Game::handleSkillUp(HANDLE_ARGS) {
