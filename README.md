@@ -1,5 +1,6 @@
 IntWars
 ==================
+DISCLAIMER: This is for development purposes only, this is not a finished project - and should not be used in a production enviroment.
 About
 ------
 New: Website to provide a central location to discuss the project! http://leaguesandbox.com/
