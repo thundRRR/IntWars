@@ -1,21 +1,18 @@
 Vector2 = require 'Vector2' -- include 2d vector lib 
 
-
 function finishCasting()
-local current = Vector2:new(getOwnerX(), getOwnerY())
-local to = Vector2:new(getSpellToX(), getSpellToY())
+    local current = Vector2:new(getOwnerX(), getOwnerY())
+    local to = Vector2:new(getSpellToX(), getSpellToY())
 
-to:sub(current)
+    to:sub(current)
+    to:normalize()
 
-to:normalize()
-local range = Vector2:Mult(to,1150)
-local trueCoords = Vector2:Add(current, range)
+    local range = Vector2:Mult(to,1150)
+    local trueCoords = Vector2:Add(current, range)
 
-addProjectile(trueCoords.x, trueCoords.y)
-
+    addProjectile(trueCoords.x, trueCoords.y)
 end
 
 function applyEffects()
-print("Ezreal Q hit something!")
-
+    print("Ezreal Q hit something!")
 end

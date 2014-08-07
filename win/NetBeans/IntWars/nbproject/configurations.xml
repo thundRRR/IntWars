@@ -40,6 +40,28 @@
         <in>main.cpp</in>
       </df>
     </df>
+    <logicalFolder name="lua" displayName="lua" projectFiles="true">
+      <logicalFolder name="champions" displayName="champions" projectFiles="true">
+        <logicalFolder name="Caitlyn" displayName="Caitlyn" projectFiles="true">
+          <itemPath>../../../lua/champions/Caitlyn/E.lua</itemPath>
+          <itemPath>../../../lua/champions/Caitlyn/Q.lua</itemPath>
+          <itemPath>../../../lua/champions/Caitlyn/R.lua</itemPath>
+          <itemPath>../../../lua/champions/Caitlyn/W.lua</itemPath>
+        </logicalFolder>
+        <logicalFolder name="Ezreal" displayName="Ezreal" projectFiles="true">
+          <itemPath>../../../lua/champions/Ezreal/E.lua</itemPath>
+          <itemPath>../../../lua/champions/Ezreal/Q.lua</itemPath>
+          <itemPath>../../../lua/champions/Ezreal/R.lua</itemPath>
+          <itemPath>../../../lua/champions/Ezreal/W.lua</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="lib" displayName="lib" projectFiles="true">
+        <itemPath>../../../lua/lib/Vector2.lua</itemPath>
+      </logicalFolder>
+      <itemPath>../../../lua/champion spell lua api.txt</itemPath>
+      <itemPath>../../../lua/config.lua</itemPath>
+      <itemPath>../../../lua/how to add champion ability.txt</itemPath>
+    </logicalFolder>
     <df root="../../../utils" name="2">
     </df>
     <logicalFolder name="ExternalFiles"
@@ -55,6 +77,7 @@
     <Elem>../../../gamed</Elem>
     <Elem>../../../dep</Elem>
     <Elem>../../../utils</Elem>
+    <Elem>../../../lua</Elem>
   </sourceRootList>
   <projectmakefile>../../../build/Makefile</projectmakefile>
   <confs>
@@ -147,6 +170,60 @@
       <item path="../../../gamed/src/Packets.cpp" ex="false" tool="1" flavor2="8">
       </item>
       <item path="../../../gamed/src/main.cpp" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../../lua/champion spell lua api.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../lua/champions/Caitlyn/E.lua"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../lua/champions/Caitlyn/Q.lua"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../lua/champions/Caitlyn/R.lua"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../lua/champions/Caitlyn/W.lua"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../lua/champions/Ezreal/E.lua"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../lua/champions/Ezreal/Q.lua"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../lua/champions/Ezreal/R.lua"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../lua/champions/Ezreal/W.lua"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../lua/config.lua" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../../lua/how to add champion ability.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../lua/lib/Vector2.lua" ex="false" tool="3" flavor2="0">
       </item>
       <folder path="0">
         <ccTool>
