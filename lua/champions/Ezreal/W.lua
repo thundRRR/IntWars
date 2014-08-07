@@ -14,3 +14,7 @@ local trueCoords = Vector2:Add(current, range)
 addProjectile(trueCoords.x, trueCoords.y ,2000)
 
 end
+
+function applyEffects()
+
+end
