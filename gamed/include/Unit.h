@@ -25,6 +25,7 @@ protected:
    float autoAttackCurrentCooldown, autoAttackCurrentDelay;
    bool isAttacking;
    uint64 statUpdateTimer;
+   uint32 autoAttackProjId;
 
 public:
     

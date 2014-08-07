@@ -10,7 +10,7 @@
 enum FieldMaskOne : uint32
 {
    FM1_Gold        = 0x00000001,
-   FM1_Gold_2      = 0x00000002,
+   FM1_Gold_Total  = 0x00000002,
    FM1_SPELL       = 0x00000004 // Sending short 0x108[1248] activates spells 1/2/3/4
 };
 
@@ -63,6 +63,10 @@ protected:
    std::multimap<uint8, uint32> updatedStats;
    bool updatedHealth;
    
+   // Here all the stats that don't have a bitmask
+   float goldPer5;
+   float adPerLevel, armorPerLevel, magicArmorPerLevel;
+   
 public:
 
    Stats() : updatedHealth(false) { }
@@ -75,6 +79,8 @@ public:
    
    bool isUpdatedHealth() const { return updatedHealth; }
    void clearUpdatedHealth() { updatedHealth = false; }
+   
+   virtual bool isFloat(uint8 blockId, uint32 stat);
 
    virtual float getBaseAd() const {
       return getStat(MM_Two, FM2_Base_Ad);
@@ -124,7 +130,7 @@ public:
       return getStat(MM_Four, FM4_MaxHp);
    }
    
-      virtual float getMaxMana() const {
+   virtual float getMaxMana() const {
       return getStat(MM_Four, FM4_MaxMp);
    }
    
@@ -148,16 +154,15 @@ public:
       return getStat(MM_Two, FM2_Atks_multiplier);
    }
    
-      
    virtual float getGold(){
-       return getStat(MM_One, FM1_Gold);
-       
+      return getStat(MM_One, FM1_Gold);
    }
    
-      virtual float getGoldPer5(){
-       return getStat(MM_One, FM1_Gold_2);
-       
+   virtual float getGoldPer5(){
+      return goldPer5;    
    }
+   
+   
    virtual void setCritChance(float crit) {
       return setStat(MM_Two, FM2_Crit_Chance, crit);
    }
@@ -175,7 +180,7 @@ public:
    }
    
    virtual void setBonusApFlat(float ap) {
-   setStat(MM_Two, FM2_Bonus_Ap_Flat, ap);
+      setStat(MM_Two, FM2_Bonus_Ap_Flat, ap);
    }
    
    virtual void setArmor(float armor) {
@@ -220,8 +225,8 @@ public:
       setStat(MM_One, FM1_Gold, gold);
    }
    
-     virtual void setGoldPer5(float gold) {
-      setStat(MM_One, FM1_Gold_2, gold);
+   virtual void setGoldPer5(float gold) {
+      goldPer5 = gold;
    }
 
    virtual void setBaseAp(float AP) {
@@ -231,7 +236,6 @@ public:
    virtual void setExp(float EXP) {
 	  setStat(MM_Four, FM4_exp, EXP);
    }
-   
    
    virtual void setLevel(float level) {
 	  setStat(MM_Four, FM4_Level, level);
