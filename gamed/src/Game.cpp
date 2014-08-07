@@ -152,8 +152,8 @@ bool Game::initialize(ENetAddress *address, const char *baseKey){
    
    map->addObject(c);
    
-   player->setChampion(c);
    player->setSkinNo(skin);
+   player->setChampion(c);
    static int id = 1;
    player->userId = id; // same as StartClient.bat
    id++;

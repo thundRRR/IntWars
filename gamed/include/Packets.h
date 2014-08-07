@@ -753,10 +753,11 @@ public:
 
 class AutoAttack : public BasePacket {
 public:
-   AutoAttack(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_AutoAttack, attacker->getNetId()) {
+   AutoAttack(Unit* attacker, Unit* attacked, uint32 futureProjNetId) : BasePacket(PKT_S2C_AutoAttack, attacker->getNetId()) {
       buffer << attacked->getNetId();
-      buffer << (uint16)0xd580; // unk
-      buffer << 12.f; // unk
+      buffer << (uint8)0x80; // unk
+      buffer << futureProjNetId; // Basic attack projectile ID, to be spawned later
+      buffer << (uint8)0x40; // unk
       buffer << attacker->getX() << attacker->getY();
    }
 };
@@ -933,18 +934,30 @@ public:
       
       for(uint8 m : masks) {
          uint32 mask = 0;
+         uint8 size = 0;
          
          for(auto it = stats.lower_bound(m); it != stats.upper_bound(m); ++it) {
+            if(u->getStats().isFloat(m, it->second)) {
+               size += 4;
+            } else {
+               size += 2;
+            }
+            
             mask |= it->second;
          }
          
          buffer << mask;
-         buffer << (uint8)(stats.count(m)*4);
+         buffer << size;
          
          for(int i = 0; i < 32; ++i) {
             uint32 tmpMask = (1 << i);
             if(tmpMask & mask) {
-               buffer << u->getStats().getStat(m, tmpMask);
+               if(u->getStats().isFloat(m, tmpMask)) {
+                  buffer << u->getStats().getStat(m, tmpMask);
+               } else {
+                  uint16 stat = floor(u->getStats().getStat(m, tmpMask) + 0.5);
+                  buffer << stat;
+               }
             }
          }
       }

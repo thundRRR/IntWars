@@ -27,3 +27,22 @@ void Stats::setStat(uint8 blockId, uint32 stat, float value) {
    stats[block][stat] = value;
 }
 
+bool Stats::isFloat(uint8 blockId, uint32 stat) {
+   switch(blockId) {
+   case MM_One:
+      switch(stat) {
+      case FM1_SPELL:
+         return false;
+      
+      }
+      
+   case MM_Four:
+      switch(stat) {
+      case FM4_Level:
+         return false;
+      
+      }
+   }
+
+   return true;
+}

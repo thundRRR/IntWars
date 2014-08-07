@@ -61,8 +61,8 @@ void Game::notifyDamageDone(Unit* source, Unit* target, float amount) {
    broadcastPacket(dd, CHL_S2C);
 }
 
-void Game::notifyAutoAttack(Unit* attacker, Unit* victim) {
-   AutoAttack aa(attacker, victim);
+void Game::notifyAutoAttack(Unit* attacker, Unit* victim, uint32 futureProjNetId) {
+   AutoAttack aa(attacker, victim, futureProjNetId);
    broadcastPacket(aa, CHL_S2C);
 }
 
