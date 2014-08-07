@@ -44,7 +44,7 @@ void Unit::update(int64 diff) {
    }
    
    statUpdateTimer += diff;
-   if(statUpdateTimer >= 1000000) { // update stats (hpregen, manaregen) every seconds
+   if(statUpdateTimer >= 500000) { // update stats (hpregen, manaregen) every seconds
       stats->update(statUpdateTimer);
       statUpdateTimer = 0;
    }
@@ -61,4 +61,8 @@ void Unit::dealDamageTo(Unit* target, float damage, DamageType type, DamageSourc
    printf("0x%08X deals %f damage to 0x%08X !\n", getNetId(), damage, target->getNetId());
    target->getStats().setCurrentHealth(max(0.f, target->getStats().getCurrentHealth()-damage));
    map->getGame()->notifyDamageDone(this, target, damage);
+}
+
+bool Unit::isDead() const {
+   return stats->getCurrentHealth() <= 0;
 }

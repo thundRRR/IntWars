@@ -45,6 +45,8 @@ public:
    virtual void autoAttackHit(Unit* target);
    
    void dealDamageTo(Unit* target, float damage, DamageType type, DamageSource source);
+   
+   bool isDead() const;
 
 };
 
