@@ -5,7 +5,7 @@
 #include "Projectile.h"
 #include "RAFFile.h"
 #include <vector>
-
+#include "LuaScript.h"
 
 
 class Unit;
@@ -25,10 +25,20 @@ protected:
    uint8 level;
    uint8 slot;
    std::string spellName;
+   
+  LuaScript script;
 
    float castTime;
+   float castRange;
+   float projectileSpeed;
    float cooldown[5];
    float cost[5];
+   
+   // Warning : this value usually contains one of the "ad/ap" bonus coefficient, as seen in "deals 50 (+{coefficient}%) damage"
+   // However, it may not be accurate and there's no way to tell whether it's the ad or ap bonus for hybrid spells
+   // Sometimes, it is also stored as an effect value instead of the coefficient
+   float coefficient;
+   std::vector< std::vector<float> > effects;
    
    float range = 0;
    
@@ -80,6 +90,8 @@ public:
     * does spell effects in lua if defined.
     */
    void doLua();
+   void loadLua();
+   void reloadLua();
    
    void setSlot(int _slot){
        slot=_slot;

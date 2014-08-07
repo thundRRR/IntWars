@@ -1,7 +1,5 @@
 Vector2 = require 'Vector2' -- include 2d vector lib 
 
-print("Path is " .. debug.getinfo(1).short_src)
-
 
 function finishCasting()
 local current = Vector2:new(getOwnerX(), getOwnerY())
@@ -24,3 +22,6 @@ teleportTo(trueCoords.x, trueCoords.y)
 print("Ezreal E used from Lua, teleporting to " ..trueCoords.x .. " " .. trueCoords.y)
 end
 
+function applyEffects()
+
+end

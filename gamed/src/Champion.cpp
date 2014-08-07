@@ -16,7 +16,6 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
 
    printf("Loading champion type %s", type.c_str());
    
-   
    stats->setCurrentHealth(inibin.getFloatValue("Data", "BaseHP")); // Why rito ? why maxHP as a string and mana as a float ?
    stats->setMaxHealth(inibin.getFloatValue("Data", "BaseHP"));
    stats->setCurrentMana(inibin.getFloatValue("Data", "BaseMP"));

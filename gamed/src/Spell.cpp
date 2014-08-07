@@ -8,7 +8,11 @@
 
 using namespace std;
 
-Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0) {
+Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0), castTime(1.f), castRange(1000.f), projectileSpeed(2000.f) {
+   for(int i = 0; i < 5; ++i) {
+      cooldown[i] = 1.0f;
+   }
+   
    std::vector<unsigned char> iniFile;
    if(!RAFManager::getInstance()->readFile("DATA/Spells/"+spellName+".inibin", iniFile)) {
       if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+".inibin", iniFile)) {
@@ -18,13 +22,36 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
    }
    
    Inibin inibin(iniFile);
-   
+      
    for(int i = 0; i < 5; ++i) {
       char c = '0'+i+1;
       cooldown[i] = inibin.getFloatValue("SpellData", string("Cooldown")+c);
    }
    
    castTime = ((1.f+inibin.getFloatValue("SpellData", "DelayCastOffsetPercent")))/2.f;
+   castRange = inibin.getFloatValue("SpellData", "CastRange");
+   projectileSpeed = inibin.getFloatValue("SpellData", "MissileSpeed");
+   coefficient = inibin.getFloatValue("SpellData", "Coefficient");
+   
+   char i = 1;
+   while(true) {
+      char effectNumber = '0'+i;
+      string key = string("Effect")+effectNumber+"Level0Amount";
+      if(!inibin.keyExists("SpellData", key)) {
+         break;
+      }
+      
+      vector<float> effectValues;
+      for(char j = 0; j < 6; ++j) {
+         char level = '0'+j; 
+         key = string("Effect")+effectNumber+"Level"+level+"Amount";
+         effectValues.push_back(inibin.getFloatValue("SpellData", key));
+      }
+      
+      effects.push_back(effectValues);
+      
+      ++i;
+   }
 }
 
 
@@ -32,6 +59,7 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
  * Called when the character casts the spell
  */
 bool Spell::cast(float x, float y, Unit* u) {
+   owner->setPosition(owner->getX(), owner->getY());//stop moving serverside too. TODO: check for each spell if they stop movement or not
    state = STATE_CASTING;
    currentCastTime = castTime;
    
@@ -75,52 +103,11 @@ std::string Spell::getStringForSlot(){
 
 
 
-void Spell::doLua(){
-    
-    printf("Spell from slot %i", getSlot());
-
-    LuaScript script;
-  
+void Spell::loadLua(){
    
-   float ownerX = owner->getX();
-   float ownerY = owner->getY();
-   
-   float spellX = x;
-  
-   float spellY = y;
-   
-   
-   script.lua.set_function("getOwnerX", [&ownerX]() { return ownerX; });
-   
-   script.lua.set_function("getOwnerY", [&ownerY]() { return ownerY; });
-   
-   script.lua.set_function("getSpellToX", [&spellX]() { return spellX; });
-      
-   script.lua.set_function("getSpellToY", [&spellY]() { return spellY; });
-   
-   
-   script.lua.set_function("teleportTo", [this](float _x, float _y) { // expose teleport to lua
-   owner->needsToTeleport = true;
-   owner->teleportToX = (_x-MAP_WIDTH) / 2; 
-   owner->teleportToY = (_y-MAP_HEIGHT)/2;
-   owner->setPosition(_x, _y);
-   return;
-   });
-   
-   std::string projectileName = spellName +"Missile";
+ 
    
 
-   uint32 projectileId = RAFFile::getHash(projectileName);
-   
-   
-   script.lua.set_function("addProjectile", [this, &projectileId](float toX, float toY, float projectileSpeed) { 
-   owner->setPosition(owner->getX(), owner->getY()); // stop moving
-   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projectileSpeed, projectileId);
-   owner->getMap()->addObject(p);
-   owner->getMap()->getGame()->notifyProjectileSpawn(p);
-
-   return;
-   });
    
    
 
@@ -133,6 +120,75 @@ void Spell::doLua(){
 
    try{
    script.loadScript(scriptloc); //todo: abstract class that loads a lua file for any lua
+     }catch(sol::error e){//lua error? don't crash the whole server
+       printf("%s", e.what());
+   }
+}
+
+
+
+void Spell::doLua(){
+
+   float ownerX = owner->getX(); //we need to do this for each variable exposed to Lua or we get a compiler error
+   float ownerY = owner->getY();
+   
+   float spellX = x;
+  
+   float spellY = y;
+   
+   float range = castRange;
+   
+   
+    
+   script.lua.set_function("getOwnerX", [&ownerX]() { return ownerX; });
+   
+   script.lua.set_function("getOwnerY", [&ownerY]() { return ownerY; });
+   
+   script.lua.set_function("getSpellToX", [&spellX]() { return spellX; });
+      
+   script.lua.set_function("getSpellToY", [&spellY]() { return spellY; });
+   
+   script.lua.set_function("getRange", [&range]() { return range; });
+   
+
+   
+   
+   
+   
+   script.lua.set_function("teleportTo", [this](float _x, float _y) { // expose teleport to lua
+   owner->needsToTeleport = true;
+   owner->teleportToX = (_x-MAP_WIDTH) / 2; 
+   owner->teleportToY = (_y-MAP_HEIGHT)/2;
+   owner->setPosition(_x, _y);
+   return;
+   });
+   
+
+   
+   std::string projectileName = spellName +"Missile";
+   
+   float projSpeed = projectileSpeed;
+   script.lua.set_function("getProjectileSpeed", [&projSpeed]() { return projSpeed; });
+   
+
+   uint32 projectileId = RAFFile::getHash(projectileName);
+   
+   
+   script.lua.set_function("addProjectile", [this, &projectileId, &projSpeed](float toX, float toY) { 
+   owner->setPosition(owner->getX(), owner->getY()); // stop moving
+   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, projectileId);
+   owner->getMap()->addObject(p);
+   owner->getMap()->getGame()->notifyProjectileSpawn(p);
+
+   return;
+   });
+   
+    
+    loadLua(); //comment this line for no reload on the fly, better performance
+    
+    printf("Spell from slot %i", getSlot());
+
+    try{
    script.lua.script("finishCasting()");
    }catch(sol::error e){//lua error? don't crash the whole server
        printf("%s", e.what());
@@ -168,5 +224,19 @@ uint32 Spell::getId() const {
 }
 
 void Spell::applyEffects(Target* t, Projectile* p) {
+          Unit* u = static_cast<Unit*>(t);
+       script.lua.set_function("dealPhysicalDamage", [this, &u](float amount) { // expose teleport to lua
+    u->dealDamageTo(u, amount, DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_SPELL);
+   return;
+   });
    
+          script.lua.set_function("dealMagicalDamage", [this, &u](float amount) { // expose teleport to lua
+    u->dealDamageTo(u, amount, DAMAGE_TYPE_MAGICAL, DAMAGE_SOURCE_SPELL);
+   return;
+   });
+       try{
+   script.lua.script("applyEffects()");
+   }catch(sol::error e){//lua error? don't crash the whole server
+       printf("%s", e.what());
+   }
 }

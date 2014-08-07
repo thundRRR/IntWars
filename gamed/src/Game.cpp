@@ -144,16 +144,14 @@ bool Game::initialize(ENetAddress *address, const char *baseKey){
    
    
    
-   printf("Before Lua getchampionfortype %s\n", champion.c_str() );
    Champion* c = ChampionFactory::getChampionFromType(champion, map, GetNewNetID());
-   
-   printf("After Lua getchampionfortype %s\n", champion.c_str() );
+
    c->setPosition(35.90f, 273.55f);
    
    map->addObject(c);
    
-   player->setChampion(c);
    player->setSkinNo(skin);
+   player->setChampion(c);
    static int id = 1;
    player->userId = id; // same as StartClient.bat
    id++;

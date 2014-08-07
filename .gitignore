@@ -98,8 +98,8 @@ cmake_install.cmake
 *.lnk
 
 build/
-win/NetBeans/IntWars/nbproject/private/
- 
+win/NetBeans/IntWars/nbproject/*
+win/NetBeans/IntWars/nbproject/private/* 
 # Backup & report files from converting an old project file to a newer Visual Studio version
 _UpgradeReport_Files/
 Backup*/
@@ -115,3 +115,7 @@ Makefile
 # Ninja build files
 build.ninja
 rules.ninja
+win/NetBeans/IntWars/nbproject/project.xml
+win/NetBeans/IntWars/nbproject/private/private.xml
+win/NetBeans/IntWars/nbproject/private/configurations.xml
+win/NetBeans/IntWars/nbproject/project.xml

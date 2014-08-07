@@ -25,6 +25,7 @@ protected:
    float autoAttackCurrentCooldown, autoAttackCurrentDelay;
    bool isAttacking;
    uint64 statUpdateTimer;
+   uint32 autoAttackProjId;
 
 public:
     
@@ -45,6 +46,8 @@ public:
    virtual void autoAttackHit(Unit* target);
    
    void dealDamageTo(Unit* target, float damage, DamageType type, DamageSource source);
+   
+   bool isDead() const;
 
 };
 
