@@ -5,6 +5,8 @@
 #include "Projectile.h"
 #include "RAFFile.h"
 #include <vector>
+#include "LuaScript.h"
+
 
 class Unit;
 class Champion;
@@ -15,15 +17,19 @@ enum SpellState {
    STATE_COOLDOWN
 };
 
+
+
 class Spell {
 protected:
    Champion* owner;
    uint8 level;
    uint8 slot;
    std::string spellName;
+   
+  LuaScript script;
 
-   float castTime;
-   float cooldown[5];
+   float castTime = 1.f; //fail to load spell data? then cast time is 1
+   float cooldown[5] = {1.f,1.f,1.f,1.f,1.f};//same as above
    float cost[5];
    
    // Warning : this value usually contains one of the "ad/ap" bonus coefficient, as seen in "deals 50 (+{coefficient}%) damage"
@@ -82,6 +88,8 @@ public:
     * does spell effects in lua if defined.
     */
    void doLua();
+   void loadLua();
+   void reloadLua();
    
    void setSlot(int _slot){
        slot=_slot;

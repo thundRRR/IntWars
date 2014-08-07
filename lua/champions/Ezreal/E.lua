@@ -24,3 +24,6 @@ teleportTo(trueCoords.x, trueCoords.y)
 print("Ezreal E used from Lua, teleporting to " ..trueCoords.x .. " " .. trueCoords.y)
 end
 
+function applyEffects()
+
+end

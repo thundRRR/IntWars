@@ -96,13 +96,32 @@ std::string Spell::getStringForSlot(){
 
 
 
-void Spell::doLua(){
-    
-    printf("Spell from slot %i", getSlot());
-
-    LuaScript script;
-  
+void Spell::loadLua(){
    
+ 
+   
+
+   
+   
+
+
+   
+   std::string scriptloc = "../../lua/champions/" + owner->getType() + "/" + getStringForSlot() + ".lua"; //lua/championname/(q/w/e/r), example: /lua/Ezreal/q, also for stuff like nidalee cougar they will have diff folders!
+
+   printf("Spell script loc is: %s \n" , scriptloc.c_str());
+   script.lua.script("package.path = '../../lua/lib/?.lua;' .. package.path"); //automatically load vector lib so scripters dont have to worry about path
+
+   try{
+   script.loadScript(scriptloc); //todo: abstract class that loads a lua file for any lua
+     }catch(sol::error e){//lua error? don't crash the whole server
+       printf("%s", e.what());
+   }
+}
+
+
+
+void Spell::doLua(){
+
    float ownerX = owner->getX();
    float ownerY = owner->getY();
    
@@ -110,7 +129,7 @@ void Spell::doLua(){
   
    float spellY = y;
    
-   
+    
    script.lua.set_function("getOwnerX", [&ownerX]() { return ownerX; });
    
    script.lua.set_function("getOwnerY", [&ownerY]() { return ownerY; });
@@ -128,6 +147,8 @@ void Spell::doLua(){
    return;
    });
    
+
+   
    std::string projectileName = spellName +"Missile";
    
 
@@ -143,17 +164,12 @@ void Spell::doLua(){
    return;
    });
    
-   
+    
+    loadLua(); //comment this line for no reload on the fly, better performance
+    
+    printf("Spell from slot %i", getSlot());
 
-
-   
-   std::string scriptloc = "../../lua/champions/" + owner->getType() + "/" + getStringForSlot() + ".lua"; //lua/championname/(q/w/e/r), example: /lua/Ezreal/q, also for stuff like nidalee cougar they will have diff folders!
-
-   printf("Spell script loc is: %s \n" , scriptloc.c_str());
-   script.lua.script("package.path = '../../lua/lib/?.lua;' .. package.path"); //automatically load vector lib so scripters dont have to worry about path
-
-   try{
-   script.loadScript(scriptloc); //todo: abstract class that loads a lua file for any lua
+    try{
    script.lua.script("finishCasting()");
    }catch(sol::error e){//lua error? don't crash the whole server
        printf("%s", e.what());
@@ -189,5 +205,14 @@ uint32 Spell::getId() const {
 }
 
 void Spell::applyEffects(Target* t, Projectile* p) {
-   
+          Unit* u = static_cast<Unit*>(t);
+       script.lua.set_function("setTargetHp", [this, &u](float _hp) { // expose teleport to lua
+           u->getStats().setCurrentHealth(_hp);
+   return;
+   });
+       try{
+   script.lua.script("applyEffects()");
+   }catch(sol::error e){//lua error? don't crash the whole server
+       printf("%s", e.what());
+   }
 }
