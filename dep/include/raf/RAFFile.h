@@ -29,10 +29,10 @@ public:
    static uint32 getHash(const std::string& path);
 
 private:
-   FileReader rafDataFile;
    
    RAFHeader header;
    std::map<uint32, FileEntry> fileEntries;
+   std::string filename;
 
 };
 

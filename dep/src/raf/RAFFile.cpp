@@ -6,7 +6,7 @@
 
 using namespace std;
 
-RAFFile::RAFFile(const std::string& filename) : rafDataFile(filename+".dat") {
+RAFFile::RAFFile(const std::string& filename) : filename(filename) {
    FileReader rafHeaderFile(filename);
    rafHeaderFile >> header;
    
@@ -50,6 +50,8 @@ bool RAFFile::readFile(const std::string& path, vector<unsigned char>& toFill) {
    if(entry == fileEntries.end()) {
       return false;
    }
+   
+   FileReader rafDataFile(filename+".dat");
    
    rafDataFile.seek(entry->second.offset);
    rafDataFile.read(compressedFile, entry->second.size);
