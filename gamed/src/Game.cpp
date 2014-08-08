@@ -26,10 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "LuaScript.h"
 #include "SummonersRift.h"
 
-
-
-
-
 #define REFRESH_RATE 5
 
 uint32 GetNewNetID() {

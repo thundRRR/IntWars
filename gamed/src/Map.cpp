@@ -17,21 +17,35 @@ void Map::update(int64 diff) {
       }
       
       Unit* u = dynamic_cast<Unit*>(kv->second);
+      if(!u) {
+         ++kv;
+         continue;
+      }
       
-      
-      if(u && u->needsToTeleport == true){
+      if(u->needsToTeleport == true){
           game->notifyTeleport(u);
          
       }
       
-      if(u && !u->getStats().getUpdatedStats().empty()) {
+      if(!u->getStats().getUpdatedStats().empty()) {
          game->notifyUpdatedStats(u);
          u->getStats().clearUpdatedStats();
       }
       
-      if(u && u->getStats().isUpdatedHealth()) {
+      if(u->getStats().isUpdatedHealth()) {
          game->notifySetHealth(u);
          u->getStats().clearUpdatedHealth();
+      }
+      
+      Champion* c = dynamic_cast<Champion*>(u);
+      if(!c) {
+         ++kv;
+         continue;
+      }
+      
+      if(c->getStats().getLevel() < getExpToLevelUp().size() && c->getStats().getExp() >= getExpToLevelUp()[c->getStats().getLevel()]) {
+         printf("Champion %s Levelup to %02.0f\n", c->getType().c_str(), c->getStats().getLevel()+1);
+         c->getStats().levelUp(getExpToLevelUp()[c->getStats().getLevel()]);
       }
       
       ++kv;

@@ -59,8 +59,20 @@ void Stats::update(int64 diff) {
       newMana = std::min(getMaxMana(), newMana);
       setCurrentMana(newMana);
    }
-   if(getGoldPer5() > 0){//todo: only generate gold if time > whatever time gold starts generating
-     float newGold = getGold()+(getGoldPer5()/5.f)*(diff*0.000001);
+   if(getGoldPerSecond() > 0){//todo: only generate gold if time > whatever time gold starts generating
+     float newGold = getGold()+getGoldPerSecond()*(diff*0.000001);
      setGold(newGold);
    }
+}
+
+void Stats::levelUp(uint32 levelXp) {
+   setLevel(getLevel()+1);
+   
+   setMaxHealth(getMaxHealth()+healthPerLevel);
+   setMaxMana(getMaxMana()+manaPerLevel);
+   setBaseAd(getBaseAd()+adPerLevel);
+   setArmor(getArmor()+armorPerLevel);
+   setMagicArmor(getMagicArmor()+magicArmorPerLevel);
+   
+   setExp(getExp()-levelXp);
 }
