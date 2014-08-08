@@ -27,7 +27,7 @@ protected:
 public:
    Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition position);
    uint32 getPosition() const { return position; }
-   uint32 getType() const { return type; }
+   uint8 getType() const { return type; }
 
 };
 
