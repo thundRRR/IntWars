@@ -64,12 +64,13 @@ protected:
    bool updatedHealth;
    
    // Here all the stats that don't have a bitmask
-   float goldPer5;
+   float goldPerSecond;
+   float healthPerLevel, manaPerLevel;
    float adPerLevel, armorPerLevel, magicArmorPerLevel;
    
 public:
 
-   Stats() : updatedHealth(false) { }
+   Stats() : updatedHealth(false), goldPerSecond(0), healthPerLevel(0), manaPerLevel(0), adPerLevel(0), armorPerLevel(0), magicArmorPerLevel(0) { }
 
    float getStat(uint8 blockId, uint32 stat) const;
    void setStat(uint8 blockId, uint32 stat, float value);
@@ -79,6 +80,9 @@ public:
    
    bool isUpdatedHealth() const { return updatedHealth; }
    void clearUpdatedHealth() { updatedHealth = false; }
+   
+   void update(int64 diff);
+   void levelUp(uint32 levelXp);
    
    virtual bool isFloat(uint8 blockId, uint32 stat);
 
@@ -158,8 +162,16 @@ public:
       return getStat(MM_One, FM1_Gold);
    }
    
-   virtual float getGoldPer5(){
-      return goldPer5;    
+   virtual float getGoldPerSecond(){
+      return goldPerSecond;
+   }
+   
+   virtual float getLevel() {
+      return getStat(MM_Four, FM4_Level);
+   }
+   
+   virtual float getExp() {
+      return getStat(MM_Four, FM4_exp);
    }
    
    
@@ -225,8 +237,8 @@ public:
       setStat(MM_One, FM1_Gold, gold);
    }
    
-   virtual void setGoldPer5(float gold) {
-      goldPer5 = gold;
+   virtual void setGoldPerSecond(float gold) {
+      goldPerSecond = gold;
    }
 
    virtual void setBaseAp(float AP) {
@@ -252,7 +264,25 @@ public:
       return setStat(MM_Two, FM2_Atks_multiplier, multiplier);
    }
    
-   void update(int64 diff);
+   virtual void setAdPerLevel(float ad) {
+      adPerLevel = ad;
+   }
+   
+   virtual void setHealthPerLevel(float health) {
+      healthPerLevel = health;
+   }
+   
+   virtual void setManaPerLevel(float mana) {
+      manaPerLevel = mana;
+   }
+   
+   virtual void setArmorPerLevel(float armor) {
+      armorPerLevel = armor;
+   }
+   
+   virtual void setMagicArmorPerLevel(float magicArmor) {
+      magicArmorPerLevel = magicArmor;
+   }
    
    /**
     * Meta-stats, relying on other stats

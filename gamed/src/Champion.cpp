@@ -1,10 +1,12 @@
 #include "Champion.h"
 #include "RAFManager.h"
 #include "Inibin.h"
+#include "Map.h"
 
 Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id, new Stats()), type(type), skillPoints(1), level(1)  {
    stats->setGold(475.0f);
    stats->setAttackSpeedMultiplier(1.0f);
+   stats->setGoldPerSecond(map->getGoldPerSecond());
 
    std::vector<unsigned char> iniFile;
    if(!RAFManager::getInstance()->readFile("DATA/Characters/"+type+"/"+type+".inibin", iniFile)) {
@@ -13,10 +15,8 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    }
    
    Inibin inibin(iniFile);
-
-   printf("Loading champion type %s", type.c_str());
    
-   stats->setCurrentHealth(inibin.getFloatValue("Data", "BaseHP")); // Why rito ? why maxHP as a string and mana as a float ?
+   stats->setCurrentHealth(inibin.getFloatValue("Data", "BaseHP"));
    stats->setMaxHealth(inibin.getFloatValue("Data", "BaseHP"));
    stats->setCurrentMana(inibin.getFloatValue("Data", "BaseMP"));
    stats->setMaxMana(inibin.getFloatValue("Data", "BaseMP"));
@@ -25,8 +25,14 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    stats->setMovementSpeed(inibin.getFloatValue("DATA", "MoveSpeed"));
    stats->setArmor(inibin.getFloatValue("DATA", "Armor"));
    stats->setMagicArmor(inibin.getFloatValue("DATA", "SpellBlock"));
-   stats->setHp5(inibin.getFloatValue("DATA", "BaseStaticHPRegen"));
-   stats->setMp5(inibin.getFloatValue("DATA", "BaseStaticMPRegen"));
+   stats->setHp5(inibin.getFloatValue("DATA", "BaseStaticHPRegen")*5);
+   stats->setMp5(inibin.getFloatValue("DATA", "BaseStaticMPRegen")*5);
+   
+   stats->setHealthPerLevel(inibin.getFloatValue("DATA", "HPPerLevel"));
+   stats->setManaPerLevel(inibin.getFloatValue("DATA", "MPPerLevel"));
+   stats->setAdPerLevel(inibin.getFloatValue("DATA", "DamagePerLevel"));
+   stats->setArmorPerLevel(inibin.getFloatValue("DATA", "ArmorPerLevel"));
+   stats->setMagicArmorPerLevel(inibin.getFloatValue("DATA", "SpellBlockPerLevel"));
    
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell1"), 0));
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell2"), 1));

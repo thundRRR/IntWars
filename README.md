@@ -5,23 +5,12 @@ About
 ------
 New: Website to provide a central location to discuss the project! http://leaguesandbox.com/
 
-Fork of the 2 year old (outdated project), IntWars. Emulates LoL server environment.  
+This is a fork of the 2 year old project, IntWars. It's a server framework for the MOBA games family.
 If you want to contribute to the project, please fork the repo and upload any progress to GitHub.  
 If you need help compiling the source on Windows, [check here](http://leaguesandbox.com/forum/viewtopic.php?f=6&t=4).
 
-Content:
-* Load Screen: http://puu.sh/8cbhW.jpg
-* Ingame: http://puu.sh/8cbiX.jpg
-
-
-Instructions:
-* Run gamed.exe
-* Run StartClient.bat
-* If StartClient.bat does not work, run the game with this command: "League of Legends.exe" "8394" "LoLLauncher.exe" "C:/Riot Games/League of Legends/RADS/projects/lol_air_client/releases/0.0.1.79/deploy/LolClient.exe" "127.0.0.1 5119 17BLOhi6KZsTtldTsizvHg== 47917791"
-
 Important rules and information
 ---------
-* Use this style reference for all your code: http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml
 * Keep this project clean and simple
 * The project is using parts of the C++ 2011 standard.
 
