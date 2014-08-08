@@ -281,60 +281,7 @@ struct Unk {
    uint32 targetNetId;
 };
 
-/*struct MinionSpawn {
-   
-   MinionSpawn(const Minion* m) : netId1(m->getNetId()), netId2(m->getNetId()), netId3(m->getNetId()), skinHash(m->getPosition()), minionType(m->getType()) {//unk8(0x0ff84540f546f424)
-      header.cmd = PKT_S2C_MinionSpawn;
-      header.netId = m->getNetId();
-   //   memcpy(unk6, "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00\x00\x06", 36);
-      toX = 500.0f;
-      toZ = 500.0f;
-      toY = 500.0f;
-      //unk(0x00150017
-   }
 
-   PacketHeader header;
-   
-   //uint32 unk;//
-   uint16 extraDataSize = 0x17;
-   uint16 unk = 0x15;
-   uint8 typee = 3;
-   uint32 netId1;
-   uint32 netId2;
-   uint32 skinHash;
-   uint8 unkk = 0xFF;
-   uint8 unkkk = 0x01;
-   uint8 minionType;
-   uint8 unk1[5];
-   uint8 unk2[13];
-   uint8 unk3 = 0x80; // always 0x80 
-   uint8 unk4 = 0x3F;// always 0x3F
-   uint8 unk5[13];
-   uint8 idk = 0x02;
-   uint8 idk2 = 0xD4;
-   uint8 idk3 = 0x25;
-   uint16 idk4 = 0x0;
-   uint8 type = 0x07;
-   uint32 netId3;
-   float toX;
-   float toY;
-   float toZ;
-   
-   /*uint8 unk2;
-   uint32 netId, netId2;
-   uint32 position;
-   uint8 unk4;
-   uint8 unk5_1;
-   uint8 type;
-   uint8 unk5_3;
-   uint8 unk5_4;
-   uint8 unk6[36];
-   uint32 netId3;
-   uint8 unk7;
-   float toX;
-   float toY;
-  // uint64 unk8;
-};*/
 
 
 struct MinionSpawn{
@@ -358,7 +305,7 @@ uint32 netId2;
 uint32 spawnAt;
 uint8 number17= 0xff;
 uint8 number18= 0x1;
-uint8 minionType;
+uint8 minionType;   
 uint8 number20= 0x0;
 uint8 number21= 0x0;
 uint8 number22= 0xa;
