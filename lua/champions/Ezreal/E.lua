@@ -18,8 +18,7 @@ function finishCasting()
 
     addParticle("Ezreal_arcaneshift_cas.troy", getOwnerX(), getOwnerY());
     teleportTo(trueCoords.x, trueCoords.y)
-    addParticle("Ezreal_arcaneshift_flash.troy", trueCoords.x, trueCoords.y);
-
+    addParticleUnit("Ezreal_arcaneshift_flash.troy", getOwner());
     
     print("Ezreal E used from Lua, teleporting to " ..trueCoords.x .. " " .. trueCoords.y)
 end

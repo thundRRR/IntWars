@@ -229,8 +229,6 @@ bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
    //TODO, Implement stop commands
    case STOP:
    {
-       
-       
        //TODO anticheat, currently it trusts client 100%
        
       peerInfo(peer)->getChampion()->setPosition(request->x, request->y);

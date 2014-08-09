@@ -52,6 +52,18 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
       
       ++i;
    }
+   
+   iniFile.clear();
+   if(!RAFManager::getInstance()->readFile("DATA/Spells/"+spellName+"Missile.inibin", iniFile)) {
+      if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+"Missile.inibin", iniFile)) {
+         return;
+      }
+   }
+   
+   Inibin projectile(iniFile);
+   
+   castRange = projectile.getFloatValue("SpellData", "CastRange");
+   projectileSpeed = projectile.getFloatValue("SpellData", "MissileSpeed");
 }
 
 
@@ -128,19 +140,19 @@ void Spell::doLua(){
    float spellY = y;
    
    float range = castRange;
-    
+   
+   script.lua.set_function("getOwner", [this]() { return owner; });
    script.lua.set_function("getOwnerX", [&ownerX]() { return ownerX; });
    script.lua.set_function("getOwnerY", [&ownerY]() { return ownerY; });
    script.lua.set_function("getSpellToX", [&spellX]() { return spellX; });
    script.lua.set_function("getSpellToY", [&spellY]() { return spellY; });
    script.lua.set_function("getRange", [&range]() { return range; });
    script.lua.set_function("teleportTo", [this](float _x, float _y) { // expose teleport to lua
-   
-   owner->needsToTeleport = true;
-   owner->teleportToX = (_x-MAP_WIDTH) / 2; 
-   owner->teleportToY = (_y-MAP_HEIGHT)/2;
-   owner->setPosition(_x, _y);
-   return;
+      owner->needsToTeleport = true;
+      owner->teleportToX = (_x-MAP_WIDTH) / 2; 
+      owner->teleportToY = (_y-MAP_HEIGHT)/2;
+      owner->setPosition(_x, _y);
+      return;
    });
    
    std::string projectileName = spellName +"Missile";
@@ -162,6 +174,11 @@ void Spell::doLua(){
       Target* t = new Target(toX, toY);
       owner->getMap()->getGame()->notifyParticleSpawn(owner, t, particle);
       delete t;
+      return;
+   });
+   
+   script.lua.set_function("addParticleUnit", [this](const std::string& particle, Unit* u) { 
+      owner->getMap()->getGame()->notifyParticleSpawn(owner, u, particle);
       return;
    });
     
@@ -203,16 +220,46 @@ uint32 Spell::getId() const {
    return RAFFile::getHash(spellName);
 }
 
-void Spell::applyEffects(Target* t, Projectile* p) {
-   Unit* u = static_cast<Unit*>(t);
-    
-   script.lua.set_function("dealPhysicalDamage", [this, &u](float amount) { // expose teleport to lua
-      u->dealDamageTo(u, amount, DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_SPELL);
+void Spell::applyEffects(Unit* u, Projectile* p) {
+   
+   script.lua.set_function("getTarget", [&u]() { return u; });
+   script.lua.set_function("getOwner", [this]() { return owner; });
+   
+   script.lua.set_function("getSide", [this](Object* o) { return o->getSide(); });
+   script.lua.set_function("isDead", [this](Unit* u) { return u->isDead(); });
+   
+   script.lua.set_function("getEffectValue", [this](uint32 effectNo) {
+      if(effectNo >= effects.size() || level >= effects[effectNo].size()) {
+         return 0.f;
+      }
+      return effects[effectNo][level];
+   });
+   
+   script.lua.set_function("dealPhysicalDamage", [this, &u](float amount) {
+      owner->dealDamageTo(u, amount, DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_SPELL);
       return;
    });
    
-   script.lua.set_function("dealMagicalDamage", [this, &u](float amount) { // expose teleport to lua
-      u->dealDamageTo(u, amount, DAMAGE_TYPE_MAGICAL, DAMAGE_SOURCE_SPELL);
+   script.lua.set_function("dealMagicalDamage", [this, &u](float amount) {
+      owner->dealDamageTo(u, amount, DAMAGE_TYPE_MAGICAL, DAMAGE_SOURCE_SPELL);
+      return;
+   });
+   
+   script.lua.set_function("addParticle", [this](const std::string& particle, float toX, float toY) { 
+      Target* t = new Target(toX, toY);
+      owner->getMap()->getGame()->notifyParticleSpawn(owner, t, particle);
+      delete t;
+      return;
+   });
+   
+   script.lua.set_function("addParticleTarget", [this](const std::string& particle, Target* t) { 
+      owner->getMap()->getGame()->notifyParticleSpawn(owner, t, particle);
+      return;
+   });
+   
+   script.lua.set_function("destroyProjectile", [this, &p]() { 
+      p->setToRemove();
+      p->getMap()->getGame()->notifyProjectileDestroy(p);
       return;
    });
    

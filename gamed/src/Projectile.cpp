@@ -20,8 +20,11 @@ void Projectile::update(int64 diff) {
          }
          
          if(collide(it.second) && it.second->getNetId() != getNetId()) {//projectile shouldn't collide with itself
-            printf("Collide with 0x%08X !\n", it.second->getNetId());
-            originSpell->applyEffects(it.second, this);
+            Unit* u = dynamic_cast<Unit*>(it.second);
+            if(!u) {
+               continue;
+            }
+            originSpell->applyEffects(u, this);
          }
       }
    } else {

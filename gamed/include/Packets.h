@@ -952,6 +952,11 @@ public:
    }
 };
 
+class DestroyProjectile : public BasePacket {
+public:
+   DestroyProjectile(Projectile* p) : BasePacket(PKT_S2C_DestroyProjectile, p->getNetId()) { }
+};
+
 class UpdateStats : public GamePacket {
 public:
    UpdateStats(Unit* u) : GamePacket(PKT_S2C_CharStats, u->getNetId()) {

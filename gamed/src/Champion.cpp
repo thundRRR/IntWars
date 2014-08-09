@@ -3,7 +3,7 @@
 #include "Inibin.h"
 #include "Map.h"
 
-Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id, new Stats()), type(type), skillPoints(1), level(1)  {
+Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id, new Stats()), type(type), skillPoints(0), level(1)  {
    stats->setGold(475.0f);
    stats->setAttackSpeedMultiplier(1.0f);
    stats->setGoldPerSecond(map->getGoldPerSecond());
@@ -88,6 +88,12 @@ Spell* Champion::levelUpSpell(uint8 slot) {
 
 void Champion::update(int64 diff) {
    Unit::update(diff);
+   
+   if(getStats().getLevel() < map->getExpToLevelUp().size() && getStats().getExp() >= map->getExpToLevelUp()[getStats().getLevel()]) {
+      printf("Champion %s Levelup to %02.0f\n", getType().c_str(), getStats().getLevel()+1);
+      getStats().levelUp(map->getExpToLevelUp()[getStats().getLevel()]);
+      ++skillPoints;
+   }
    
    for(Spell* s : spells) {
       s->update(diff);

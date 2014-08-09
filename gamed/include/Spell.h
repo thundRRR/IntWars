@@ -72,7 +72,7 @@ public:
     * Called by projectiles when they land / hit
     * In here we apply the effects : damage, buffs, debuffs...
     */
-   virtual void applyEffects(Target* t, Projectile* p = 0);
+   virtual void applyEffects(Unit* t, Projectile* p = 0);
    
    Champion* getOwner() const { return owner; }
    

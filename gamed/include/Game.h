@@ -78,6 +78,7 @@ class Game
       void notifyAutoAttack(Unit* attacker, Unit* victim, uint32 futureProjNetId);
       void notifyTeleport(Unit* u);
       void notifyProjectileSpawn(Projectile* p);
+      void notifyProjectileDestroy(Projectile* p);
       void notifyParticleSpawn(Champion* source, Target* target, const std::string& particleName);
    
 
