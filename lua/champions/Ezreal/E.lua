@@ -16,7 +16,11 @@ function finishCasting()
         trueCoords = Vector2:new(getSpellToX(), getSpellToY())
     end
 
+    addParticle("Ezreal_arcaneshift_cas.troy", getOwnerX(), getOwnerY());
     teleportTo(trueCoords.x, trueCoords.y)
+    addParticle("Ezreal_arcaneshift_flash.troy", trueCoords.x, trueCoords.y);
+
+    
     print("Ezreal E used from Lua, teleporting to " ..trueCoords.x .. " " .. trueCoords.y)
 end
 

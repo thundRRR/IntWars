@@ -17,8 +17,6 @@ enum SpellState {
    STATE_COOLDOWN
 };
 
-
-
 class Spell {
 protected:
    Champion* owner;
@@ -26,7 +24,7 @@ protected:
    uint8 slot;
    std::string spellName;
    
-  LuaScript script;
+   LuaScript script;
 
    float castTime;
    float castRange;

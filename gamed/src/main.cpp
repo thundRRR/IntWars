@@ -40,18 +40,15 @@ int main(int argc, char ** argv)
       return EXIT_FAILURE;
    }
    
-   printf("Game started");
+   puts("Game started");
 
 	Game g;
 	ENetAddress address;
 	address.host = SERVER_HOST;
 	address.port = SERVER_PORT;
-   
-   
 
 	g.initialize(&address, SERVER_KEY);
-  
-    printf("Init\n");
+
 	g.netLoop();
    
 	

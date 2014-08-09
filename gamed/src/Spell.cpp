@@ -104,15 +104,7 @@ std::string Spell::getStringForSlot(){
 
 
 void Spell::loadLua(){
-   
- 
-   
 
-   
-   
-
-
-   
    std::string scriptloc = "../../lua/champions/" + owner->getType() + "/" + getStringForSlot() + ".lua"; //lua/championname/(q/w/e/r), example: /lua/Ezreal/q, also for stuff like nidalee cougar they will have diff folders!
 
    printf("Spell script loc is: %s \n" , scriptloc.c_str());
@@ -133,29 +125,17 @@ void Spell::doLua(){
    float ownerY = owner->getY();
    
    float spellX = x;
-  
    float spellY = y;
    
    float range = castRange;
-   
-   
     
    script.lua.set_function("getOwnerX", [&ownerX]() { return ownerX; });
-   
    script.lua.set_function("getOwnerY", [&ownerY]() { return ownerY; });
-   
    script.lua.set_function("getSpellToX", [&spellX]() { return spellX; });
-      
    script.lua.set_function("getSpellToY", [&spellY]() { return spellY; });
-   
    script.lua.set_function("getRange", [&range]() { return range; });
-   
-
-   
-   
-   
-   
    script.lua.set_function("teleportTo", [this](float _x, float _y) { // expose teleport to lua
+   
    owner->needsToTeleport = true;
    owner->teleportToX = (_x-MAP_WIDTH) / 2; 
    owner->teleportToY = (_y-MAP_HEIGHT)/2;
@@ -163,35 +143,36 @@ void Spell::doLua(){
    return;
    });
    
-
-   
    std::string projectileName = spellName +"Missile";
    
    float projSpeed = projectileSpeed;
    script.lua.set_function("getProjectileSpeed", [&projSpeed]() { return projSpeed; });
-   
 
    uint32 projectileId = RAFFile::getHash(projectileName);
    
-   
    script.lua.set_function("addProjectile", [this, &projectileId, &projSpeed](float toX, float toY) { 
-   owner->setPosition(owner->getX(), owner->getY()); // stop moving
-   Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, projectileId);
-   owner->getMap()->addObject(p);
-   owner->getMap()->getGame()->notifyProjectileSpawn(p);
+      Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, projectileId);
+      owner->getMap()->addObject(p);
+      owner->getMap()->getGame()->notifyProjectileSpawn(p);
 
-   return;
+      return;
    });
    
+   script.lua.set_function("addParticle", [this](const std::string& particle, float toX, float toY) { 
+      Target* t = new Target(toX, toY);
+      owner->getMap()->getGame()->notifyParticleSpawn(owner, t, particle);
+      delete t;
+      return;
+   });
     
-    loadLua(); //comment this line for no reload on the fly, better performance
-    
-    printf("Spell from slot %i", getSlot());
+   loadLua(); //comment this line for no reload on the fly, better performance
 
-    try{
-   script.lua.script("finishCasting()");
+   printf("Spell from slot %i\n", getSlot());
+
+   try{
+      script.lua.script("finishCasting()");
    }catch(sol::error e){//lua error? don't crash the whole server
-       printf("%s", e.what());
+      printf("%s", e.what());
    }
 }
 
@@ -200,22 +181,21 @@ void Spell::doLua(){
  */
 void Spell::update(int64 diff) {
    switch(state) {
-      case STATE_READY:
-         return;
-      case STATE_CASTING:
-          
-    printf("Update spell %s , currentCastTime %f\n" , getStringForSlot().c_str(), (float)currentCastTime);
-         currentCastTime -= diff/1000000.f;
-         if(currentCastTime <= 0) {
-            finishCasting();
-         }
-         break;
-      case STATE_COOLDOWN:
-         currentCooldown -= diff/1000000.f;
-         if(currentCooldown < 0) {
-            state = STATE_READY;
-         }
-         break;
+   case STATE_READY:
+      return;
+   case STATE_CASTING:
+       
+      currentCastTime -= diff/1000000.f;
+      if(currentCastTime <= 0) {
+         finishCasting();
+      }
+      break;
+   case STATE_COOLDOWN:
+      currentCooldown -= diff/1000000.f;
+      if(currentCooldown < 0) {
+         state = STATE_READY;
+      }
+      break;
    }
 }
 
@@ -224,19 +204,21 @@ uint32 Spell::getId() const {
 }
 
 void Spell::applyEffects(Target* t, Projectile* p) {
-          Unit* u = static_cast<Unit*>(t);
-       script.lua.set_function("dealPhysicalDamage", [this, &u](float amount) { // expose teleport to lua
-    u->dealDamageTo(u, amount, DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_SPELL);
-   return;
+   Unit* u = static_cast<Unit*>(t);
+    
+   script.lua.set_function("dealPhysicalDamage", [this, &u](float amount) { // expose teleport to lua
+      u->dealDamageTo(u, amount, DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_SPELL);
+      return;
    });
    
-          script.lua.set_function("dealMagicalDamage", [this, &u](float amount) { // expose teleport to lua
-    u->dealDamageTo(u, amount, DAMAGE_TYPE_MAGICAL, DAMAGE_SOURCE_SPELL);
-   return;
+   script.lua.set_function("dealMagicalDamage", [this, &u](float amount) { // expose teleport to lua
+      u->dealDamageTo(u, amount, DAMAGE_TYPE_MAGICAL, DAMAGE_SOURCE_SPELL);
+      return;
    });
-       try{
-   script.lua.script("applyEffects()");
+   
+   try{
+      script.lua.script("applyEffects()");
    }catch(sol::error e){//lua error? don't crash the whole server
-       printf("%s", e.what());
+      printf("%s\n", e.what());
    }
 }
