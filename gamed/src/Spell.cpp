@@ -9,6 +9,8 @@
 using namespace std;
 
 Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0), castTime(1.f), castRange(1000.f), projectileSpeed(2000.f) {
+   script.lua.script("package.path = '../../lua/lib/?.lua;' .. package.path"); //automatically load vector lib so scripters dont have to worry about path
+   
    for(int i = 0; i < 5; ++i) {
       cooldown[i] = 1.0f;
    }
@@ -120,7 +122,6 @@ void Spell::loadLua(){
    std::string scriptloc = "../../lua/champions/" + owner->getType() + "/" + getStringForSlot() + ".lua"; //lua/championname/(q/w/e/r), example: /lua/Ezreal/q, also for stuff like nidalee cougar they will have diff folders!
 
    printf("Spell script loc is: %s \n" , scriptloc.c_str());
-   script.lua.script("package.path = '../../lua/lib/?.lua;' .. package.path"); //automatically load vector lib so scripters dont have to worry about path
 
    try{
    script.loadScript(scriptloc); //todo: abstract class that loads a lua file for any lua
@@ -141,7 +142,6 @@ void Spell::doLua(){
    
    float range = castRange;
    
-   script.lua.set_function("getOwner", [this]() { return owner; });
    script.lua.set_function("getOwnerX", [&ownerX]() { return ownerX; });
    script.lua.set_function("getOwnerY", [&ownerY]() { return ownerY; });
    script.lua.set_function("getSpellToX", [&spellX]() { return spellX; });
@@ -154,6 +154,18 @@ void Spell::doLua(){
       owner->setPosition(_x, _y);
       return;
    });
+   
+   script.lua.set_function("getEffectValue", [this](uint32 effectNo) {
+      if(effectNo >= effects.size() || level >= effects[effectNo].size()) {
+         return 0.f;
+      }
+      return effects[effectNo][level];
+   });
+   
+   script.lua.set_function("getOwner", [this]() { return owner; });
+   
+   script.lua.set_function("getSide", [this](Object* o) { return o->getSide(); });
+   script.lua.set_function("isDead", [this](Unit* u) { return u->isDead(); });
    
    std::string projectileName = spellName +"Missile";
    
@@ -177,7 +189,7 @@ void Spell::doLua(){
       return;
    });
    
-   script.lua.set_function("addParticleUnit", [this](const std::string& particle, Unit* u) { 
+   script.lua.set_function("addParticleTarget", [this](const std::string& particle, Target* u) { 
       owner->getMap()->getGame()->notifyParticleSpawn(owner, u, particle);
       return;
    });
@@ -223,17 +235,6 @@ uint32 Spell::getId() const {
 void Spell::applyEffects(Unit* u, Projectile* p) {
    
    script.lua.set_function("getTarget", [&u]() { return u; });
-   script.lua.set_function("getOwner", [this]() { return owner; });
-   
-   script.lua.set_function("getSide", [this](Object* o) { return o->getSide(); });
-   script.lua.set_function("isDead", [this](Unit* u) { return u->isDead(); });
-   
-   script.lua.set_function("getEffectValue", [this](uint32 effectNo) {
-      if(effectNo >= effects.size() || level >= effects[effectNo].size()) {
-         return 0.f;
-      }
-      return effects[effectNo][level];
-   });
    
    script.lua.set_function("dealPhysicalDamage", [this, &u](float amount) {
       owner->dealDamageTo(u, amount, DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_SPELL);
@@ -242,18 +243,6 @@ void Spell::applyEffects(Unit* u, Projectile* p) {
    
    script.lua.set_function("dealMagicalDamage", [this, &u](float amount) {
       owner->dealDamageTo(u, amount, DAMAGE_TYPE_MAGICAL, DAMAGE_SOURCE_SPELL);
-      return;
-   });
-   
-   script.lua.set_function("addParticle", [this](const std::string& particle, float toX, float toY) { 
-      Target* t = new Target(toX, toY);
-      owner->getMap()->getGame()->notifyParticleSpawn(owner, t, particle);
-      delete t;
-      return;
-   });
-   
-   script.lua.set_function("addParticleTarget", [this](const std::string& particle, Target* t) { 
-      owner->getMap()->getGame()->notifyParticleSpawn(owner, t, particle);
       return;
    });
    
