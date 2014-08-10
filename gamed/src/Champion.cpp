@@ -3,7 +3,7 @@
 #include "Inibin.h"
 #include "Map.h"
 
-Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id, new Stats()), type(type), skillPoints(0), level(1)  {
+Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id, type, new Stats()), type(type), skillPoints(0), level(1)  {
    stats->setGold(475.0f);
    stats->setAttackSpeedMultiplier(1.0f);
    stats->setGoldPerSecond(map->getGoldPerSecond());

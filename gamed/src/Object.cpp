@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Object::Object(Map* map, uint32 id, float x, float y, uint32 collisionRadius) : Target(x, y), map(map), id(id), target(0), collisionRadius(collisionRadius), side(0), movementUpdated(false), toRemove(false), unitTarget(0) {
+Object::Object(Map* map, uint32 id, std::string model, float x, float y, uint32 collisionRadius) : Target(x, y), map(map), id(id), target(0), collisionRadius(collisionRadius), model(model), side(0), movementUpdated(false), toRemove(false), unitTarget(0) {
 }
 
 Object::~Object() {
@@ -72,6 +72,15 @@ void Object::Move(int64 diff) {
          setTarget(waypoints[curWaypoint].toTarget());
       }
 	}
+}
+
+void Object::setModel(std::string newModel) {
+    model = newModel;
+    modelUpdated = false;
+}
+
+std::string Object::getModel() {
+    return model;
 }
 
 void Object::update(int64 diff) {

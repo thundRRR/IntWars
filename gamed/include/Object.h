@@ -52,10 +52,12 @@ protected:
    
    uint32 collisionRadius;
    
+   std::string model;
+   
 public:
 	
    virtual ~Object();
-   Object(Map* map, uint32 id, float x, float y, uint32 collisionRadius);
+   Object(Map* map, uint32 id, std::string model, float x, float y, uint32 collisionRadius);
 
    /**
    * Moves the object depending on its target, updating its coordinate.
@@ -71,6 +73,10 @@ public:
    */
    void setSide(unsigned int side) { this->side = side; }
    unsigned int getSide() { return side; }
+   
+   void setModel(std::string newModel);
+   std::string getModel();
+   bool modelUpdated;
 
    virtual void update(int64 diff);
    virtual float getMoveSpeed() const = 0;

@@ -419,8 +419,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
       // Model
       if(strncmp(message->getMessage(), cmd[8], strlen(cmd[8])) == 0) {
          std::string sModel = (char *)&message->getMessage()[strlen(cmd[8]) + 1];
-         UpdateModel modelPacket(peerInfo(peer)->getChampion()->getNetId(), (char *)sModel.c_str()); //96
-         broadcastPacket(reinterpret_cast<uint8 *>(&modelPacket), sizeof(UpdateModel), CHL_S2C);
+         peerInfo(peer)->getChampion()->setModel(sModel);
          return true;
       }
       

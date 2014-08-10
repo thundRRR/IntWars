@@ -14,6 +14,11 @@ void Map::update(int64 diff) {
          kv->second->clearMovementUpdated();
       }
       
+      if(!kv->second->modelUpdated) {
+         game->notifyModelUpdate(kv->second);
+         kv->second->modelUpdated = true;
+      }
+      
       Unit* u = dynamic_cast<Unit*>(kv->second);
       if(!u) {
          kv->second->update(diff);
