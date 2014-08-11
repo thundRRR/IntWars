@@ -14,7 +14,7 @@ function finishCasting()
     local trueCoords = current.add(teleportTo)
 
     teleportTo(trueCoords.x, trueCoords.y)
-    addProjectile(trueCoords.x, trueCoords.y)
+    addProjectile(getSpellToX(), getSpellToY())
 end
 
 function applyEffects()
