@@ -37,7 +37,7 @@ SummonersRift::SummonersRift(Game* game) : Map(game) {
    addObject(new LevelProp(this, GetNewNetID(), -99, 855.6632f, 191, "LevelProp_ShopMale1", "ShopMale"));
    
    // Start at xp to reach level 1
-   expToLevelUp = { 0, 280, 380, 480, 580, 680, 780, 880, 980, 1080, 1180, 1280, 1380, 1480, 1580, 1680, 1780, 1880 };
+   expToLevelUp = { 0, 280, 660, 1140, 1720, 2400, 3180, 4060, 5040, 6120, 7300, 8580, 9960, 11440, 13020, 14700, 16480, 18360 };
 }
 
 void SummonersRift::update(long long diff) {

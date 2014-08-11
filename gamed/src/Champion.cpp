@@ -93,7 +93,7 @@ void Champion::update(int64 diff) {
    
    if(getStats().getLevel() < map->getExpToLevelUp().size() && getStats().getExp() >= map->getExpToLevelUp()[getStats().getLevel()]) {
       printf("Champion %s Levelup to %02.0f\n", getType().c_str(), getStats().getLevel()+1);
-      getStats().levelUp(map->getExpToLevelUp()[getStats().getLevel()]);
+      getStats().levelUp();
       ++skillPoints;
    }
    

@@ -84,7 +84,7 @@ public:
    void clearUpdatedHealth() { updatedHealth = false; }
    
    void update(int64 diff);
-   void levelUp(uint32 levelXp);
+   void levelUp();
    
    virtual bool isFloat(uint8 blockId, uint32 stat);
 
