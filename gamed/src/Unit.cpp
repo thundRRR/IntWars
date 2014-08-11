@@ -67,3 +67,12 @@ void Unit::dealDamageTo(Unit* target, float damage, DamageType type, DamageSourc
 bool Unit::isDead() const {
    return stats->getCurrentHealth() <= 0;
 }
+
+void Unit::setModel(std::string newModel) {
+    model = newModel;
+    modelUpdated = false;
+}
+
+std::string Unit::getModel() {
+    return model;
+}

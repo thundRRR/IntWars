@@ -14,11 +14,6 @@ void Map::update(int64 diff) {
          kv->second->clearMovementUpdated();
       }
       
-      if(!kv->second->modelUpdated) {
-         game->notifyModelUpdate(kv->second);
-         kv->second->modelUpdated = true;
-      }
-      
       Unit* u = dynamic_cast<Unit*>(kv->second);
       if(!u) {
          kv->second->update(diff);
@@ -39,6 +34,11 @@ void Map::update(int64 diff) {
       if(u->getStats().isUpdatedHealth()) {
          game->notifySetHealth(u);
          u->getStats().clearUpdatedHealth();
+      }
+      
+      if(!u->modelUpdated) {
+         game->notifyModelUpdate(u);
+         u->modelUpdated = true;
       }
       
       kv->second->update(diff);

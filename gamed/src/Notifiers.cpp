@@ -81,7 +81,7 @@ void Game::notifyParticleSpawn(Champion* source, Target* target, const std::stri
    broadcastPacket(sp, CHL_S2C);
 }
 
-void Game::notifyModelUpdate(Object* object) {
+void Game::notifyModelUpdate(Unit* object) {
     UpdateModel mp(object->getNetId(), object->getModel().c_str());
     broadcastPacket(reinterpret_cast<uint8 *>(&mp), sizeof(UpdateModel), CHL_S2C);
 }

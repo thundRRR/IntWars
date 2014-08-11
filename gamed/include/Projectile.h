@@ -17,7 +17,7 @@ protected:
    uint32 projectileId;
 
 public:
-   Projectile(Map* map, uint32 id, float x, float y, uint32 collisionRadius, Unit* owner, Target* target, Spell* originSpell, float moveSpeed, uint32 projectileId) : Object(map, id, "", x, y, collisionRadius), originSpell(originSpell), moveSpeed(moveSpeed), owner(owner), projectileId(projectileId) {
+   Projectile(Map* map, uint32 id, float x, float y, uint32 collisionRadius, Unit* owner, Target* target, Spell* originSpell, float moveSpeed, uint32 projectileId) : Object(map, id, x, y, collisionRadius), originSpell(originSpell), moveSpeed(moveSpeed), owner(owner), projectileId(projectileId) {
       setTarget(target);
    }
    
