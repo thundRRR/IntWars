@@ -54,6 +54,7 @@ protected:
    SpellState state;
    float currentCooldown;
    float currentCastTime;
+   uint32 futureProjNetId;
    
    Unit* target;
    float x, y;
@@ -66,7 +67,7 @@ public:
    /**
     * Called when the character casts the spell
     */
-   virtual bool cast(float x, float y, Unit* u = 0);
+   virtual bool cast(float x, float y, Unit* u = 0, uint32 futureProjNetId = 0);
    
    /**
     * Called when the spell is finished casting and we're supposed to do things

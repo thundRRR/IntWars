@@ -287,13 +287,14 @@ bool Game::handleCastSpell(HANDLE_ARGS) {
 
    printf("Spell Cast : Slot %d, coord %f ; %f, coord2 %f, %f, target NetId %08X\n", spell->spellSlot & 0x3F, spell->x, spell->y, spell->x2, spell->y2, spell->targetNetId);
 
-   Spell* s = peerInfo(peer)->getChampion()->castSpell(spell->spellSlot & 0x3F, spell->x, spell->y, 0);
+   uint32 futureProjNetId = GetNewNetID();
+   Spell* s = peerInfo(peer)->getChampion()->castSpell(spell->spellSlot & 0x3F, spell->x, spell->y, 0, futureProjNetId);
 
    if(!s) {
       return false;
    }
    
-   CastSpellAns response(s, spell->x, spell->y);
+   CastSpellAns response(s, spell->x, spell->y, futureProjNetId);
    broadcastPacket(response, CHL_S2C);
 
    return true;

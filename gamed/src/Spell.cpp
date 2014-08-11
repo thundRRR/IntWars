@@ -90,11 +90,12 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
 /**
  * Called when the character casts the spell
  */
-bool Spell::cast(float x, float y, Unit* u) {
+bool Spell::cast(float x, float y, Unit* u, uint32 futureProjNetId) {
 
    this->x = x;
    this->y = y;
    this->target = u;
+   this->futureProjNetId = futureProjNetId;
 
    if(castTime > 0) {
       owner->setPosition(owner->getX(), owner->getY());//stop moving serverside too. TODO: check for each spell if they stop movement or not
@@ -206,6 +207,24 @@ void Spell::doLua(){
       Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, projectileId);
       owner->getMap()->addObject(p);
       owner->getMap()->getGame()->notifyProjectileSpawn(p);
+
+      return;
+   });
+   
+   script.lua.set_function("addProjectileCustom", [this](const std::string& name, float projSpeed, float toX, float toY) { 
+      Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, RAFFile::getHash(name));
+      owner->getMap()->addObject(p);
+      owner->getMap()->getGame()->notifyProjectileSpawn(p);
+
+      return;
+   });
+   
+   /**
+    * For spells that don't require SpawnProjectile, but for which we still need to track the projectile server-side
+    */
+   script.lua.set_function("addServerProjectile", [this, &projSpeed](float toX, float toY) { 
+      Projectile* p = new Projectile(owner->getMap(), futureProjNetId, owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, 0);
+      owner->getMap()->addObject(p);
 
       return;
    });

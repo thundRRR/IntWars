@@ -10,11 +10,10 @@ function finishCasting()
     local range = Vector2:Mult(to, 1500)
     local trueCoords = Vector2:Add(current, range)
 
-    addProjectile(trueCoords.x, trueCoords.y)
+    addServerProjectile(trueCoords.x, trueCoords.y)
 end
 
 function applyEffects()
-   print("hit")
    if getSide(getTarget()) == getSide(getOwner()) or isDead(getTarget()) then
       return;
    end

@@ -55,7 +55,7 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    autoAttackProjectileSpeed = autoAttack.getFloatValue("SpellData", "MissileSpeed")/30.f;
 }
 
-Spell* Champion::castSpell(uint8 slot, float x, float y, Unit* target) {
+Spell* Champion::castSpell(uint8 slot, float x, float y, Unit* target, uint32 futureProjNetId) {
    if(slot >= spells.size()) {
       return 0;
    }
@@ -68,7 +68,7 @@ Spell* Champion::castSpell(uint8 slot, float x, float y, Unit* target) {
       return 0;
    }
    
-   s->cast(x, y, target);
+   s->cast(x, y, target, futureProjNetId);
    stats->setCurrentMana(stats->getCurrentMana()-s->getCost());
    return s;
 }

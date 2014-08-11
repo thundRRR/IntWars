@@ -824,7 +824,7 @@ struct CastSpell {
 
 class CastSpellAns : public GamePacket {
 public:
-   CastSpellAns(Spell* s, float x, float y) : GamePacket(PKT_S2C_CastSpellAns, s->getOwner()->getNetId()) {
+   CastSpellAns(Spell* s, float x, float y, uint32 futureProjNetId) : GamePacket(PKT_S2C_CastSpellAns, s->getOwner()->getNetId()) {
       printf("%08X ; %08X ; %f\n", s->getId(), s->getOwner()->getChampionHash(), s->getCastTime());
       buffer << (uint8)0 << (uint8)0x66 << (uint8)0x00; // unk
       buffer << s->getId(); // Spell hash, for example hash("EzrealMysticShot")
@@ -833,7 +833,7 @@ public:
       buffer << (uint16)0x3f80; // unk
       buffer << s->getOwner()->getNetId() << s->getOwner()->getNetId();
       buffer << (uint32)s->getOwner()->getChampionHash();
-      buffer << (uint32)0x400001f5; // Another net ID..
+      buffer << (uint32)futureProjNetId; // The projectile ID that will be spawned
       buffer << x << 55.f << y;
       buffer << x << 55.f << y;
       buffer << (uint8)0;

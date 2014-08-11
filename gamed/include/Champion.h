@@ -21,7 +21,7 @@ public:
    Champion(const std::string& type, Map* map, uint32 id);
    const std::string& getType() { return type; }
    
-   Spell* castSpell(uint8 slot, float x, float y, Unit* target);
+   Spell* castSpell(uint8 slot, float x, float y, Unit* target, uint32 futureProjNetId);
    Spell* levelUpSpell(uint8 slot);
    
    virtual void update(int64 diff);
