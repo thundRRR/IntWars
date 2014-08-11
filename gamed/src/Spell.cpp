@@ -33,6 +33,11 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
    }
    
    castTime = ((1.f+inibin.getFloatValue("SpellData", "DelayCastOffsetPercent")))/2.f;
+   
+   if(inibin.keyExists("SpellData", "OverrideCastTime")) {
+      castTime = inibin.getFloatValue("SpellData", "OverrideCastTime");
+   }
+   
    castRange = inibin.getFloatValue("SpellData", "CastRange");
    projectileSpeed = inibin.getFloatValue("SpellData", "MissileSpeed");
    coefficient = inibin.getFloatValue("SpellData", "Coefficient");
@@ -77,15 +82,17 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
  * Called when the character casts the spell
  */
 bool Spell::cast(float x, float y, Unit* u) {
-   owner->setPosition(owner->getX(), owner->getY());//stop moving serverside too. TODO: check for each spell if they stop movement or not
-   state = STATE_CASTING;
-   currentCastTime = castTime;
+   if(castTime > 0) {
+      owner->setPosition(owner->getX(), owner->getY());//stop moving serverside too. TODO: check for each spell if they stop movement or not
+      state = STATE_CASTING;
+      currentCastTime = castTime;
+   } else {
+      finishCasting();
+   }
    
    this->x = x;
    this->y = y;
    this->target = u;
-   
-   
    
    return true;
 }
