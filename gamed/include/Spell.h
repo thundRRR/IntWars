@@ -24,7 +24,7 @@ enum SpellTargetType : uint8 {
    TARGET_CONE     = 3, // Annie W, Kass E
    TARGET_SELF_AOE = 4, // sivir R, Gangplanck E
    TARGET_LOC      = 6, // Ez Q, W, E, R ; Mundo Q
-   TARGET_LOC2     = 7  // Morg Q
+   TARGET_LOC2     = 7  // Morg Q, Cait's Q -- These don't seem to have Missile inibins, and SpawnProjectile doesn't seem necessary to show the projectiles
 };
 
 class Spell {

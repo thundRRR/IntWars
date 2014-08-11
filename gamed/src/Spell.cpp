@@ -65,10 +65,17 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
    targetType = floor(inibin.getFloatValue("SpellData", "TargettingType")+0.5f);
    
    iniFile.clear();
+   // This is starting to get ugly. How many more names / paths to go ?
    if(!RAFManager::getInstance()->readFile("DATA/Spells/"+spellName+"Missile.inibin", iniFile)) {
-      if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/Spells/"+spellName+"Missile.inibin", iniFile)) {
-         if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+"Missile.inibin", iniFile)) {
-            return;
+      if(!RAFManager::getInstance()->readFile("DATA/Spells/"+spellName+"Mis.inibin", iniFile)) {
+         if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/Spells/"+spellName+"Missile.inibin", iniFile)) {
+            if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+"Missile.inibin", iniFile)) {
+               if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/Spells/"+spellName+"Mis.inibin", iniFile)) {
+                  if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+"Mis.inibin", iniFile)) {
+                     return;
+                  }
+               }
+            }
          }
       }
    }

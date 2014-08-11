@@ -75,6 +75,8 @@ void Stats::levelUp(uint32 levelXp) {
    setBaseAd(getBaseAd()+adPerLevel);
    setArmor(getArmor()+armorPerLevel);
    setMagicArmor(getMagicArmor()+magicArmorPerLevel);
+   setHp5(getHp5()+hp5RegenPerLevel);
+   setMp5(getMana5()+mp5RegenPerLevel);
    
    setExp(getExp()-levelXp);
 }

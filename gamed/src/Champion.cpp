@@ -33,6 +33,8 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    stats->setAdPerLevel(inibin.getFloatValue("DATA", "DamagePerLevel"));
    stats->setArmorPerLevel(inibin.getFloatValue("DATA", "ArmorPerLevel"));
    stats->setMagicArmorPerLevel(inibin.getFloatValue("DATA", "SpellBlockPerLevel"));
+   stats->setHp5RegenPerLevel(inibin.getFloatValue("DATA", "HPRegenPerLevel")*5);
+   stats->setMp5RegenPerLevel(inibin.getFloatValue("DATA", "MPRegenPerLevel")*5);
    
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell1"), 0));
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell2"), 1));

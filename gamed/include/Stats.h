@@ -67,10 +67,12 @@ protected:
    float goldPerSecond;
    float healthPerLevel, manaPerLevel;
    float adPerLevel, armorPerLevel, magicArmorPerLevel;
+   float hp5RegenPerLevel, mp5RegenPerLevel;
    
 public:
 
-   Stats() : updatedHealth(false), goldPerSecond(0), healthPerLevel(0), manaPerLevel(0), adPerLevel(0), armorPerLevel(0), magicArmorPerLevel(0) { }
+   Stats() : updatedHealth(false), goldPerSecond(0), healthPerLevel(0), manaPerLevel(0), adPerLevel(0), armorPerLevel(0), magicArmorPerLevel(0),
+             hp5RegenPerLevel(0), mp5RegenPerLevel(0) { }
 
    float getStat(uint8 blockId, uint32 stat) const;
    void setStat(uint8 blockId, uint32 stat, float value);
@@ -282,6 +284,14 @@ public:
    
    virtual void setMagicArmorPerLevel(float magicArmor) {
       magicArmorPerLevel = magicArmor;
+   }
+   
+   virtual void setHp5RegenPerLevel(float hpRegen) {
+      hp5RegenPerLevel = hpRegen;
+   }
+   
+   virtual void setMp5RegenPerLevel(float mpRegen) {
+      mp5RegenPerLevel = mpRegen;
    }
    
    /**
