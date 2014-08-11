@@ -17,10 +17,11 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
    
    std::vector<unsigned char> iniFile;
    if(!RAFManager::getInstance()->readFile("DATA/Spells/"+spellName+".inibin", iniFile)) {
-       printf("Could not find spell at %s, trying other path...\n", string("DATA/Spells/"+spellName+".inibin").c_str());
-      if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+".inibin", iniFile)) {
-         printf("ERR : couldn't find spell stats for %s (at %s)\n", spellName.c_str(), string("DATA/Characters/"+owner->getType()+"/"+spellName+".inibin").c_str());
-         return;
+      if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/Spells/"+spellName+".inibin", iniFile)) {
+         if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+".inibin", iniFile)) {
+            printf("ERR : couldn't find spell stats for %s\n", spellName.c_str());
+            return;
+         }
       }
    }
    
@@ -58,8 +59,10 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
    
    iniFile.clear();
    if(!RAFManager::getInstance()->readFile("DATA/Spells/"+spellName+"Missile.inibin", iniFile)) {
-      if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+"Missile.inibin", iniFile)) {
-         return;
+      if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/Spells/"+spellName+"Missile.inibin", iniFile)) {
+         if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/"+spellName+"Missile.inibin", iniFile)) {
+            return;
+         }
       }
    }
    

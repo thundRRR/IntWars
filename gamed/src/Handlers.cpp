@@ -294,7 +294,7 @@ bool Game::handleCastSpell(HANDLE_ARGS) {
    }
    
    CastSpellAns response(s, spell->x, spell->y);
-   sendPacket(peer, response, CHL_S2C);
+   broadcastPacket(response, CHL_S2C);
 
    return true;
 }
