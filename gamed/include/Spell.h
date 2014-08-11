@@ -17,12 +17,23 @@ enum SpellState {
    STATE_COOLDOWN
 };
 
+enum SpellTargetType : uint8 {
+   TARGET_SELF     = 0, // teemo W ; xin Q
+   TARGET_UNIT     = 1, // Taric E ; Annie Q ; teemo Q ; xin E
+   TARGET_LOC_AOE  = 2, // Lux E, Ziggs R
+   TARGET_CONE     = 3, // Annie W, Kass E
+   TARGET_SELF_AOE = 4, // sivir R, Gangplanck E
+   TARGET_LOC      = 6, // Ez Q, W, E, R ; Mundo Q
+   TARGET_LOC2     = 7  // Morg Q
+};
+
 class Spell {
 protected:
    Champion* owner;
    uint8 level;
    uint8 slot;
    std::string spellName;
+   uint8 targetType;
    
    LuaScript script;
 

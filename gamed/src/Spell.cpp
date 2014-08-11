@@ -62,6 +62,8 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
       ++i;
    }
    
+   targetType = floor(inibin.getFloatValue("SpellData", "TargettingType")+0.5f);
+   
    iniFile.clear();
    if(!RAFManager::getInstance()->readFile("DATA/Spells/"+spellName+"Missile.inibin", iniFile)) {
       if(!RAFManager::getInstance()->readFile("DATA/Characters/"+owner->getType()+"/Spells/"+spellName+"Missile.inibin", iniFile)) {
