@@ -58,6 +58,42 @@ public:
          readBooleanValues(readKeys(nbKeys));
       }
       
+      // 3
+      if(bitmask & 0x0040) {
+         buffer >> nbKeys;
+         buffer.skip(nbKeys*(4+3));
+      }
+      
+      // 12
+      if(bitmask & 0x0080) {
+         buffer >> nbKeys;
+         buffer.skip(nbKeys*(4+12));
+      }
+      
+      // 2
+      if(bitmask & 0x0100) {
+         buffer >> nbKeys;
+         readUint16Values(readKeys(nbKeys));
+      }
+      
+      // 8
+      if(bitmask & 0x0200) {
+         buffer >> nbKeys;
+         buffer.skip(nbKeys*(4+8));
+      }
+      
+      // 4
+      if(bitmask & 0x0400) {
+         buffer >> nbKeys;
+         readUint32Values(readKeys(nbKeys));
+      }
+      
+      // 16
+      if(bitmask & 0x0800) {
+         buffer >> nbKeys;
+         buffer.skip(nbKeys*(4+16));
+      }
+      
       if(bitmask & 0x1000) {
          buffer >> nbKeys;
          readStringValues(readKeys(nbKeys));
@@ -98,6 +134,7 @@ public:
       
          Value value;
          value.floatV = v;
+         
          values[key] = value;
       }
    }

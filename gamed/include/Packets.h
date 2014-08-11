@@ -848,7 +848,7 @@ public:
       buffer << (uint16)0x41e0; // unk
       buffer << s->getOwner()->getX() << 55.f << s->getOwner()->getY();
       buffer << (uint64)1; // unk
-}
+   }
 };
 
 class PlayerInfo : public BasePacket{
@@ -913,6 +913,48 @@ public:
       buffer << (uint64)0x0000000000000000; // unk
    }
 
+};
+
+class SpawnParticle : public BasePacket {
+public:
+   SpawnParticle(Champion* owner, Target* t, const std::string& particle) : BasePacket(PKT_S2C_SpawnParticle, owner->getNetId()) {
+      buffer << (uint8)1; // number of particles
+      buffer << owner->getChampionHash();
+      buffer << RAFFile::getHash(particle);
+      buffer << (uint32)0x00000020; // flags ?
+      buffer << (uint32)0; // unk
+      buffer << (uint16)0; // unk
+      buffer << (uint8)1; // number of targets ?
+      buffer << owner->getNetId();
+      buffer << (uint32)0xff000040; // Particle net id ?
+      buffer << owner->getNetId();
+      
+      if(t->isSimpleTarget()) {
+         buffer << (uint32)0;
+      } else {
+         buffer << static_cast<Object*>(t)->getNetId();
+      }
+      
+      buffer << (uint32)0; // unk
+      
+      for(int i = 0; i < 3; ++i) {
+         buffer << static_cast<int16>((t->getX() - MAP_WIDTH)/2);
+         buffer << 50.f;
+         buffer << static_cast<int16>((t->getY() - MAP_HEIGHT)/2);
+      }
+      
+      buffer << (uint32)0; // unk
+      buffer << (uint32)0; // unk
+      buffer << (uint32)0; // unk
+      buffer << (uint32)0; // unk
+      buffer << 1.f; // unk
+      
+   }
+};
+
+class DestroyProjectile : public BasePacket {
+public:
+   DestroyProjectile(Projectile* p) : BasePacket(PKT_S2C_DestroyProjectile, p->getNetId()) { }
 };
 
 class UpdateStats : public GamePacket {

@@ -21,16 +21,16 @@ unsigned int getCharacterHash(char *szName, unsigned int nSkin) {
     char szSkin[32];
     sprintf(szSkin, "%02d", nSkin);
     unsigned int hash = 0;
-    const char *gobj = "[Character]";
+    const char *gobj = "[Particle]";
     for(unsigned int i = 0; i < strlen(gobj); i++) {
         hash = tolower(gobj[i]) + (0x1003F * hash);
     }
     for(unsigned int i = 0; i < strlen(szName); i++) {
         hash = tolower(szName[i]) + (0x1003F * hash);
     }
-    for(unsigned int i = 0; i < strlen(szSkin); i++) {
+    /*for(unsigned int i = 0; i < strlen(szSkin); i++) {
         hash = tolower(szSkin[i]) + (0x1003F * hash);
-    }
+    }*/
     return hash;
 }
 

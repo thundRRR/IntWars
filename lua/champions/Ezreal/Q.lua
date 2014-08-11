@@ -14,5 +14,17 @@ function finishCasting()
 end
 
 function applyEffects()
-    print("Ezreal Q hit something!")
+
+   if getSide(getTarget()) == getSide(getOwner()) or isDead(getTarget()) then
+      return;
+   end
+   
+   dealPhysicalDamage(getEffectValue(0))
+   
+   -- TODO this can be fetched from projectile inibin "HitEffectName"
+   addParticleTarget("Ezreal_mysticshot_tar.troy", getTarget())
+   
+   destroyProjectile()
+   
+   print("Ezreal Q hit something!")
 end

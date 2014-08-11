@@ -130,6 +130,7 @@ bool Game::initialize(ENetAddress *address, const char *baseKey){
            Champion* c = ChampionFactory::getChampionFromType(champion, map, GetNewNetID());
 
            c->setPosition(35.90f, 273.55f);
+           c->setSide((team == "BLUE") ? 0 : 1);
 
            map->addObject(c);
 

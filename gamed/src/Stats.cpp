@@ -69,7 +69,9 @@ void Stats::levelUp(uint32 levelXp) {
    setLevel(getLevel()+1);
    
    setMaxHealth(getMaxHealth()+healthPerLevel);
+   setCurrentHealth((getMaxHealth() / (getMaxHealth()-healthPerLevel)) * getCurrentHealth());
    setMaxMana(getMaxMana()+manaPerLevel);
+   setCurrentMana((getMaxMana() / (getMaxMana()-manaPerLevel)) * getCurrentMana());
    setBaseAd(getBaseAd()+adPerLevel);
    setArmor(getArmor()+armorPerLevel);
    setMagicArmor(getMagicArmor()+magicArmorPerLevel);

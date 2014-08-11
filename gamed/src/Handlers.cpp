@@ -229,8 +229,6 @@ bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
    //TODO, Implement stop commands
    case STOP:
    {
-       
-       
        //TODO anticheat, currently it trusts client 100%
        
       peerInfo(peer)->getChampion()->setPosition(request->x, request->y);
@@ -296,7 +294,7 @@ bool Game::handleCastSpell(HANDLE_ARGS) {
    }
    
    CastSpellAns response(s, spell->x, spell->y);
-   sendPacket(peer, response, CHL_S2C);
+   broadcastPacket(response, CHL_S2C);
 
    return true;
 }

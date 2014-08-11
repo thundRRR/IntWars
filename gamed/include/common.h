@@ -32,38 +32,39 @@ enum PacketCmd : uint8
 
    PKT_S2C_EndSpawn = 0x11,
    PKT_C2S_QueryStatusReq = 0x14,
-   PKT_S2C_SkillUp = 0x15,   // 4.12
+   PKT_S2C_SkillUp = 0x15,
    PKT_C2S_Ping_Load_Info = 0x16,
    PKT_S2C_AutoAttack = 0x1A,
    
    PKT_S2C_PlayerInfo = 0x2A,
 
-   PKT_S2C_ViewAns = 0x2C,   // 4.12
-   PKT_C2S_ViewReq = 0x2E,   // 4.12
+   PKT_S2C_ViewAns = 0x2C,
+   PKT_C2S_ViewReq = 0x2E,
 
-   PKT_C2S_SkillUp = 0x39,   // 4.12
+   PKT_C2S_SkillUp = 0x39,
    PKT_S2C_SpawnProjectile = 0x3B,
-   PKT_S2C_AttentionPing = 0x40, //4.12
+   PKT_S2C_AttentionPing = 0x40,
 
    PKT_S2C_Emotion = 0x42,
    PKT_C2S_Emotion = 0x48,
-   PKT_S2C_HeroSpawn = 0x4C,  // 4.12
-   PKT_S2C_Announce = 0x4D,   // 4.12
+   PKT_S2C_HeroSpawn = 0x4C,
+   PKT_S2C_Announce = 0x4D,
 
    PKT_S2C_GameTimer = 0xC0,
    PKT_S2C_GameTimerUpdate = 0xC1,
 
-   PKT_C2S_StartGame = 0x52,    // 4.12
-   PKT_S2C_SynchVersion = 0x54, // 4.12
+   PKT_C2S_StartGame = 0x52,
+   PKT_S2C_SynchVersion = 0x54,
    PKT_C2S_ScoreBord = 0x56,
    PKT_C2S_AttentionPing = 0x57,
-   PKT_S2C_StartGame = 0x5C,    // 4.12
+   PKT_S2C_DestroyProjectile = 0x5A,
+   PKT_S2C_StartGame = 0x5C,
 
    PKT_S2C_StartSpawn = 0x62,
    PKT_C2S_ClientReady = 0x64,
    PKT_S2C_DamageDone = 0x65,
-   PKT_S2C_LoadHero = 0x65,    // 4.12
-   PKT_S2C_LoadName = 0x66,    // 4.12
+   PKT_S2C_LoadHero = 0x65,
+   PKT_S2C_LoadName = 0x66,
    PKT_S2C_LoadScreenInfo = 0x67,
    PKT_ChatBoxMessage = 0x68,
    PKT_S2C_SetTarget = 0x6A,
@@ -75,13 +76,14 @@ enum PacketCmd : uint8
 
    PKT_C2S_LockCamera = 0x81,
    PKT_C2S_BuyItemReq = 0x82,
-   PKT_S2C_QueryStatusAns = 0x88, // 4.12
+   PKT_S2C_SpawnParticle = 0x87,
+   PKT_S2C_QueryStatusAns = 0x88,
    PKT_C2S_Exit = 0x8F,
 
    PKT_World_SendGameNumber = 0x92,
-   PKT_S2C_Ping_Load_Info = 0x95, // 4.12
-   PKT_C2S_CastSpell = 0x9A,      // 4.12
-   PKT_S2C_TurretSpawn = 0x9D,    // 4.12
+   PKT_S2C_Ping_Load_Info = 0x95,
+   PKT_C2S_CastSpell = 0x9A,
+   PKT_S2C_TurretSpawn = 0x9D,
 
    PKT_C2S_Surrender = 0xA4,
    PKT_C2S_StatsConfirm = 0xA8, 
@@ -91,8 +93,8 @@ enum PacketCmd : uint8
    PKT_S2C_CastSpellAns = 0xB5,
    PKT_S2C_MinionSpawn = 0xBA,
    PKT_S2C_HeroSpawn2 = 0xBA,
-   PKT_C2S_SynchVersion = 0xBD, // 4.12
-   PKT_C2S_CharLoaded = 0xBE,   // 4.12
+   PKT_C2S_SynchVersion = 0xBD,
+   PKT_C2S_CharLoaded = 0xBE,
 
    PKT_S2C_CharStats = 0xC4,
    PKT_S2C_FogUpdate2 = 0x23,

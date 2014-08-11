@@ -66,7 +66,17 @@ void Game::notifyAutoAttack(Unit* attacker, Unit* victim, uint32 futureProjNetId
    broadcastPacket(aa, CHL_S2C);
 }
 
-void Game::notifyProjectileSpawn(Projectile* p ) {
+void Game::notifyProjectileSpawn(Projectile* p) {
    SpawnProjectile sp(p);
+   broadcastPacket(sp, CHL_S2C);
+}
+
+void Game::notifyProjectileDestroy(Projectile* p) {
+   DestroyProjectile dp(p);
+   broadcastPacket(dp, CHL_S2C);
+}
+
+void Game::notifyParticleSpawn(Champion* source, Target* target, const std::string& particleName) {
+   SpawnParticle sp(source, target, particleName);
    broadcastPacket(sp, CHL_S2C);
 }
