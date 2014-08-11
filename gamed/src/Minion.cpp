@@ -53,10 +53,8 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
        position == SPAWN_BLUE_MID ||
        position == SPAWN_BLUE_BOT) {
        minionModel += "Blue_Minion_";
-       setSide(0);
    } else {
        minionModel += "Red_Minion_";
-       setSide(1);
    }
    
    if (type == MINION_TYPE_MELEE) {
