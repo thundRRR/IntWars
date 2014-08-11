@@ -3,7 +3,7 @@
 
 using namespace std;
 
-bool Inventory::addItem(const ItemTemplate* itemTemplate) {
+int Inventory::addItem(const ItemTemplate* itemTemplate) {
    int slot = -1;
 
    if(itemTemplate->getMaxStack() > 1) {
@@ -14,7 +14,7 @@ bool Inventory::addItem(const ItemTemplate* itemTemplate) {
       
          if(items[slot].first->getTemplate() == itemTemplate && items[slot].second < itemTemplate->getMaxStack()) {
             ++items[slot].second;
-            return true;
+            return slot;
          }
       }
    }
@@ -32,10 +32,11 @@ bool Inventory::addItem(const ItemTemplate* itemTemplate) {
    }
    
    if(slot == 7) { // Inventory full
-      return false;
+      return -1;
    }
    
+   printf("Adding item %d to slot %d\n", itemTemplate->getId(), slot);
    items[slot] = make_pair(new ItemInstance(itemTemplate), 1);
    
-   return true;
+   return slot;
 }

@@ -16,7 +16,7 @@ public:
       items = { std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0) };
    }
    
-   bool addItem(const ItemTemplate* itemTemplate);
+   int addItem(const ItemTemplate* itemTemplate);
    const std::vector<std::pair<ItemInstance*, uint8> >& getItems() const { return items; }
     
 };

@@ -494,7 +494,6 @@ bool Game::handleSkillUp(HANDLE_ARGS) {
 bool Game::handleBuyItem(HANDLE_ARGS) {
    
    BuyItemReq *request = reinterpret_cast<BuyItemReq *>(packet->data);
-   BuyItemAns response;
    
    const ItemTemplate* itemTemplate = ItemManager::getInstance()->getItemTemplateById(request->id);
    if(!itemTemplate) {
@@ -505,25 +504,20 @@ bool Game::handleBuyItem(HANDLE_ARGS) {
       return true;
    }
    
-   if(!peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate)) {
+   int slot;
+   
+   if((slot = peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate)) == -1) {
       return true;
    }
    
    peerInfo(peer)->getChampion()->getStats().setGold(peerInfo(peer)->getChampion()->getStats().getGold()-itemTemplate->getPrice());
    
-   auto items = peerInfo(peer)->getChampion()->getInventory().getItems();
-   
-   for(int i = 0; i < 7; ++i) {
-      if(items[i].first == 0) {
-         continue;
-      }
-      
-      response.header.netId = request->header.netId;
-      response.itemId = items[i].first->getTemplate()->getId();
-      response.slotId = i;
-      response.stack = items[i].second;
-      broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
-   }
+   BuyItemAns response;
+   response.header.netId = peerInfo(peer)->getChampion()->getNetId();
+   response.itemId = request->id;
+   response.slotId = slot;
+   response.stack = peerInfo(peer)->getChampion()->getInventory().getItems()[slot].second;
+   broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
    
    return true;
 }

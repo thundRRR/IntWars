@@ -10,7 +10,7 @@
 using namespace std;
 
 struct Value {
-   Value() : floatV(0), boolV(0) {
+   Value() : floatV(0), boolV(0), intV(0) {
    
    }
 
@@ -26,6 +26,10 @@ public:
       
       size = buffer.size();
       buffer >> version >> oldLength >> bitmask;
+      
+      if(version != 2) {
+         return;
+      }
       
       uint16 nbKeys;
       

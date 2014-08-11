@@ -624,16 +624,14 @@ typedef struct _BuyItemReq {
 typedef struct _BuyItemAns {
     _BuyItemAns() {
         header.cmd = (PacketCmd)PKT_S2C_BuyItemAns;
-        unk1 = 0;
         unk2 = 0;
-        unk3 = 0;
+        unk3 = 0x40;
     }
     PacketHeader header;
-    uint16 itemId;
-    uint16 unk1;
+    uint32 itemId;
     uint8 slotId;
     uint8 stack;
-    uint16 unk2;
+    uint8 unk2;
     uint8 unk3;
 } BuyItemAns;
 

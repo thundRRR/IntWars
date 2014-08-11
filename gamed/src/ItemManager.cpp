@@ -17,8 +17,9 @@ void ItemManager::init() {
       if(!RAFManager::getInstance()->readFile("DATA/items/"+to_string(i)+".inibin", iniFile)) {
          continue;
       }
-   
+
       Inibin inibin(iniFile);
+      
       
       uint32 maxStack = inibin.getIntValue("DATA", "MaxStack");
       uint32 price = inibin.getIntValue("DATA", "Price");
