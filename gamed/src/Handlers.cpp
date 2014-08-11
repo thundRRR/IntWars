@@ -407,7 +407,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
       // Mana
       if(strncmp(message->getMessage(), cmd[7], strlen(cmd[7])) == 0)
       {
-         float data = (float)atoi(&message->getMessage()[strlen(cmd[5])+1]);
+         float data = (float)atoi(&message->getMessage()[strlen(cmd[7])+1]);
 
          printf("Setting Mana to %f\n", data);
 
