@@ -640,6 +640,12 @@ typedef struct _EmotionPacket {
     uint8 id;
 } EmotionPacket;
 
+struct SwapItemsReq {
+    PacketHeader header;
+    uint8 slotFrom;
+    uint8 slotTo;
+};
+
 typedef struct _EmotionResponse {
     _EmotionResponse() {
         header.cmd = PKT_S2C_Emotion;

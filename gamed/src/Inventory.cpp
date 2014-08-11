@@ -40,3 +40,9 @@ int Inventory::addItem(const ItemTemplate* itemTemplate) {
    
    return slot;
 }
+
+void Inventory::swapItems(uint8 slotFrom, uint8 slotTo) {
+   pair<ItemInstance*, uint32> to = items[slotTo];
+   items[slotTo] = items[slotFrom];
+   items[slotFrom] = to;
+}

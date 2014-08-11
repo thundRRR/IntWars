@@ -85,3 +85,21 @@ void Game::notifyModelUpdate(Unit* object) {
     UpdateModel mp(object->getNetId(), object->getModel().c_str());
     broadcastPacket(reinterpret_cast<uint8 *>(&mp), sizeof(UpdateModel), CHL_S2C);
 }
+
+void Game::notifyInventory(Champion* c) {
+
+   auto items = c->getInventory().getItems();
+
+   for(int i = 0; i < 7 ; ++i) {
+      if(items[i].first == 0) {
+         continue;
+      }
+      
+      BuyItemAns response;
+      response.header.netId = c->getNetId();
+      response.itemId = items[i].first->getTemplate()->getId();
+      response.slotId = i;
+      response.stack = c->getInventory().getItems()[i].second;
+      broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
+   }
+}

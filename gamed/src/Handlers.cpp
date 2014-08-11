@@ -511,15 +511,20 @@ bool Game::handleBuyItem(HANDLE_ARGS) {
    }
    
    peerInfo(peer)->getChampion()->getStats().setGold(peerInfo(peer)->getChampion()->getStats().getGold()-itemTemplate->getPrice());
-   
-   BuyItemAns response;
-   response.header.netId = peerInfo(peer)->getChampion()->getNetId();
-   response.itemId = request->id;
-   response.slotId = slot;
-   response.stack = peerInfo(peer)->getChampion()->getInventory().getItems()[slot].second;
-   broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
+   notifyInventory(peerInfo(peer)->getChampion());
    
    return true;
+}
+
+bool Game::handleSwapItems(HANDLE_ARGS) {
+   SwapItemsReq* request = reinterpret_cast<SwapItemsReq*>(packet->data);
+   
+   if(request->slotFrom > 6 || request->slotTo > 6) {
+      return false;
+   }
+   
+   peerInfo(peer)->getChampion()->getInventory().swapItems(request->slotFrom, request->slotTo);
+   notifyInventory(peerInfo(peer)->getChampion());
 }
 
 bool Game::handleEmotion(HANDLE_ARGS) {

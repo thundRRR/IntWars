@@ -17,6 +17,7 @@ public:
    }
    
    int addItem(const ItemTemplate* itemTemplate);
+   void swapItems(uint8 slotFrom, uint8 slotTo);
    const std::vector<std::pair<ItemInstance*, uint8> >& getItems() const { return items; }
     
 };

@@ -68,6 +68,7 @@ class Game
 		bool handleBuyItem(HANDLE_ARGS);
       bool handleCastSpell(HANDLE_ARGS);
       bool handleClick(HANDLE_ARGS);
+      bool handleSwapItems(HANDLE_ARGS);
       
       // Notifiers
       void notifyMinionSpawned(Minion* m);
@@ -81,6 +82,7 @@ class Game
       void notifyProjectileDestroy(Projectile* p);
       void notifyParticleSpawn(Champion* source, Target* target, const std::string& particleName);
       void notifyModelUpdate(Unit* object);
+      void notifyInventory(Champion* c);
    
 
 		// Tools

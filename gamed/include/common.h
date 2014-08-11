@@ -35,6 +35,7 @@ enum PacketCmd : uint8
    PKT_S2C_SkillUp = 0x15,
    PKT_C2S_Ping_Load_Info = 0x16,
    PKT_S2C_AutoAttack = 0x1A,
+   PKT_C2S_SwapItems = 0x20,
    
    PKT_S2C_PlayerInfo = 0x2A,
 
