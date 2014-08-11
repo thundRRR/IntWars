@@ -82,6 +82,11 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
  * Called when the character casts the spell
  */
 bool Spell::cast(float x, float y, Unit* u) {
+
+   this->x = x;
+   this->y = y;
+   this->target = u;
+
    if(castTime > 0) {
       owner->setPosition(owner->getX(), owner->getY());//stop moving serverside too. TODO: check for each spell if they stop movement or not
       state = STATE_CASTING;
@@ -89,10 +94,6 @@ bool Spell::cast(float x, float y, Unit* u) {
    } else {
       finishCasting();
    }
-   
-   this->x = x;
-   this->y = y;
-   this->target = u;
    
    return true;
 }
