@@ -93,8 +93,6 @@ bool Game::initialize(ENetAddress *address, const char *baseKey){
     _blowfish = new BlowFish((uint8*)key.c_str(), 16);
     initHandlers();
    
-   
-   printf("Before map");
    map = new SummonersRift(this);
    
    //TODO: better lua implementation

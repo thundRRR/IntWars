@@ -27,6 +27,7 @@
 #include "stack.hpp"
 #include "function_types.hpp"
 #include "userdata_traits.hpp"
+#include "resolve.hpp"
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -34,7 +35,7 @@
 namespace sol {
 class function : public reference {
 private:
-    void luacall (std::size_t argcount, std::size_t resultcount) const {
+    void luacall(std::size_t argcount, std::size_t resultcount) const {
         lua_call(state(), static_cast<uint32_t>(argcount), static_cast<uint32_t>(resultcount));
     }
 
@@ -59,7 +60,7 @@ private:
     }
 
 public:
-    function() : reference() {}
+    function() = default;
     function(lua_State* L, int index = -1): reference(L, index) {
         type_assert(L, index, type::function);
     }
@@ -85,7 +86,7 @@ public:
 };
 
 namespace stack {
-template <typename... Sigs>
+template<typename... Sigs>
 struct pusher<function_sig_t<Sigs...>> {
 
     template<typename R, typename... Args, typename Fx, typename = typename std::result_of<Fx(Args...)>::type>
@@ -196,7 +197,7 @@ struct pusher<function_sig_t<Sigs...>> {
         void* userdata = reinterpret_cast<void*>(target);
         lua_CFunction freefunc = &base_function::call;
 
-        if (luaL_newmetatable(L, metatablename) == 1) {
+        if(luaL_newmetatable(L, metatablename) == 1) {
             lua_pushstring(L, "__gc");
             stack::push(L, &base_function::gc);
             lua_settable(L, -3);
@@ -207,45 +208,45 @@ struct pusher<function_sig_t<Sigs...>> {
         stack::push(L, freefunc, 1);
     }
 
-    template <typename... Args>
+    template<typename... Args>
     static void push(lua_State* L, Args&&... args) {
         set(L, std::forward<Args>(args)...);
     }
 };
 
-template <typename Signature>
+template<typename Signature>
 struct pusher<std::function<Signature>> {
     static void push(lua_State* L, std::function<Signature> fx) {
         pusher<function_t>{}.push(L, std::move(fx));
     }
 };
 
-template <typename Signature>
+template<typename Signature>
 struct getter<std::function<Signature>> {
     typedef function_traits<Signature> fx_t;
     typedef typename fx_t::args_type args_t;
     typedef typename tuple_types<typename fx_t::return_type>::type ret_t;
 
-    template <typename... FxArgs, typename... Ret>
+    template<typename... FxArgs, typename... Ret>
     static std::function<Signature> get_std_func(types<FxArgs...>, types<Ret...>, lua_State* L, int index = -1) {
         typedef typename function_traits<Signature>::return_type return_t;
         sol::function f(L, index);
-        auto fx = [ f, L, index ] (FxArgs&&... args) -> return_t {
+        auto fx = [f, L, index](FxArgs&&... args) -> return_t {
             return f(types<Ret...>(), std::forward<FxArgs>(args)...);
         };
         return std::move(fx);
     }
 
-    template <typename... FxArgs>
+    template<typename... FxArgs>
     static std::function<Signature> get_std_func(types<FxArgs...>, types<void>, lua_State* L, int index = -1) {
         sol::function f(L, index);
-        auto fx = [ f, L, index ] (FxArgs&&... args) -> void {
+        auto fx = [f, L, index](FxArgs&&... args) -> void {
             f(std::forward<FxArgs>(args)...);
         };
         return std::move(fx);
     }
 
-    template <typename... FxArgs>
+    template<typename... FxArgs>
     static std::function<Signature> get_std_func(types<FxArgs...> t, types<>, lua_State* L, int index = -1) {
         return get_std_func(std::move(t), types<void>(), L, index);
     }

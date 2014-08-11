@@ -24,7 +24,7 @@
 
 #include <lua.hpp>
 #include <string>
-#include <type_traits>
+#include "traits.hpp"
 
 namespace sol {
 struct nil_t {};
@@ -32,26 +32,26 @@ const nil_t nil {};
 struct void_type {};
 const void_type Void {};
 
-template <typename... T>
+template<typename... T>
 struct function_sig_t {};
 using function_t = function_sig_t<>;
 
 struct upvalue_t {
     void* value;
     upvalue_t(void* data) : value(data) {}
-    operator void* () const { return value; }
+    operator void*() const { return value; }
 };
 
 struct lightuserdata_t {
     void* value;
-    lightuserdata_t(void* data) : value(data) {} 
-    operator void* () const { return value; }
+    lightuserdata_t(void* data) : value(data) {}
+    operator void*() const { return value; }
 };
 
-struct userdata_t { 
+struct userdata_t {
     void* value;
-    userdata_t(void* data) : value(data) {} 
-    operator void* () const { return value; }
+    userdata_t(void* data) : value(data) {}
+    operator void*() const { return value; }
 };
 
 enum class call_syntax {

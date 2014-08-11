@@ -19,29 +19,34 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef SOL_USERDATA_TRAITS_HPP
-#define SOL_USERDATA_TRAITS_HPP
+#ifndef SOL_DEBUG_HPP
+#define SOL_DEBUG_HPP
 
-#include "demangle.hpp"
+#include "stack.hpp"
+#include <iostream>
 
 namespace sol {
-
-template<typename T>
-struct userdata_traits {
-    static const std::string name;
-    static const std::string metatable;
-    static const std::string gctable;
-};
-
-template<typename T>
-const std::string userdata_traits<T>::name = detail::demangle(typeid(T));
-
-template<typename T>
-const std::string userdata_traits<T>::metatable = std::string("sol.").append(detail::demangle(typeid(T)));
-
-template<typename T>
-const std::string userdata_traits<T>::gctable = std::string("sol.").append(detail::demangle(typeid(T))).append(".\xE2\x99\xBB");
-
+namespace debug {
+inline std::string dump_types(lua_State* L) {
+    std::string visual;
+    std::size_t size = lua_gettop(L) + 1;
+    for(std::size_t i = 1; i < size; ++i) {
+        if(i != 1) {
+            visual += " | ";
+        }
+        visual += type_name(L, stack::get<type>(L, i));
+    }
+    return visual;
 }
 
-#endif // SOL_USERDATA_TRAITS_HPP
+inline void print_stack(lua_State* L) {
+    std::cout << dump_types(L) << std::endl;
+}
+
+inline void print_section(const std::string& message, lua_State* L) {
+    std::cout << "-- " << message << " -- [ "  << dump_types(L) << " ]" << std::endl;
+}
+} // debug
+} // sol
+
+#endif // SOL_DEBUG_HPP

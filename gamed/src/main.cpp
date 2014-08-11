@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
       return EXIT_FAILURE;
    }
    
-   printf("Game started");
+   puts("Game started");
 
 	Game g;
 	ENetAddress address;
