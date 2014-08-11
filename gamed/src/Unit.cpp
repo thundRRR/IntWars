@@ -68,11 +68,11 @@ bool Unit::isDead() const {
    return stats->getCurrentHealth() <= 0;
 }
 
-void Unit::setModel(std::string newModel) {
+void Unit::setModel(const std::string& newModel) {
     model = newModel;
-    modelUpdated = false;
+    modelUpdated = true;
 }
 
-std::string Unit::getModel() {
+const std::string& Unit::getModel() {
     return model;
 }

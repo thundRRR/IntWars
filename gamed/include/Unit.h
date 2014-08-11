@@ -24,7 +24,7 @@ protected:
    AI* ai;
    float autoAttackDelay, autoAttackProjectileSpeed;
    float autoAttackCurrentCooldown, autoAttackCurrentDelay;
-   bool isAttacking;
+   bool isAttacking, modelUpdated;
    uint64 statUpdateTimer;
    uint32 autoAttackProjId;
    
@@ -37,7 +37,7 @@ public:
     
    Unit(Map* map, uint32 id, std::string model, Stats* stats, uint32 collisionRadius = 40, float x = 0, float y = 0, AI* ai = 0) : Object(map, id, x, y, collisionRadius), stats(stats), ai(ai),
                                                                                                                 statUpdateTimer(0), model(model), autoAttackDelay(0), autoAttackProjectileSpeed(0), isAttacking(false),
-                                                                                                                autoAttackCurrentCooldown(0), autoAttackCurrentDelay(0) { }
+                                                                                                                autoAttackCurrentCooldown(0), autoAttackCurrentDelay(0), modelUpdated(false) { }
    virtual ~Unit();
    Stats& getStats() { return *stats; }
    virtual void update(int64 diff);
@@ -52,9 +52,10 @@ public:
    
    bool isDead() const;
       
-   void setModel(std::string newModel);
-   std::string getModel();
-   bool modelUpdated;
+   void setModel(const std::string& newModel);
+   const std::string& getModel();
+   bool isModelUpdated() { return modelUpdated; }
+   void clearModelUpdated() { modelUpdated = false; }
 };
 
 #endif

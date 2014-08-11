@@ -22,7 +22,7 @@ function applyEffects()
    dealMagicalDamage(getEffectValue(0))
    
    -- TODO this can be fetched from projectile inibin "HitEffectName"
-   addParticleTarget("Ezreal_mysticshot_tar.troy", getTarget())
+   addParticleTarget("Nidalee_Base_Q_Tar.troy", getTarget())
    
    destroyProjectile()
 end

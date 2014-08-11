@@ -36,9 +36,9 @@ void Map::update(int64 diff) {
          u->getStats().clearUpdatedHealth();
       }
       
-      if(!u->modelUpdated) {
+      if(u->isModelUpdated()) {
          game->notifyModelUpdate(u);
-         u->modelUpdated = true;
+         u->clearModelUpdated();
       }
       
       kv->second->update(diff);
