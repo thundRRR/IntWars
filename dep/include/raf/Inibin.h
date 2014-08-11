@@ -16,6 +16,7 @@ struct Value {
 
    float floatV;
    bool boolV;
+   uint32 intV;
    std::string stringV;
 };
 
@@ -109,7 +110,7 @@ public:
          toReturn.push_back(key);
       }
       
-      return toReturn;
+      return toReturn;std::vector<unsigned char> iniFile;
    }
    
    static uint32 getKeyHash(const std::string& sectionName, const std::string& varName) {
@@ -134,6 +135,7 @@ public:
       
          Value value;
          value.floatV = v;
+         value.intV = v;
          
          values[key] = value;
       }
@@ -146,6 +148,7 @@ public:
          
          Value value;
          value.floatV = v;
+         value.intV = v;
          values[key] = value;
       }
    }
@@ -157,6 +160,7 @@ public:
                   
          Value value;
          value.floatV = v;
+         value.intV = v;
          values[key] = value;
       }
    }
@@ -215,7 +219,7 @@ public:
    }
          
    float getFloatValue(const std::string& sectionName, const std::string& varName) {
-      if(values[getKeyHash(sectionName, varName)].floatV == 0 && values[getKeyHash(sectionName, varName)].stringV[0] != 0) {
+      if(values[getKeyHash(sectionName, varName)].floatV == 0 && values[getKeyHash(sectionName, varName)].stringV.length() > 0) {
          return atof(values[getKeyHash(sectionName, varName)].stringV.c_str());
       }
       return values[getKeyHash(sectionName, varName)].floatV;
@@ -223,6 +227,13 @@ public:
    
    bool getBoolValue(const std::string& sectionName, const std::string& varName) {
       return values[getKeyHash(sectionName, varName)].boolV;
+   }
+   
+   uint32 getIntValue(const std::string& sectionName, const std::string& varName) {
+      if(values[getKeyHash(sectionName, varName)].intV == 0 && values[getKeyHash(sectionName, varName)].stringV.length() > 0) {
+         return atoi(values[getKeyHash(sectionName, varName)].stringV.c_str());
+      }
+      return values[getKeyHash(sectionName, varName)].intV;
    }
    
    const std::string& getStringValue(const std::string& sectionName, const std::string& varName) {

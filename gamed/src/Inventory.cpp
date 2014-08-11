@@ -1,43 +1,41 @@
-
 #include "Inventory.h"
 #include "stdafx.h"
 
-Inventory::Inventory() {
-    
+using namespace std;
 
-}
+bool Inventory::addItem(const ItemTemplate* itemTemplate) {
+   int slot = -1;
 
-bool Inventory::containsItem(int id){
-   for (int i = 0; i < 6; i++){
-        if (items[i].active == true && items[i].id == id){
+   if(itemTemplate->getMaxStack() > 1) {
+      for(slot = 0; slot < 7; ++slot) {
+         if(slot == 3 || items[slot].first == 0) { // trinket slot
+            continue;
+         }
+      
+         if(items[slot].first->getTemplate() == itemTemplate && items[slot].second < itemTemplate->getMaxStack()) {
+            ++items[slot].second;
             return true;
-        }
-   }
-    return false;
-}
-
-bool Inventory::addItemNew(Item _item ) {
-    for (int i = 0; i < 6; i++){
-
-      if (items[i].id == _item.id){
-        if (items[i].isStackable == true){
-            if (items[i].stackAmount < MAX_STACK_AMOUNT){
-               items[i].stackAmount++;
-               items[i].active = true;
-               return true;
-            }
-
-
-
          }
       }
-      if (items[i].active == false){
-         items[i] = _item;
-         items[i].stackAmount = 1;
-         items[i].active = true;
-         
-         return true;
+   }
+   
+   if(slot == -1 || slot == 7) {
+      for(slot = 0; slot < 7; ++slot) {
+         if(slot == 3) { // trinket slot
+            continue;
+         }
+      
+         if(items[slot].first == 0) {
+            break;
+         }
       }
-    }
-    return false;
+   }
+   
+   if(slot == 7) { // Inventory full
+      return false;
+   }
+   
+   items[slot] = make_pair(new ItemInstance(itemTemplate), 1);
+   
+   return true;
 }

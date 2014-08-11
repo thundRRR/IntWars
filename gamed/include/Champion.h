@@ -14,6 +14,7 @@ protected:
    uint8 skillPoints;
    uint8 level;
    uint8 skin;
+   Inventory inventory;
 
    
 public:
@@ -25,8 +26,6 @@ public:
    Spell* levelUpSpell(uint8 slot);
    
    virtual void update(int64 diff);
-   
-   Inventory inventory;
 
    void setSkillPoints(int _skillPoints){
        skillPoints = (uint8)_skillPoints;
@@ -36,6 +35,8 @@ public:
    uint32 getChampionHash();
    
    uint8 getSkillPoints() const { return skillPoints; }
+   
+   Inventory& getInventory() { return inventory; }
    
 
 };

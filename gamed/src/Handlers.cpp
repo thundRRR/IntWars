@@ -18,8 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "stdafx.h"
 #include "Game.h"
 #include "Packets.h"
-#include "Inventory.h"
-#include "ItemFactory.h"
+#include "ItemManager.h"
 #include "ChatBox.h"
 
 #include <vector>
@@ -494,32 +493,39 @@ bool Game::handleSkillUp(HANDLE_ARGS) {
 
 bool Game::handleBuyItem(HANDLE_ARGS) {
    
-    BuyItemReq *request = reinterpret_cast<BuyItemReq *>(packet->data);
-     
-    Item newItem = ItemFactory::getItemFromId(request->id);
-    
-    
-    
-    //if(!peerInfo(peer)->getChampion()->inventory.isFull() == false){
-        printf("Add new item");
-        peerInfo(peer)->getChampion()->inventory.addItemNew(newItem);
-    //}
-    
-
+   BuyItemReq *request = reinterpret_cast<BuyItemReq *>(packet->data);
+   BuyItemAns response;
+   
+   const ItemTemplate* itemTemplate = ItemManager::getInstance()->getItemTemplateById(request->id);
+   if(!itemTemplate) {
+      return false;
+   }
+   
+   if(peerInfo(peer)->getChampion()->getStats().getGold() < itemTemplate->getPrice()) {
+      return true;
+   }
+   
+   if(!peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate)) {
+      return true;
+   }
+   
+   peerInfo(peer)->getChampion()->getStats().setGold(peerInfo(peer)->getChampion()->getStats().getGold()-itemTemplate->getPrice());
+   
+   auto items = peerInfo(peer)->getChampion()->getInventory().getItems();
+   
+   for(int i = 0; i < 7; ++i) {
+      if(items[i].first == 0) {
+         continue;
+      }
       
-    for(int i=0x0;i<0x6;i++){//loop through all inventory slots, and update them
-        if(peerInfo(peer)->getChampion()->inventory.items[i].id != -1){
-        BuyItemAns response;
-        response.header.netId = request->header.netId;
-        response.itemId = peerInfo(peer)->getChampion()->inventory.items[i].id;
-        response.slotId = i;
-        response.stack = peerInfo(peer)->getChampion()->inventory.items[i].stackAmount;
-        broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
-        }
-    }
-
-
-	return true;
+      response.header.netId = request->header.netId;
+      response.itemId = items[i].first->getTemplate()->getId();
+      response.slotId = i;
+      response.stack = items[i].second;
+      broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
+   }
+   
+   return true;
 }
 
 bool Game::handleEmotion(HANDLE_ARGS) {

@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Game.h"
 #include "RAFManager.h"
 #include "Inibin.h"
+#include "ItemManager.h"
 
 #define SERVER_HOST ENET_HOST_ANY 
 #define SERVER_PORT 5119
@@ -39,6 +40,8 @@ int main(int argc, char ** argv)
       puts("This directory is to be taken from RADS/projects/lol_game_client/");
       return EXIT_FAILURE;
    }
+   
+   ItemManager::getInstance()->init();
    
    puts("Game started");
 
