@@ -52,7 +52,7 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    Inibin autoAttack(iniFile);
    
    autoAttackDelay = autoAttack.getFloatValue("SpellData", "castFrame")/30.f;
-   autoAttackProjectileSpeed = autoAttack.getFloatValue("SpellData", "MissileSpeed")/30.f;
+   autoAttackProjectileSpeed = autoAttack.getFloatValue("SpellData", "MissileSpeed");
 }
 
 Spell* Champion::castSpell(uint8 slot, float x, float y, Unit* target, uint32 futureProjNetId) {

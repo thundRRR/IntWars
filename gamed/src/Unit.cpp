@@ -18,7 +18,7 @@ void Unit::update(int64 diff) {
    if(isAttacking) {
       autoAttackCurrentDelay += diff/1000000.f;
       if(autoAttackCurrentDelay >= autoAttackDelay) {
-         Projectile* p = new Projectile(map, autoAttackProjId, x, y, 10, this, unitTarget, 0, autoAttackProjectileSpeed, RAFFile::getHash("EzrealMysticShotMissile"));
+         Projectile* p = new Projectile(map, autoAttackProjId, x, y, 5, this, unitTarget, 0, autoAttackProjectileSpeed, RAFFile::getHash("EzrealMysticShotMissile"));
          map->addObject(p);
          autoAttackCurrentCooldown = 1.f/(stats->getTotalAttackSpeed());
          isAttacking = false;
