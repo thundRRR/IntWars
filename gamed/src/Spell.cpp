@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0), castTime(1.f), castRange(1000.f), projectileSpeed(2000.f) {
+Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0), castTime(0.f), castRange(1000.f), projectileSpeed(2000.f) {
    script.lua.script("package.path = '../../lua/lib/?.lua;' .. package.path"); //automatically load vector lib so scripters dont have to worry about path
    
    for(int i = 0; i < 5; ++i) {
@@ -141,6 +141,8 @@ void Spell::doLua(){
    float ownerX = owner->getX(); //we need to do this for each variable exposed to Lua or we get a compiler error
    float ownerY = owner->getY();
    
+   std::string model = owner->getModel();
+   
    float spellX = x;
    float spellY = y;
    
@@ -148,6 +150,11 @@ void Spell::doLua(){
    
    script.lua.set_function("getOwnerX", [&ownerX]() { return ownerX; });
    script.lua.set_function("getOwnerY", [&ownerY]() { return ownerY; });
+   script.lua.set_function("getChampionModel", [&model]() { return model; });
+   script.lua.set_function("setChampionModel", [this](const std::string& newModel) {
+      owner->setModel(newModel); 
+      return;
+   });
    script.lua.set_function("getSpellToX", [&spellX]() { return spellX; });
    script.lua.set_function("getSpellToY", [&spellY]() { return spellY; });
    script.lua.set_function("getRange", [&range]() { return range; });

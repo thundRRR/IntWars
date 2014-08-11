@@ -51,7 +51,7 @@ protected:
    bool toRemove;
    
    uint32 collisionRadius;
-   
+      
 public:
 	
    virtual ~Object();

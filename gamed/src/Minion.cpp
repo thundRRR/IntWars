@@ -1,7 +1,7 @@
 #include "Minion.h"
 #include "MinionStats.h"
 
-Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition position) : Unit(map, id, new MinionStats(), 40, 0, 0, new MinionAI(this)), type(type), position(position) {
+Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition position) : Unit(map, id, "", new MinionStats(), 40, 0, 0, new MinionAI(this)), type(type), position(position) {
    switch(position) {
    case SPAWN_BLUE_TOP:
       setSide(0);
@@ -47,6 +47,25 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
       stats->setBaseAd(40.0f);
       break;
    }
+   
+   std::string minionModel;
+   if (position == SPAWN_BLUE_TOP ||
+       position == SPAWN_BLUE_MID ||
+       position == SPAWN_BLUE_BOT) {
+       minionModel += "Blue_Minion_";
+   } else {
+       minionModel += "Red_Minion_";
+   }
+   
+   if (type == MINION_TYPE_MELEE) {
+       minionModel += "Basic";
+   } else if (type == MINION_TYPE_CASTER) {
+       minionModel += "Wizard"; 
+   } else {
+       minionModel += "MechCannon";
+   }
+   
+   setModel(minionModel);
    
    stats->setMovementSpeed(325.f);
    stats->setBaseAttackSpeed(0.625f);
