@@ -2,6 +2,7 @@
 #include "RAFManager.h"
 #include "Inibin.h"
 #include "Map.h"
+#include "Game.h"
 
 Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id, type, new Stats()), type(type), skillPoints(0), level(1)  {
    stats->setGold(475.0f);
@@ -91,10 +92,17 @@ Spell* Champion::levelUpSpell(uint8 slot) {
 void Champion::update(int64 diff) {
    Unit::update(diff);
    
-   if(getStats().getLevel() < map->getExpToLevelUp().size() && getStats().getExp() >= map->getExpToLevelUp()[getStats().getLevel()]) {
-      printf("Champion %s Levelup to %02.0f\n", getType().c_str(), getStats().getLevel()+1);
+   bool levelup = false;
+   
+   while(getStats().getLevel() < map->getExpToLevelUp().size() && getStats().getExp() >= map->getExpToLevelUp()[getStats().getLevel()]) {
+      printf("Champion %s Levelup to %d\n", getType().c_str(), getStats().getLevel()+1);
       getStats().levelUp();
       ++skillPoints;
+      levelup = true;
+   }
+   
+   if(levelup) {
+      map->getGame()->notifyLevelUp(this);
    }
    
    for(Spell* s : spells) {

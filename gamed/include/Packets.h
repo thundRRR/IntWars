@@ -961,8 +961,8 @@ public:
 
 class UpdateStats : public GamePacket {
 public:
-   UpdateStats(Unit* u) : GamePacket(PKT_S2C_CharStats, u->getNetId()) {
-      const std::multimap<uint8, uint32>& stats = u->getStats().getUpdatedStats();
+   UpdateStats(Unit* u) : GamePacket(PKT_S2C_CharStats, 0) {
+      const std::map<uint8, std::set<uint32> >& stats = u->getStats().getUpdatedStats();
       
       std::set<uint8> masks;
       uint8 masterMask = 0;
@@ -980,14 +980,11 @@ public:
          uint32 mask = 0;
          uint8 size = 0;
          
-         for(auto it = stats.lower_bound(m); it != stats.upper_bound(m); ++it) {
-            if(u->getStats().isFloat(m, it->second)) {
-               size += 4;
-            } else {
-               size += 2;
-            }
-            
-            mask |= it->second;
+         const std::set<uint32>& updatedStats = stats.find(m)->second;
+         
+         for(auto it = updatedStats.begin(); it != updatedStats.end(); ++it) {      
+            size += u->getStats().getSize(m, *it);
+            mask |= *it;
          }
          
          buffer << mask;
@@ -996,10 +993,14 @@ public:
          for(int i = 0; i < 32; ++i) {
             uint32 tmpMask = (1 << i);
             if(tmpMask & mask) {
-               if(u->getStats().isFloat(m, tmpMask)) {
-                  buffer << u->getStats().getStat(m, tmpMask);
-               } else {
+               if(u->getStats().getSize(m, tmpMask) == 4) {
+                  float f = u->getStats().getStat(m, tmpMask);
+                  buffer << f;
+               } else if(u->getStats().getSize(m, tmpMask) == 2) {
                   uint16 stat = floor(u->getStats().getStat(m, tmpMask) + 0.5);
+                  buffer << stat;
+               } else {
+                  uint8 stat = floor(u->getStats().getStat(m, tmpMask) + 0.5);
                   buffer << stat;
                }
             }
@@ -1048,6 +1049,14 @@ struct ViewRequest {
     uint32 height;	//Unk
     uint32 unk2;	//Unk
     uint8 requestNo;
+};
+
+class LevelUp : public BasePacket {
+public:
+   LevelUp(Champion* c) : BasePacket(PKT_S2C_LevelUp, c->getNetId()) {
+      buffer << c->getStats().getLevel();
+      buffer << c->getStats().getLevel()-1;
+   }
 };
 
 class ViewAnswer : public Packet {

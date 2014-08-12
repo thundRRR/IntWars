@@ -18,7 +18,7 @@ float Stats::getStat(uint8 blockId, uint32 stat) const {
 
 void Stats::setStat(uint8 blockId, uint32 stat, float value) {
    int block = -1;
-   updatedStats.insert(make_pair(blockId, stat));
+   updatedStats[blockId].insert(stat);
    
    while(blockId) {
       blockId = blockId >> 1;
@@ -27,24 +27,24 @@ void Stats::setStat(uint8 blockId, uint32 stat, float value) {
    stats[block][stat] = value;
 }
 
-bool Stats::isFloat(uint8 blockId, uint32 stat) {
+uint8 Stats::getSize(uint8 blockId, uint32 stat) {
    switch(blockId) {
    case MM_One:
       switch(stat) {
       case FM1_SPELL:
-         return false;
+         return 2;
       
       }
       
    case MM_Four:
       switch(stat) {
       case FM4_Level:
-         return false;
+         return 1;
       
       }
    }
 
-   return true;
+   return 4;
 }
 
 void Stats::update(int64 diff) {

@@ -103,3 +103,8 @@ void Game::notifyInventory(Champion* c) {
       broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
    }
 }
+
+void Game::notifyLevelUp(Champion* c) {
+   LevelUp lu(c);
+   broadcastPacket(lu, CHL_S2C);
+}

@@ -2,6 +2,7 @@
 #define __H_STATS
 
 #include <map>
+#include <set>
 #include <algorithm>
 
 #include "stdafx.h"
@@ -60,7 +61,7 @@ class Stats {
 
 protected:
    std::map<uint32, float> stats[5];
-   std::multimap<uint8, uint32> updatedStats;
+   std::map<uint8, std::set<uint32> > updatedStats;
    bool updatedHealth;
    
    // Here all the stats that don't have a bitmask
@@ -77,7 +78,7 @@ public:
    float getStat(uint8 blockId, uint32 stat) const;
    void setStat(uint8 blockId, uint32 stat, float value);
 
-   const std::multimap<uint8, uint32>& getUpdatedStats() const { return updatedStats; }
+   const std::map<uint8, std::set<uint32> >& getUpdatedStats() const { return updatedStats; }
    void clearUpdatedStats() { updatedStats.clear(); }
    
    bool isUpdatedHealth() const { return updatedHealth; }
@@ -86,7 +87,7 @@ public:
    void update(int64 diff);
    void levelUp();
    
-   virtual bool isFloat(uint8 blockId, uint32 stat);
+   virtual uint8 getSize(uint8 blockId, uint32 stat);
 
    virtual float getBaseAd() const {
       return getStat(MM_Two, FM2_Base_Ad);
@@ -168,8 +169,8 @@ public:
       return goldPerSecond;
    }
    
-   virtual float getLevel() {
-      return getStat(MM_Four, FM4_Level);
+   virtual uint8 getLevel() {
+      return floor(getStat(MM_Four, FM4_Level)+0.5f);
    }
    
    virtual float getExp() {
