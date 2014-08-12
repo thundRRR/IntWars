@@ -32,11 +32,15 @@ public:
 class ItemInstance {
 private:
    const ItemTemplate* itemTemplate;
+   uint8 slot, stacks;
    float cooldown;
 
 public:
-   ItemInstance(const ItemTemplate* itemTemplate) : itemTemplate(itemTemplate), cooldown(0) { }
-   const ItemTemplate* getTemplate() { return itemTemplate; }
+   ItemInstance(const ItemTemplate* itemTemplate, uint8 slot = 0, uint8 stacks = 1) : itemTemplate(itemTemplate), cooldown(0), slot(slot), stacks(stacks) { }
+   const ItemTemplate* getTemplate() const { return itemTemplate; }
+   uint8 getSlot() const { return slot; }
+   uint8 getStacks() const { return stacks; }
+   void incrementStacks() { ++stacks; }
 
 };
 

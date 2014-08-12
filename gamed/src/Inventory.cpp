@@ -3,18 +3,18 @@
 
 using namespace std;
 
-int Inventory::addItem(const ItemTemplate* itemTemplate) {
+const ItemInstance* Inventory::addItem(const ItemTemplate* itemTemplate) {
    int slot = -1;
 
    if(itemTemplate->getMaxStack() > 1) {
       for(slot = 0; slot < 7; ++slot) {
-         if(slot == 3 || items[slot].first == 0) { // trinket slot
+         if(slot == 3 || items[slot] == 0) { // trinket slot
             continue;
          }
       
-         if(items[slot].first->getTemplate() == itemTemplate && items[slot].second < itemTemplate->getMaxStack()) {
-            ++items[slot].second;
-            return slot;
+         if(items[slot]->getTemplate() == itemTemplate && items[slot]->getStacks() < itemTemplate->getMaxStack()) {
+            items[slot]->incrementStacks();
+            return items[slot];
          }
       }
    }
@@ -25,24 +25,24 @@ int Inventory::addItem(const ItemTemplate* itemTemplate) {
             continue;
          }
       
-         if(items[slot].first == 0) {
+         if(items[slot] == 0) {
             break;
          }
       }
    }
    
    if(slot == 7) { // Inventory full
-      return -1;
+      return 0;
    }
    
    printf("Adding item %d to slot %d\n", itemTemplate->getId(), slot);
-   items[slot] = make_pair(new ItemInstance(itemTemplate), 1);
+   items[slot] = new ItemInstance(itemTemplate, slot, 1);
    
-   return slot;
+   return items[slot];
 }
 
 void Inventory::swapItems(uint8 slotFrom, uint8 slotTo) {
-   pair<ItemInstance*, uint32> to = items[slotTo];
+   ItemInstance* to = items[slotTo];
    items[slotTo] = items[slotFrom];
    items[slotFrom] = to;
 }

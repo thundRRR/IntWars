@@ -504,14 +504,14 @@ bool Game::handleBuyItem(HANDLE_ARGS) {
       return true;
    }
    
-   int slot;
+   const ItemInstance* i = peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate);
    
-   if((slot = peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate)) == -1) {
+   if(i == 0) {
       return true;
    }
    
    peerInfo(peer)->getChampion()->getStats().setGold(peerInfo(peer)->getChampion()->getStats().getGold()-itemTemplate->getPrice());
-   notifyInventory(peerInfo(peer)->getChampion());
+   notifyItemBought(peerInfo(peer)->getChampion(), i);
    
    return true;
 }
@@ -524,7 +524,7 @@ bool Game::handleSwapItems(HANDLE_ARGS) {
    }
    
    peerInfo(peer)->getChampion()->getInventory().swapItems(request->slotFrom, request->slotTo);
-   notifyInventory(peerInfo(peer)->getChampion());
+   notifyItemsSwapped(peerInfo(peer)->getChampion(), request->slotFrom, request->slotTo);
 }
 
 bool Game::handleEmotion(HANDLE_ARGS) {

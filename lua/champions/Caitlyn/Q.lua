@@ -16,5 +16,5 @@ end
 function applyEffects()
    dealPhysicalDamage(getEffectValue(0))
    
-   addParticleTarget("caitlyn_Base_Q_tar.troy", getTarget())
+   addParticleTarget("caitlyn_Base_Q_mis.troy", getTarget())
 end

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0), castTime(0.f), castRange(1000.f), projectileSpeed(2000.f), flags(0) {
+Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0), castTime(0.f), castRange(1000.f), projectileSpeed(2000.f), flags(0), projectileFlags(0) {
    script.lua.script("package.path = '../../lua/lib/?.lua;' .. package.path"); //automatically load vector lib so scripters dont have to worry about path
    
    for(int i = 0; i < 5; ++i) {
@@ -81,6 +81,7 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
    
    castRange = projectile.getFloatValue("SpellData", "CastRange");
    projectileSpeed = projectile.getFloatValue("SpellData", "MissileSpeed");
+   projectileFlags = projectile.getIntValue("SpellData", "Flags");
 }
 
 
@@ -201,7 +202,7 @@ void Spell::doLua(){
    uint32 projectileId = RAFFile::getHash(projectileName);
    
    script.lua.set_function("addProjectile", [this, &projectileId, &projSpeed](float toX, float toY) { 
-      Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, projectileId);
+      Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, projectileId, projectileFlags ? projectileFlags : flags);
       owner->getMap()->addObject(p);
       owner->getMap()->getGame()->notifyProjectileSpawn(p);
 
@@ -209,7 +210,7 @@ void Spell::doLua(){
    });
    
    script.lua.set_function("addProjectileCustom", [this](const std::string& name, float projSpeed, float toX, float toY) { 
-      Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, RAFFile::getHash(name));
+      Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, RAFFile::getHash(name), projectileFlags ? projectileFlags : flags);
       owner->getMap()->addObject(p);
       owner->getMap()->getGame()->notifyProjectileSpawn(p);
 
@@ -220,7 +221,7 @@ void Spell::doLua(){
     * For spells that don't require SpawnProjectile, but for which we still need to track the projectile server-side
     */
    script.lua.set_function("addServerProjectile", [this, &projSpeed](float toX, float toY) { 
-      Projectile* p = new Projectile(owner->getMap(), futureProjNetId, owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, 0);
+      Projectile* p = new Projectile(owner->getMap(), futureProjNetId, owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, 0, projectileFlags ? projectileFlags : flags);
       owner->getMap()->addObject(p);
 
       return;

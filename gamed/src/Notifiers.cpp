@@ -86,22 +86,19 @@ void Game::notifyModelUpdate(Unit* object) {
     broadcastPacket(reinterpret_cast<uint8 *>(&mp), sizeof(UpdateModel), CHL_S2C);
 }
 
-void Game::notifyInventory(Champion* c) {
+void Game::notifyItemBought(Champion* c, const ItemInstance* i) {
+   BuyItemAns response;
+   response.header.netId = c->getNetId();
+   response.itemId = i->getTemplate()->getId();
+   response.slotId = i->getSlot();
+   response.stack = i->getStacks();
+   
+   broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
+}
 
-   auto items = c->getInventory().getItems();
-
-   for(int i = 0; i < 7 ; ++i) {
-      if(items[i].first == 0) {
-         continue;
-      }
-      
-      BuyItemAns response;
-      response.header.netId = c->getNetId();
-      response.itemId = items[i].first->getTemplate()->getId();
-      response.slotId = i;
-      response.stack = c->getInventory().getItems()[i].second;
-      broadcastPacket(reinterpret_cast<uint8 *>(&response), sizeof(response), CHL_S2C);
-   }
+void Game::notifyItemsSwapped(Champion* c, uint8 fromSlot, uint8 toSlot) {
+   SwapItemsAns sia(c, fromSlot, toSlot);
+   broadcastPacket(sia, CHL_S2C);
 }
 
 void Game::notifyLevelUp(Champion* c) {

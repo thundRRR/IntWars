@@ -646,6 +646,13 @@ struct SwapItemsReq {
     uint8 slotTo;
 };
 
+class SwapItemsAns : public BasePacket {
+public:
+   SwapItemsAns(Champion* c, uint8 slotFrom, uint8 slotTo) : BasePacket(PKT_S2C_SwapItems, c->getNetId()) {
+      buffer << slotFrom << slotTo;
+   }
+};
+
 typedef struct _EmotionResponse {
     _EmotionResponse() {
         header.cmd = PKT_S2C_Emotion;
@@ -1055,7 +1062,7 @@ class LevelUp : public BasePacket {
 public:
    LevelUp(Champion* c) : BasePacket(PKT_S2C_LevelUp, c->getNetId()) {
       buffer << c->getStats().getLevel();
-      buffer << c->getStats().getLevel()-1;
+      buffer << c->getSkillPoints();
    }
 };
 

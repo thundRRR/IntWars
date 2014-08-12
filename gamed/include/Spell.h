@@ -71,7 +71,7 @@ protected:
    uint8 slot;
    std::string spellName;
    uint8 targetType;
-   uint32 flags;
+   uint32 flags, projectileFlags;
    
    LuaScript script;
 

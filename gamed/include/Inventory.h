@@ -8,17 +8,17 @@
 
 class Inventory {
 private:
-   std::vector<std::pair<ItemInstance*, uint8> > items;
+   std::vector<ItemInstance*> items;
 
 public:
     
    Inventory() {
-      items = { std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0), std::make_pair<ItemInstance*, uint8>(0, 0) };
+      items = { 0, 0, 0, 0, 0, 0, 0 };
    }
    
-   int addItem(const ItemTemplate* itemTemplate);
+   const ItemInstance* addItem(const ItemTemplate* itemTemplate);
    void swapItems(uint8 slotFrom, uint8 slotTo);
-   const std::vector<std::pair<ItemInstance*, uint8> >& getItems() const { return items; }
+   const std::vector<ItemInstance*>& getItems() const { return items; }
     
 };
 

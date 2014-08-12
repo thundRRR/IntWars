@@ -95,9 +95,7 @@ void Champion::update(int64 diff) {
    bool levelup = false;
    
    while(getStats().getLevel() < map->getExpToLevelUp().size() && getStats().getExp() >= map->getExpToLevelUp()[getStats().getLevel()]) {
-      printf("Champion %s Levelup to %d\n", getType().c_str(), getStats().getLevel()+1);
-      getStats().levelUp();
-      ++skillPoints;
+      levelUp();
       levelup = true;
    }
    
@@ -125,4 +123,10 @@ uint32 Champion::getChampionHash() {
      hash = tolower(szSkin[i]) + (0x1003F * hash);
    }
    return hash;
+}
+
+void Champion::levelUp() {
+   printf("Champion %s Levelup to %d\n", getType().c_str(), getStats().getLevel()+1);
+   getStats().levelUp();
+   ++skillPoints;
 }

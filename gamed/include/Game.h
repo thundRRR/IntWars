@@ -82,8 +82,9 @@ class Game
       void notifyProjectileDestroy(Projectile* p);
       void notifyParticleSpawn(Champion* source, Target* target, const std::string& particleName);
       void notifyModelUpdate(Unit* object);
-      void notifyInventory(Champion* c);
       void notifyLevelUp(Champion* c);
+      void notifyItemBought(Champion* c, const ItemInstance* i);
+      void notifyItemsSwapped(Champion* c, uint8 fromSlot, uint8 toSlot);
    
 
 		// Tools

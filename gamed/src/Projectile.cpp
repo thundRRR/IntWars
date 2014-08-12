@@ -35,32 +35,30 @@ void Projectile::update(int64 diff) {
                continue;
             }
             
-            uint32 spellFlags = originSpell->getFlags();
-            
-            if(u->getSide() == owner->getSide() && !(spellFlags & SPELL_FLAG_AffectFriends)) {
+            if(u->getSide() == owner->getSide() && !(flags & SPELL_FLAG_AffectFriends)) {
                continue;
             }
             
-            if(u->getSide() != owner->getSide() && !(spellFlags & SPELL_FLAG_AffectEnemies)) {
+            if(u->getSide() != owner->getSide() && !(flags & SPELL_FLAG_AffectEnemies)) {
                continue;
             }
             
-            if(u->isDead() && !(spellFlags & SPELL_FLAG_AffectDead)) {
+            if(u->isDead() && !(flags & SPELL_FLAG_AffectDead)) {
                continue;
             }
             
             Minion* m = dynamic_cast<Minion*>(u);
-            if(m && !(spellFlags & SPELL_FLAG_AffectMinions)) {
+            if(m && !(flags & SPELL_FLAG_AffectMinions)) {
                continue;
             }
             
             Turret* t = dynamic_cast<Turret*>(u);
-            if(t && !(spellFlags & SPELL_FLAG_AffectTurrets)) {
+            if(t && !(flags & SPELL_FLAG_AffectTurrets)) {
                continue;
             }
             
             Champion* c = dynamic_cast<Champion*>(u);
-            if(c && !(spellFlags & SPELL_FLAG_AffectHeroes)) {
+            if(c && !(flags & SPELL_FLAG_AffectHeroes)) {
                continue;
             }
             
