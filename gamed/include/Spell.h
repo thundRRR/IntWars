@@ -167,6 +167,8 @@ public:
       return cost[level-1];
    }
    
+   uint32 getFlags() const { return flags; }
+   
    uint8 getLevel() const {
       return level;
    }

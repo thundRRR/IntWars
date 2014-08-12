@@ -4,6 +4,9 @@
 #include "Projectile.h"
 #include "Spell.h"
 #include "Unit.h"
+#include "Minion.h"
+#include "Turret.h"
+#include "Champion.h"
 
 void Projectile::update(int64 diff) {
 
@@ -24,6 +27,32 @@ void Projectile::update(int64 diff) {
             if(!u) {
                continue;
             }
+            
+            uint32 spellFlags = originSpell->getFlags();
+            
+            if(u->getSide() == owner->getSide() && !(spellFlags & SPELL_FLAG_AffectFriends)) {
+               continue;
+            }
+            
+            if(u->getSide() != owner->getSide() && !(spellFlags & SPELL_FLAG_AffectEnemies)) {
+               continue;
+            }
+            
+            Minion* m = dynamic_cast<Minion*>(u);
+            if(m && !(spellFlags & SPELL_FLAG_AffectMinions)) {
+               continue;
+            }
+            
+            Turret* t = dynamic_cast<Turret*>(u);
+            if(t && !(spellFlags & SPELL_FLAG_AffectTurrets)) {
+               continue;
+            }
+            
+            Champion* c = dynamic_cast<Champion*>(u);
+            if(c && !(spellFlags & SPELL_FLAG_AffectHeroes)) {
+               continue;
+            }
+            
             originSpell->applyEffects(u, this);
          }
       }
