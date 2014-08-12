@@ -11,6 +11,10 @@
 class Unit;
 class Champion;
 
+enum SpellFlag : uint32 {
+   SPELL_FLAG_INSTANT = 0x00000004
+};
+
 enum SpellState {
    STATE_READY,
    STATE_CASTING,
@@ -34,6 +38,7 @@ protected:
    uint8 slot;
    std::string spellName;
    uint8 targetType;
+   uint32 flags;
    
    LuaScript script;
 

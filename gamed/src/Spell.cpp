@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0), castTime(0.f), castRange(1000.f), projectileSpeed(2000.f) {
+Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0), castTime(0.f), castRange(1000.f), projectileSpeed(2000.f), flags(0) {
    script.lua.script("package.path = '../../lua/lib/?.lua;' .. package.path"); //automatically load vector lib so scripters dont have to worry about path
    
    for(int i = 0; i < 5; ++i) {
@@ -34,6 +34,7 @@ Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(
    
    castTime = ((1.f+inibin.getFloatValue("SpellData", "DelayCastOffsetPercent")))/2.f;
    
+   flags = inibin.getIntValue("SpellData", "Flags");
    castRange = inibin.getFloatValue("SpellData", "CastRange");
    projectileSpeed = inibin.getFloatValue("SpellData", "MissileSpeed");
    coefficient = inibin.getFloatValue("SpellData", "Coefficient");
@@ -93,7 +94,7 @@ bool Spell::cast(float x, float y, Unit* u, uint32 futureProjNetId) {
    this->target = u;
    this->futureProjNetId = futureProjNetId;
 
-   if(castTime > 0) {
+   if(castTime > 0 && !(flags & SPELL_FLAG_INSTANT)) {
       owner->setPosition(owner->getX(), owner->getY());//stop moving serverside too. TODO: check for each spell if they stop movement or not
       state = STATE_CASTING;
       currentCastTime = castTime;

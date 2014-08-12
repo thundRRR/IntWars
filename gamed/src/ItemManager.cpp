@@ -18,8 +18,7 @@ void ItemManager::init() {
          continue;
       }
 
-      Inibin inibin(iniFile);
-      
+      Inibin inibin(iniFile);      
       
       uint32 maxStack = inibin.getIntValue("DATA", "MaxStack");
       uint32 price = inibin.getIntValue("DATA", "Price");
