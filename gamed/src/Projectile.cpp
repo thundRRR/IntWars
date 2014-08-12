@@ -8,6 +8,8 @@
 #include "Turret.h"
 #include "Champion.h"
 
+using namespace std;
+
 void Projectile::update(int64 diff) {
 
    if(!target) {
@@ -22,7 +24,12 @@ void Projectile::update(int64 diff) {
             return;
          }
          
-         if(collide(it.second) && it.second->getNetId() != getNetId()) {//projectile shouldn't collide with itself
+         if(collide(it.second)) {
+         
+            if(find(objectsHit.begin(), objectsHit.end(), it.second) != objectsHit.end()) {
+               continue;
+            }
+         
             Unit* u = dynamic_cast<Unit*>(it.second);
             if(!u) {
                continue;
@@ -35,6 +42,10 @@ void Projectile::update(int64 diff) {
             }
             
             if(u->getSide() != owner->getSide() && !(spellFlags & SPELL_FLAG_AffectEnemies)) {
+               continue;
+            }
+            
+            if(u->isDead() && !(spellFlags & SPELL_FLAG_AffectDead)) {
                continue;
             }
             
@@ -53,6 +64,7 @@ void Projectile::update(int64 diff) {
                continue;
             }
             
+            objectsHit.push_back(u);
             originSpell->applyEffects(u, this);
          }
       }

@@ -10,9 +10,11 @@ function finishCasting()
     local range = Vector2:Mult(to,1150)
     local trueCoords = Vector2:Add(current, range)
 
-    addProjectile(trueCoords.x, trueCoords.y)
+    addServerProjectile(trueCoords.x, trueCoords.y)
 end
 
 function applyEffects()
-
+   dealPhysicalDamage(getEffectValue(0))
+   
+   addParticleTarget("caitlyn_Base_Q_tar.troy", getTarget())
 end

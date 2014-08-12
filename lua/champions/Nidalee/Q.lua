@@ -14,9 +14,6 @@ function finishCasting()
 end
 
 function applyEffects()
-   if getSide(getTarget()) == getSide(getOwner()) or isDead(getTarget()) then
-      return;
-   end
    
    dealMagicalDamage(getEffectValue(0))
    
