@@ -94,7 +94,7 @@ bool Spell::cast(float x, float y, Unit* u, uint32 futureProjNetId) {
    this->target = u;
    this->futureProjNetId = futureProjNetId;
 
-   if(castTime > 0 && !(flags & SPELL_FLAG_INSTANT)) {
+   if(castTime > 0 && !(flags & SPELL_FLAG_InstantCast)) {
       owner->setPosition(owner->getX(), owner->getY());//stop moving serverside too. TODO: check for each spell if they stop movement or not
       state = STATE_CASTING;
       currentCastTime = castTime;
