@@ -48,13 +48,13 @@ uint8 Stats::getSize(uint8 blockId, uint32 stat) {
 }
 
 void Stats::update(int64 diff) {
-   if(getHp5() > 0 && getCurrentHealth() != getMaxHealth()) {
+   if(getHp5() > 0 && getCurrentHealth() < getMaxHealth()) {
       float newHealth = getCurrentHealth()+(getHp5()/5.f)*(diff*0.000001);
       newHealth = std::min(getMaxHealth(), newHealth);
       setCurrentHealth(newHealth);
    }
    
-   if(getMana5() > 0 && getCurrentMana() != getMaxMana()) {
+   if(getMana5() > 0 && getCurrentMana() < getMaxMana()) {
       float newMana = getCurrentMana()+(getMana5()/5.f)*(diff*0.000001);
       newMana = std::min(getMaxMana(), newMana);
       setCurrentMana(newMana);

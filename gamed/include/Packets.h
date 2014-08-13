@@ -1001,7 +1001,7 @@ public:
             uint32 tmpMask = (1 << i);
             if(tmpMask & mask) {
                if(u->getStats().getSize(m, tmpMask) == 4) {
-                  float f = u->getStats().getStat(m, tmpMask);
+                  float f = u->getStats().getStat(m, tmpMask) & 0xFFFFFFFE;
                   buffer << f;
                } else if(u->getStats().getSize(m, tmpMask) == 2) {
                   uint16 stat = floor(u->getStats().getStat(m, tmpMask) + 0.5);
