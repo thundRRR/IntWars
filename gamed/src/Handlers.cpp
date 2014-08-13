@@ -43,6 +43,7 @@ bool Game::handleKeyCheck(ENetPeer *peer, ENetPacket *packet) {
    for(ClientInfo* player : players) {
       if(player->userId == userId) {
          peer->data = player;
+         player->setPeer(peer);
          KeyCheck response;
          response.userId = keyCheck->userId;
          response.playerNo = playerNo;
@@ -162,7 +163,7 @@ bool Game::handleStartGame(HANDLE_ARGS) {
 bool Game::handleAttentionPing(ENetPeer *peer, ENetPacket *packet) {
    AttentionPing *ping = reinterpret_cast<AttentionPing *>(packet->data);
    AttentionPingAns response(peerInfo(peer), ping);
-   return broadcastPacket(response, CHL_S2C);
+   return broadcastPacketTeam(peerInfo(peer)->getTeam(), response, CHL_S2C);
 }
 
 bool Game::handleView(ENetPeer *peer, ENetPacket *packet) {
@@ -462,8 +463,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
    case CMT_ALL:
       return broadcastPacket(packet->data, packet->dataLength, CHL_COMMUNICATION);
    case CMT_TEAM:
-      //!TODO make a team class and foreach player in the team send the message
-      return sendPacket(peer, packet->data, packet->dataLength, CHL_COMMUNICATION);
+      return broadcastPacketTeam(peerInfo(peer)->getTeam(), packet->data, packet->dataLength, CHL_COMMUNICATION);
    default:
       //Logging->errorLine("Unknown ChatMessageType\n");
       return sendPacket(peer, packet->data, packet->dataLength, CHL_COMMUNICATION); 

@@ -147,6 +147,28 @@ bool Game::broadcastPacket(uint8 *data, uint32 length, uint8 channelNo, uint32 f
 	return true;
 }
 
+bool Game::broadcastPacketTeam(uint8 team, uint8 *data, uint32 length, uint8 channelNo, uint32 flag)
+{
+	for(ClientInfo* ci : players) {
+      if(ci->getPeer() && ci->getTeam() == team) {
+         sendPacket(ci->getPeer(), data, length, channelNo, flag);
+      }
+   }
+   
+	return true;
+}
+
+bool Game::broadcastPacketTeam(uint8 team, const Packet& packet, uint8 channelNo, uint32 flag)
+{
+	for(ClientInfo* ci : players) {
+      if(ci->getPeer() && ci->getTeam() == team) {
+         sendPacket(ci->getPeer(), packet, channelNo, flag);
+      }
+   }
+   
+	return true;
+}
+
 bool Game::broadcastPacket(const Packet& packet, uint8 channelNo, uint32 flag) {
    return broadcastPacket((uint8*)&packet.getBuffer().getBytes()[0], packet.getBuffer().size(), channelNo, flag);
 }

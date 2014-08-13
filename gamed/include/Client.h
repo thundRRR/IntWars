@@ -29,7 +29,7 @@ enum TeamId : uint32 {
 
 struct ClientInfo
 {
-	ClientInfo(const std::string& rank, TeamId team, uint16 ribbon) : keyChecked(false), ticks(0), skinNo(0), rank(rank), team(team), ribbon(ribbon)
+	ClientInfo(const std::string& rank, TeamId team, uint16 ribbon) : keyChecked(false), ticks(0), skinNo(0), rank(rank), team(team), ribbon(ribbon), peer(0)
 	{
 	}
 
@@ -81,6 +81,9 @@ struct ClientInfo
       return ticks;
    }
    
+   void setPeer(ENetPeer* peer) { this->peer = peer; }
+   ENetPeer* getPeer() { return peer; }
+   
    bool keyChecked;
    uint64 userId;
    uint32 ticks;
@@ -91,6 +94,7 @@ struct ClientInfo
    uint32 team;
    
    Champion* champion;
+   ENetPeer* peer;
 
 };
 

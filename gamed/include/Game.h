@@ -96,6 +96,8 @@ class Game
       bool sendPacket(ENetPeer *peer, const Packet& packet, uint8 channelNo, uint32 flag = RELIABLE);
 		bool broadcastPacket(uint8 *data, uint32 length, uint8 channelNo, uint32 flag = RELIABLE);
       bool broadcastPacket(const Packet& packet, uint8 channelNo, uint32 flag = RELIABLE);
+      bool broadcastPacketTeam(uint8 team, uint8 *data, uint32 length, uint8 channelNo, uint32 flag = RELIABLE);
+      bool broadcastPacketTeam(uint8 team, const Packet& packet, uint8 channelNo, uint32 flag = RELIABLE);
 
 	private:
 		bool _isAlive, _started;
