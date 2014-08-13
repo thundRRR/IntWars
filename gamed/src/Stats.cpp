@@ -84,6 +84,7 @@ void Stats::applyStatMods(const std::vector<StatMod>& statMods) {
       if(stat.value == 0) {
          continue;
       }
+
       setStat(stat.blockId, stat.mask, getStat(stat.blockId, stat.mask)+stat.value);
    }
 }

@@ -8,7 +8,7 @@ const ItemInstance* Inventory::addItem(const ItemTemplate* itemTemplate) {
 
    if(itemTemplate->getMaxStack() > 1) {
       for(slot = 0; slot < 7; ++slot) {
-         if(slot == 3 || items[slot] == 0) { // trinket slot
+         if(slot == 6 || items[slot] == 0) { // trinket slot
             continue;
          }
       
@@ -21,7 +21,7 @@ const ItemInstance* Inventory::addItem(const ItemTemplate* itemTemplate) {
    
    if(slot == -1 || slot == 7) {
       for(slot = 0; slot < 7; ++slot) {
-         if(slot == 3) { // trinket slot
+         if(slot == 6) { // trinket slot
             continue;
          }
       
