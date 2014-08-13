@@ -26,16 +26,16 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    stats->setMovementSpeed(inibin.getFloatValue("DATA", "MoveSpeed"));
    stats->setArmor(inibin.getFloatValue("DATA", "Armor"));
    stats->setMagicArmor(inibin.getFloatValue("DATA", "SpellBlock"));
-   stats->setHp5(inibin.getFloatValue("DATA", "BaseStaticHPRegen")*5);
-   stats->setMp5(inibin.getFloatValue("DATA", "BaseStaticMPRegen")*5);
+   stats->setHp5(inibin.getFloatValue("DATA", "BaseStaticHPRegen"));
+   stats->setMp5(inibin.getFloatValue("DATA", "BaseStaticMPRegen"));
    
    stats->setHealthPerLevel(inibin.getFloatValue("DATA", "HPPerLevel"));
    stats->setManaPerLevel(inibin.getFloatValue("DATA", "MPPerLevel"));
    stats->setAdPerLevel(inibin.getFloatValue("DATA", "DamagePerLevel"));
    stats->setArmorPerLevel(inibin.getFloatValue("DATA", "ArmorPerLevel"));
    stats->setMagicArmorPerLevel(inibin.getFloatValue("DATA", "SpellBlockPerLevel"));
-   stats->setHp5RegenPerLevel(inibin.getFloatValue("DATA", "HPRegenPerLevel")*5);
-   stats->setMp5RegenPerLevel(inibin.getFloatValue("DATA", "MPRegenPerLevel")*5);
+   stats->setHp5RegenPerLevel(inibin.getFloatValue("DATA", "HPRegenPerLevel"));
+   stats->setMp5RegenPerLevel(inibin.getFloatValue("DATA", "MPRegenPerLevel"));
    
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell1"), 0));
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell2"), 1));

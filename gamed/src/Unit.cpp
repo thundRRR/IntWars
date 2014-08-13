@@ -45,7 +45,7 @@ void Unit::update(int64 diff) {
    }
    
    statUpdateTimer += diff;
-   if(statUpdateTimer >= 500000) { // update stats (hpregen, manaregen) every seconds
+   if(statUpdateTimer >= 500000) { // update stats (hpregen, manaregen) every 0.5 seconds
       stats->update(statUpdateTimer);
       statUpdateTimer = 0;
    }

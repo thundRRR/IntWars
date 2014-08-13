@@ -5,6 +5,15 @@ using namespace std;
 
 const ItemInstance* Inventory::addItem(const ItemTemplate* itemTemplate) {
    int slot = -1;
+   
+   if(itemTemplate->isTrinket()) {
+      if(items[6] == 0) {
+         items[6] = new ItemInstance(itemTemplate, 6, 1);
+         return items[6];
+      }
+      
+      return 0;
+   }
 
    if(itemTemplate->getMaxStack() > 1) {
       for(slot = 0; slot < 7; ++slot) {
