@@ -22,16 +22,21 @@ void Game::notifyUpdatedStats(Unit* u) {
    broadcastPacket(us, CHL_LOW_PRIORITY, 2);
 }
 
-void Game::notifyTeleport(Unit* u){
+void Game::notifyTeleport(Unit* u, float _x, float _y){
     
    // TeleportRequest first(u->getNetId(), u->teleportToX, u->teleportToY, true);
     
+    
+    u->setPosition(_x, _y);
+    
    // sendPacket(currentPeer, first, CHL_S2C);
-       
-    TeleportRequest second(u->getNetId(), u->teleportToX, u->teleportToY, false);
+    _x = MovementVector::targetXToNormalFormat(_x);
+    _y = MovementVector::targetYToNormalFormat(_y);
+    
+    
+    TeleportRequest second(u->getNetId(), _x, _y, false);
     broadcastPacket(second, CHL_S2C);
     
-    u->needsToTeleport = false;
        
     //todo check for vision? and send to each player 
     

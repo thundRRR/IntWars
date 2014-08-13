@@ -154,10 +154,7 @@ void Spell::loadLua(LuaScript& script){
    script.lua.set_function("getSpellToY", [this]() { return y; });
    script.lua.set_function("getRange", [this]() { return castRange; });
    script.lua.set_function("teleportTo", [this](float _x, float _y) { // expose teleport to lua
-      owner->needsToTeleport = true;
-      owner->teleportToX = (_x-MAP_WIDTH) / 2; 
-      owner->teleportToY = (_y-MAP_HEIGHT)/2;
-      owner->setPosition(_x, _y);
+      owner->getMap()->getGame()->notifyTeleport(owner, _x, _y);
       return;
    });
    

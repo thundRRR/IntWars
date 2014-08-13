@@ -21,10 +21,6 @@ void Map::update(int64 diff) {
          continue;
       }
       
-      if(u->needsToTeleport == true){
-          game->notifyTeleport(u);
-         
-      }
       
       if(!u->getStats().getUpdatedStats().empty()) {
          game->notifyUpdatedStats(u);
