@@ -1001,7 +1001,11 @@ public:
             uint32 tmpMask = (1 << i);
             if(tmpMask & mask) {
                if(u->getStats().getSize(m, tmpMask) == 4) {
-                  float f = (int)u->getStats().getStat(m, tmpMask) & 0xFFFFFFFE;
+                  float f = u->getStats().getStat(m, tmpMask);
+                  unsigned char *c = reinterpret_cast<unsigned char *>(&f);
+                  if(c[0] == 0xFF) {
+                     c[0] = 0xFE;
+                  }
                   buffer << f;
                } else if(u->getStats().getSize(m, tmpMask) == 2) {
                   uint16 stat = floor(u->getStats().getStat(m, tmpMask) + 0.5);
