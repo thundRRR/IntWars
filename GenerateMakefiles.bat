@@ -16,6 +16,7 @@ cd build
 echo Creating MinGW Makefiles...
 echo ------------------------------
 cmake .. -G "MinGW Makefiles"
+cd ..
 pause
 
 
