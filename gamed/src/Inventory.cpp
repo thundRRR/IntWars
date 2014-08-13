@@ -5,10 +5,19 @@ using namespace std;
 
 const ItemInstance* Inventory::addItem(const ItemTemplate* itemTemplate) {
    int slot = -1;
+   
+   if(itemTemplate->isTrinket()) {
+      if(items[6] == 0) {
+         items[6] = new ItemInstance(itemTemplate, 6, 1);
+         return items[6];
+      }
+      
+      return 0;
+   }
 
    if(itemTemplate->getMaxStack() > 1) {
       for(slot = 0; slot < 7; ++slot) {
-         if(slot == 3 || items[slot] == 0) { // trinket slot
+         if(slot == 6 || items[slot] == 0) { // trinket slot
             continue;
          }
       
@@ -21,7 +30,7 @@ const ItemInstance* Inventory::addItem(const ItemTemplate* itemTemplate) {
    
    if(slot == -1 || slot == 7) {
       for(slot = 0; slot < 7; ++slot) {
-         if(slot == 3) { // trinket slot
+         if(slot == 6) { // trinket slot
             continue;
          }
       

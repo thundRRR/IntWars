@@ -18,10 +18,11 @@ void ItemManager::init() {
          continue;
       }
 
-      Inibin inibin(iniFile);    
+      Inibin inibin(iniFile);
       
       uint32 maxStack = inibin.getIntValue("DATA", "MaxStack");
       uint32 price = inibin.getIntValue("DATA", "Price");
+      bool trinket = inibin.getIntValue(0x32E2CBC9);
       
       float sellBack = 0.7f;
       
@@ -43,7 +44,7 @@ void ItemManager::init() {
       statMods.push_back({MM_Four, FM4_MaxMp, inibin.getFloatValue("DATA", "FlatMPPoolMod")});
       statMods.push_back({MM_Four, FM4_Speed, inibin.getFloatValue("DATA", "FlatMovementSpeedMod")});
       
-      itemTemplates[i] = new ItemTemplate(i, maxStack, price, sellBack, statMods);
+      itemTemplates[i] = new ItemTemplate(i, maxStack, price, sellBack, trinket, statMods);
    }
    
    printf("Loaded %lu items\n", itemTemplates.size());

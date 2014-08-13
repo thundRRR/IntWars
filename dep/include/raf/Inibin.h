@@ -202,6 +202,7 @@ public:
          }
          
          value.boolV = boolean & 0x01;
+         value.intV = boolean & 0x01;
          values[key] = value;
          ++index;
       }
@@ -234,10 +235,14 @@ public:
    }
    
    uint32 getIntValue(const std::string& sectionName, const std::string& varName) {
-      if(values[getKeyHash(sectionName, varName)].intV == 0 && values[getKeyHash(sectionName, varName)].stringV.length() > 0) {
-         return atoi(values[getKeyHash(sectionName, varName)].stringV.c_str());
+      return getIntValue(getKeyHash(sectionName, varName));
+   }
+   
+   uint32 getIntValue(uint32 keyHash) {
+      if(values[keyHash].intV == 0 && values[keyHash].stringV.length() > 0) {
+         return atoi(values[keyHash].stringV.c_str());
       }
-      return values[getKeyHash(sectionName, varName)].intV;
+      return values[keyHash].intV;
    }
    
    const std::string& getStringValue(const std::string& sectionName, const std::string& varName) {
