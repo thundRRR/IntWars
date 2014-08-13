@@ -9,7 +9,6 @@
 using namespace std;
 
 Spell::Spell(Champion* owner, const std::string& spellName, uint8 slot) : owner(owner), spellName(spellName), level(0), slot(slot), state(STATE_READY), currentCooldown(0), currentCastTime(0), castTime(0.f), castRange(1000.f), projectileSpeed(2000.f), flags(0), projectileFlags(0) {
-   script.lua.script("package.path = '../../lua/lib/?.lua;' .. package.path"); //automatically load vector lib so scripters dont have to worry about path
    
    for(int i = 0; i < 5; ++i) {
       cooldown[i] = 1.0f;
@@ -137,43 +136,23 @@ std::string Spell::getStringForSlot(){
 
 
 
-void Spell::loadLua(){
+void Spell::loadLua(LuaScript& script){
 
    std::string scriptloc = "../../lua/champions/" + owner->getType() + "/" + getStringForSlot() + ".lua"; //lua/championname/(q/w/e/r), example: /lua/Ezreal/q, also for stuff like nidalee cougar they will have diff folders!
 
    printf("Spell script loc is: %s \n" , scriptloc.c_str());
-
-   try{
-   script.loadScript(scriptloc); //todo: abstract class that loads a lua file for any lua
-     }catch(sol::error e){//lua error? don't crash the whole server
-       printf("%s", e.what());
-   }
-}
-
-
-
-void Spell::doLua(){
-
-   float ownerX = owner->getX(); //we need to do this for each variable exposed to Lua or we get a compiler error
-   float ownerY = owner->getY();
    
-   std::string model = owner->getModel();
-   
-   float spellX = x;
-   float spellY = y;
-   
-   float range = castRange;
-   
-   script.lua.set_function("getOwnerX", [&ownerX]() { return ownerX; });
-   script.lua.set_function("getOwnerY", [&ownerY]() { return ownerY; });
-   script.lua.set_function("getChampionModel", [&model]() { return model; });
+   script.lua.script("package.path = '../../lua/lib/?.lua;' .. package.path"); //automatically load vector lib so scripters dont have to worry about path
+   script.lua.set_function("getOwnerX", [this]() { return owner->getX(); });
+   script.lua.set_function("getOwnerY", [this]() { return owner->getY(); });
+   script.lua.set_function("getChampionModel", [this]() { return owner->getModel(); });
    script.lua.set_function("setChampionModel", [this](const std::string& newModel) {
       owner->setModel(newModel); 
       return;
    });
-   script.lua.set_function("getSpellToX", [&spellX]() { return spellX; });
-   script.lua.set_function("getSpellToY", [&spellY]() { return spellY; });
-   script.lua.set_function("getRange", [&range]() { return range; });
+   script.lua.set_function("getSpellToX", [this]() { return x; });
+   script.lua.set_function("getSpellToY", [this]() { return y; });
+   script.lua.set_function("getRange", [this]() { return castRange; });
    script.lua.set_function("teleportTo", [this](float _x, float _y) { // expose teleport to lua
       owner->needsToTeleport = true;
       owner->teleportToX = (_x-MAP_WIDTH) / 2; 
@@ -194,15 +173,10 @@ void Spell::doLua(){
    script.lua.set_function("getSide", [this](Object* o) { return o->getSide(); });
    script.lua.set_function("isDead", [this](Unit* u) { return u->isDead(); });
    
-   std::string projectileName = spellName +"Missile";
+   script.lua.set_function("getProjectileSpeed", [this]() { return projectileSpeed; });
    
-   float projSpeed = projectileSpeed;
-   script.lua.set_function("getProjectileSpeed", [&projSpeed]() { return projSpeed; });
-
-   uint32 projectileId = RAFFile::getHash(projectileName);
-   
-   script.lua.set_function("addProjectile", [this, &projectileId, &projSpeed](float toX, float toY) { 
-      Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, projectileId, projectileFlags ? projectileFlags : flags);
+   script.lua.set_function("addProjectile", [this](float toX, float toY) { 
+      Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projectileSpeed, RAFFile::getHash(spellName +"Missile"), projectileFlags ? projectileFlags : flags);
       owner->getMap()->addObject(p);
       owner->getMap()->getGame()->notifyProjectileSpawn(p);
 
@@ -210,7 +184,7 @@ void Spell::doLua(){
    });
    
    script.lua.set_function("addProjectileCustom", [this](const std::string& name, float projSpeed, float toX, float toY) { 
-      Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, RAFFile::getHash(name), projectileFlags ? projectileFlags : flags);
+      Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projectileSpeed, RAFFile::getHash(name), projectileFlags ? projectileFlags : flags);
       owner->getMap()->addObject(p);
       owner->getMap()->getGame()->notifyProjectileSpawn(p);
 
@@ -220,8 +194,8 @@ void Spell::doLua(){
    /**
     * For spells that don't require SpawnProjectile, but for which we still need to track the projectile server-side
     */
-   script.lua.set_function("addServerProjectile", [this, &projSpeed](float toX, float toY) { 
-      Projectile* p = new Projectile(owner->getMap(), futureProjNetId, owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projSpeed, 0, projectileFlags ? projectileFlags : flags);
+   script.lua.set_function("addServerProjectile", [this](float toX, float toY) { 
+      Projectile* p = new Projectile(owner->getMap(), futureProjNetId, owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projectileSpeed, 0, projectileFlags ? projectileFlags : flags);
       owner->getMap()->addObject(p);
 
       return;
@@ -238,8 +212,21 @@ void Spell::doLua(){
       owner->getMap()->getGame()->notifyParticleSpawn(owner, u, particle);
       return;
    });
+
+   try{
+      script.loadScript(scriptloc); //todo: abstract class that loads a lua file for any lua
+     }catch(sol::error e){//lua error? don't crash the whole server
+       printf("%s", e.what());
+   }
+}
+
+
+
+void Spell::doLua(){
+   
+   LuaScript script;
     
-   loadLua(); //comment this line for no reload on the fly, better performance
+   loadLua(script); //comment this line for no reload on the fly, better performance
 
    printf("Spell from slot %i\n", getSlot());
 
@@ -278,6 +265,8 @@ uint32 Spell::getId() const {
 }
 
 void Spell::applyEffects(Unit* u, Projectile* p) {
+
+   LuaScript script;
    
    script.lua.set_function("getTarget", [&u]() { return u; });
    
@@ -296,6 +285,8 @@ void Spell::applyEffects(Unit* u, Projectile* p) {
       p->getMap()->getGame()->notifyProjectileDestroy(p);
       return;
    });
+   
+   loadLua(script); //comment this line for no reload on the fly, better performance
    
    try{
       script.lua.script("applyEffects()");

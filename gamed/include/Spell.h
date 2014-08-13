@@ -73,8 +73,6 @@ protected:
    uint8 targetType;
    uint32 flags, projectileFlags;
    
-   LuaScript script;
-
    float castTime;
    float castRange;
    float projectileSpeed;
@@ -138,7 +136,7 @@ public:
     * does spell effects in lua if defined.
     */
    void doLua();
-   void loadLua();
+   void loadLua(LuaScript& script);
    void reloadLua();
    
    void setSlot(int _slot){
