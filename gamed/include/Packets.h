@@ -125,7 +125,8 @@ public:
          buffer.fill(0, 64-p->getName().length());
          buffer.fill(0, 64);
          buffer << p->getRank();
-         buffer.fill(0, 28-p->getRank().length());
+         buffer.fill(0, 24-p->getRank().length());
+         buffer << p->getIcon();
          buffer << (uint16)p->getRibbon();
       }
       
