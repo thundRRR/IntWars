@@ -23,7 +23,7 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    stats->setMaxMana(inibin.getFloatValue("Data", "BaseMP"));
    stats->setBaseAd(inibin.getFloatValue("DATA", "BaseDamage"));
    stats->setRange(inibin.getFloatValue("DATA", "AttackRange"));
-   stats->setMovementSpeed(inibin.getFloatValue("DATA", "MoveSpeed"));
+   stats->setBaseMovementSpeed(inibin.getFloatValue("DATA", "MoveSpeed"));
    stats->setArmor(inibin.getFloatValue("DATA", "Armor"));
    stats->setMagicArmor(inibin.getFloatValue("DATA", "SpellBlock"));
    stats->setHp5(inibin.getFloatValue("DATA", "BaseStaticHPRegen")*5);

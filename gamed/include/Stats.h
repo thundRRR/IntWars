@@ -75,6 +75,10 @@ protected:
    float healthPerLevel, manaPerLevel;
    float adPerLevel, armorPerLevel, magicArmorPerLevel;
    float hp5RegenPerLevel, mp5RegenPerLevel;
+   float movementSpeedPercentageModifier;
+   
+   float baseMovement;
+   
    
 public:
 
@@ -96,6 +100,23 @@ public:
    void applyStatMods(const std::vector<StatMod>& statMods);
    
    virtual uint8 getSize(uint8 blockId, uint32 stat);
+   
+   virtual float getMovementSpeedPercentageModifier() const{
+       return 1.0 + (movementSpeedPercentageModifier/100.0);
+   }
+   
+   void setBaseMovementSpeed(float ms){
+       baseMovement = ms;
+       setStat(MM_Four, FM4_Speed, baseMovement*getMovementSpeedPercentageModifier());
+   }
+   
+   
+   
+   void addMovementSpeedPercentageModifier(float amount){
+
+       movementSpeedPercentageModifier += amount;
+       setStat(MM_Four, FM4_Speed, baseMovement*getMovementSpeedPercentageModifier());
+   }
 
    virtual float getBaseAd() const {
       return getStat(MM_Two, FM2_Base_Ad);
@@ -157,8 +178,11 @@ public:
       return getStat(MM_Two, FM2_Mp5);
    }
    
+  
+   
    virtual float getMovementSpeed() const {
-      return getStat(MM_Four, FM4_Speed);
+ //  printf("Movement speed with buffs %f \n", getMovementSpeedPercentageModifier() * getStat(MM_Four, FM4_Speed));
+   return getStat(MM_Four, FM4_Speed);
    }
    
    virtual float getBaseAttackSpeed() const {
@@ -313,6 +337,10 @@ public:
     
     float getTotalAttackSpeed() const {
       return getBaseAttackSpeed()*getAttackSpeedMultiplier();
+    }
+    
+    float getTotalMovementSpeed() const {
+        return getMovementSpeedPercentageModifier() * getStat(MM_Four, FM4_Speed);
     }
 
 };

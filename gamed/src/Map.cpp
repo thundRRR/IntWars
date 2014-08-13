@@ -15,11 +15,29 @@ void Map::update(int64 diff) {
       }
       
       Unit* u = dynamic_cast<Unit*>(kv->second);
+      
+
+      
+      
       if(!u) {
          kv->second->update(diff);
          ++kv;
          continue;
       }
+      
+    if(u->buffs.size() != 0){
+          
+          for(int i = u->buffs.size(); i>0;i--){
+
+              if(u->buffs[i-1]->needsToRemove()){
+                  u->buffs.erase(u->getBuffs().begin() + (i-1));
+                  //todo move this to Buff.cpp and add every stat
+                  u->getStats().addMovementSpeedPercentageModifier(-u->getBuffs()[i-1]->getMovementSpeedPercentModifier());
+                  continue;
+              }
+              u->buffs[i-1]->update(diff);
+          }
+    }
       
       
       if(!u->getStats().getUpdatedStats().empty()) {

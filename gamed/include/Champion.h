@@ -34,6 +34,8 @@ public:
    void setSkin(uint8 skin) { this->skin = skin; }
    uint32 getChampionHash();
    
+   uint8 getLevel() const{ return level;  }
+   
    uint8 getSkillPoints() const { return skillPoints; }
    void levelUp();
    
