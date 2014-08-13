@@ -2,6 +2,7 @@
 #define ITEM_H
 
 #include "stdafx.h"
+#include "Stats.h"
 #include <vector>
 
 class ItemTemplate
@@ -11,6 +12,7 @@ private:
    uint32 maxStack;
    uint32 price;
    float sellBackModifier;
+   std::vector<StatMod> statMods;
    
    /**
     * Necessary items to create this one.
@@ -18,12 +20,13 @@ private:
    std::vector<ItemTemplate*> recipes;
    
 public:
-   ItemTemplate(uint32 id, uint32 maxStack, uint32 price, float sellBackModifier) : id(id), maxStack(maxStack), price(price), sellBackModifier(sellBackModifier) { }
+   ItemTemplate(uint32 id, uint32 maxStack, uint32 price, float sellBackModifier, const std::vector<StatMod>& statMods) : id(id), maxStack(maxStack), price(price), sellBackModifier(sellBackModifier), statMods(statMods) { }
    
    uint32 getId() const { return id; }
    uint32 getMaxStack() const { return maxStack; }
    uint32 getPrice() const { return price; }
    float getSellBackModifier() const { return sellBackModifier; }
+   const std::vector<StatMod>& getStatMods() const { return statMods; }
    
    bool isRecipe() const { return recipes.size() > 0; }
 

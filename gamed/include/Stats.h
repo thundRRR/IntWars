@@ -57,6 +57,12 @@ enum FieldMaskFive : uint32
 {
 };
 
+struct StatMod {
+   uint8 blockId;
+   uint32 mask;
+   float value;
+};
+
 class Stats {
 
 protected:
@@ -86,6 +92,8 @@ public:
    
    void update(int64 diff);
    void levelUp();
+   
+   void applyStatMods(const std::vector<StatMod>& statMods);
    
    virtual uint8 getSize(uint8 blockId, uint32 stat);
 

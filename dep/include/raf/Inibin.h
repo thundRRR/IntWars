@@ -247,6 +247,29 @@ public:
    bool keyExists(const std::string& sectionName, const std::string& varName) {
       return values.find(getKeyHash(sectionName, varName)) != values.end();
    }
+   
+   void printValues() {
+      for(auto& v : values) {
+         printf("%08X : ", v.first);
+         if(!v.second.stringV.empty()) {
+            printf("\"%s\"\n", v.second.stringV.c_str());
+            continue;
+         }
+         
+         if(!v.second.intV && !v.second.floatV) {
+            printf("%d\n", v.second.boolV);
+            
+            continue;
+         }
+         
+         if(!v.second.intV) {
+            printf("%f\n", v.second.floatV);
+            continue;
+         }
+         
+         printf("%d\n", v.second.intV);
+      }
+   }
 
 private:
    

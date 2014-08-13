@@ -510,6 +510,7 @@ bool Game::handleBuyItem(HANDLE_ARGS) {
       return true;
    }
    
+   peerInfo(peer)->getChampion()->getStats().applyStatMods(i->getTemplate()->getStatMods());
    peerInfo(peer)->getChampion()->getStats().setGold(peerInfo(peer)->getChampion()->getStats().getGold()-itemTemplate->getPrice());
    notifyItemBought(peerInfo(peer)->getChampion(), i);
    

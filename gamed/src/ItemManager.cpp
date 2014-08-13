@@ -18,7 +18,7 @@ void ItemManager::init() {
          continue;
       }
 
-      Inibin inibin(iniFile);      
+      Inibin inibin(iniFile);    
       
       uint32 maxStack = inibin.getIntValue("DATA", "MaxStack");
       uint32 price = inibin.getIntValue("DATA", "Price");
@@ -29,8 +29,21 @@ void ItemManager::init() {
          sellBack = inibin.getFloatValue("DATA", "SellBackModifier");
       }
       
-      itemTemplates[i] = new ItemTemplate(i, maxStack, price, sellBack);
-   
+      vector<StatMod> statMods;
+      
+      statMods.push_back({MM_Two, FM2_Bonus_Ad_Flat, inibin.getFloatValue("DATA", "FlatPhysicalDamageMod")});
+      statMods.push_back({MM_Two, FM2_Bonus_Ad_Pct, inibin.getFloatValue("DATA", "PercentPhysicalDamageMod")});
+      statMods.push_back({MM_Two, FM2_Bonus_Ap_Flat, inibin.getFloatValue("DATA", "FlatMagicDamageMod")});
+      statMods.push_back({MM_Two, FM2_Hp5, inibin.getFloatValue("DATA", "FlatHPRegenMod")});
+      statMods.push_back({MM_Two, FM2_Crit_Chance, inibin.getFloatValue("DATA", "FlatCritChanceMod")});
+      statMods.push_back({MM_Two, FM2_Armor, inibin.getFloatValue("DATA", "FlatArmorMod")});
+      statMods.push_back({MM_Two, FM2_Magic_Armor, inibin.getFloatValue("DATA", "FlatSpellBlockMod")});
+      
+      statMods.push_back({MM_Four, FM4_MaxHp, inibin.getFloatValue("DATA", "FlatHPPoolMod")});
+      statMods.push_back({MM_Four, FM4_MaxMp, inibin.getFloatValue("DATA", "FlatMPPoolMod")});
+      statMods.push_back({MM_Four, FM4_Speed, inibin.getFloatValue("DATA", "FlatMovementSpeedMod")});
+      
+      itemTemplates[i] = new ItemTemplate(i, maxStack, price, sellBack, statMods);
    }
    
    printf("Loaded %lu items\n", itemTemplates.size());

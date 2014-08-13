@@ -78,3 +78,12 @@ void Stats::levelUp() {
    setHp5(getHp5()+hp5RegenPerLevel);
    setMp5(getMana5()+mp5RegenPerLevel);
 }
+
+void Stats::applyStatMods(const std::vector<StatMod>& statMods) {
+   for(StatMod stat : statMods) {
+      if(stat.value == 0) {
+         continue;
+      }
+      setStat(stat.blockId, stat.mask, getStat(stat.blockId, stat.mask)+stat.value);
+   }
+}
