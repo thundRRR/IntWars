@@ -118,10 +118,11 @@ bool Game::initialize(ENetAddress *address, const char *baseKey){
             std::string team = playerData.get<std::string>("team");
             int skin = playerData.get<int>("skin");
             int ribbon = playerData.get<int>("ribbon");
+            int icon = playerData.get<int>("icon");
             std::string summoner1 = playerData.get<std::string>("summoner1");
             std::string summoner2 = playerData.get<std::string>("summoner2");
 
-            ClientInfo* player = new ClientInfo(rank, ((team == "BLUE") ? TEAM_BLUE : TEAM_PURPLE), ribbon);
+            ClientInfo* player = new ClientInfo(rank, ((team == "BLUE") ? TEAM_BLUE : TEAM_PURPLE), ribbon, icon);
 
            player->setName(name);
 
