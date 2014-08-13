@@ -390,7 +390,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
 
          printf("Setting AP to %f\n", data);
 
-         peerInfo(peer)->getChampion()->getStats().setBaseAp(data);
+         peerInfo(peer)->getChampion()->getStats().setBonusApFlat(data);
          return true;
       }
       
@@ -401,7 +401,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
 
          printf("Setting AD to %f\n", data);
 
-         peerInfo(peer)->getChampion()->getStats().setBaseAd(data);
+         peerInfo(peer)->getChampion()->getStats().setBonusAdFlat(data);
          return true;
       }
       
