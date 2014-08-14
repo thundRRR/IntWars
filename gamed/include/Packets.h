@@ -282,29 +282,25 @@ struct Unk {
    uint32 targetNetId;
 };
 
-struct MinionSpawn {
-   
-   MinionSpawn(const Minion* m) : netId(m->getNetId()), netId2(m->getNetId()), netId3(m->getNetId()), unk(0x00150017), unk2(0x03), position(m->getPosition()), unk4(0xff), unk5_1(1), type(m->getType()), unk5_3(0), unk5_4(1), unk7(5), unk8(0x0ff84540f546f424) {
-      header.cmd = PKT_S2C_MinionSpawn;
-      header.netId = m->getNetId();
-      memcpy(unk6, "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00\x00\x06", 36);
+class MinionSpawn : public BasePacket {
+public:
+   MinionSpawn(const Minion* m) : BasePacket(PKT_S2C_MinionSpawn, m->getNetId()) {
+      buffer << (uint32)0x00150017; // unk
+      buffer << (uint8)0x03; // SpawnType - 3 = minion
+      buffer << m->getNetId() << m->getNetId();
+      buffer << (uint32)m->getPosition();
+      buffer << (uint8)0xFF; // unk
+      buffer << (uint8)1; // unk
+      buffer << (uint8)m->getType();
+      buffer << (uint8)0; // unk
+      buffer << (uint8)1; // unk
+      buffer << "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00";
+      buffer << (uint8)2; // coordCount
+      buffer << m->getNetId();
+      buffer << (uint8)0; // movement mask
+      buffer << MovementVector::targetXToNormalFormat(m->getX());
+      buffer << MovementVector::targetYToNormalFormat(m->getY());
    }
-
-   PacketHeader header;
-   
-   uint32 unk;
-   uint8 unk2;
-   uint32 netId, netId2;
-   uint32 position;
-   uint8 unk4;
-   uint8 unk5_1;
-   uint8 type;
-   uint8 unk5_3;
-   uint8 unk5_4;
-   uint8 unk6[36];
-   uint32 netId3;
-   uint8 unk7;
-   uint64 unk8;
 };
 
 struct MovementReq {
