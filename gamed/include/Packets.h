@@ -632,6 +632,14 @@ typedef struct _BuyItemAns {
     uint8 unk3;
 } BuyItemAns;
 
+class RemoveItem : public BasePacket {
+public:
+   RemoveItem(Unit* u, uint8 slot) : BasePacket(PKT_S2C_RemoveItem, u->getNetId()) {
+      buffer << slot;
+      buffer << (uint8)0; // unk
+   }
+};
+
 typedef struct _EmotionPacket {
     PacketHeader header;
     uint8 id;

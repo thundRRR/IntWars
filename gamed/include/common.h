@@ -29,6 +29,7 @@ enum GameCmd : uint8
 enum PacketCmd : uint8
 {                                            
    PKT_KeyCheck = 0x00, 
+   PKT_S2C_RemoveItem = 0x0B,
 
    PKT_S2C_EndSpawn = 0x11,
    PKT_C2S_QueryStatusReq = 0x14,

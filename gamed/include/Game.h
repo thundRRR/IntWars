@@ -85,7 +85,7 @@ class Game
       void notifyLevelUp(Champion* c);
       void notifyItemBought(Champion* c, const ItemInstance* i);
       void notifyItemsSwapped(Champion* c, uint8 fromSlot, uint8 toSlot);
-   
+      void notifyRemoveItem(Champion* c, uint8 slot);
 
 		// Tools
 		static void printPacket(const uint8 *buf, uint32 len);

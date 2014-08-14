@@ -524,8 +524,8 @@ bool Game::handleBuyItem(HANDLE_ARGS) {
       }
    
       for(ItemInstance* instance : recipeParts) {
+         notifyRemoveItem(peerInfo(peer)->getChampion(), instance->getSlot());
          peerInfo(peer)->getChampion()->getInventory().removeItem(instance->getSlot());
-         // TODO : new notifier packet "remove item from slot" ?
       }
       
       i = peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate);
