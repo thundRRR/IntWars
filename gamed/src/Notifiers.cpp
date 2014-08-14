@@ -8,7 +8,7 @@ using namespace std;
 
 void Game::notifyMinionSpawned(Minion* m) {
    MinionSpawn ms(m);
-   broadcastPacket(reinterpret_cast<uint8*>(&ms),sizeof(ms), CHL_S2C);
+   broadcastPacket(ms, CHL_S2C);
    notifySetHealth(m);
 }
 

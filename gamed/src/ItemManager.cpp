@@ -48,7 +48,10 @@ void ItemManager::init() {
       
       char c = '1';
       while(inibin.keyExists("DATA", string("RecipeItem")+c)) {
-         recipes.push_back(inibin.getIntValue("DATA", string("RecipeItem")+c));
+         uint32 componentId = inibin.getIntValue("DATA", string("RecipeItem")+c);
+         if(componentId) { // sometimes there are "0" entries
+            recipes.push_back(componentId);
+         }
          ++c;
       }
       

@@ -55,7 +55,11 @@ vector<ItemInstance*> Inventory::getAvailableRecipeParts(const ItemTemplate* rec
    vector<ItemInstance*> toReturn;
    
    for(uint32 itemId : recipe->getRecipeParts()) {
-      vector<ItemInstance*> parts = _getAvailableRecipeParts(ItemManager::getInstance()->getItemTemplateById(itemId));
+      const ItemTemplate* item = ItemManager::getInstance()->getItemTemplateById(itemId);
+      if(!item) {
+         continue;
+      }
+      vector<ItemInstance*> parts = _getAvailableRecipeParts(item);
       toReturn.insert(toReturn.begin(), parts.begin(), parts.end());
    }
    
