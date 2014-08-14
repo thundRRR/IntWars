@@ -98,6 +98,7 @@ public:
    void levelUp();
    
    void applyStatMods(const std::vector<StatMod>& statMods);
+   void unapplyStatMods(const std::vector<StatMod>& statMods);
    
    virtual uint8 getSize(uint8 blockId, uint32 stat);
    

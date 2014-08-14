@@ -17,31 +17,29 @@ const ItemInstance* Inventory::addItem(const ItemTemplate* itemTemplate) {
    }
 
    if(itemTemplate->getMaxStack() > 1) {
-      for(slot = 0; slot < 7; ++slot) {
-         if(slot == 6 || items[slot] == 0) { // trinket slot
+      for(slot = 0; slot < 6; ++slot) {
+         if(items[slot] == 0) { // trinket slot
             continue;
          }
       
-         if(items[slot]->getTemplate() == itemTemplate && items[slot]->getStacks() < itemTemplate->getMaxStack()) {
-            items[slot]->incrementStacks();
-            return items[slot];
+         if(items[slot]->getTemplate() == itemTemplate) {
+            if(items[slot]->getStacks() < itemTemplate->getMaxStack()) {
+               items[slot]->incrementStacks();
+               return items[slot];
+            } else if(items[slot]->getStacks() == itemTemplate->getMaxStack()) {
+               return 0;
+            }
          }
       }
    }
    
-   if(slot == -1 || slot == 7) {
-      for(slot = 0; slot < 7; ++slot) {
-         if(slot == 6) { // trinket slot
-            continue;
-         }
-      
-         if(items[slot] == 0) {
-            break;
-         }
+   for(slot = 0; slot < 6; ++slot) {
+      if(items[slot] == 0) {
+         break;
       }
    }
    
-   if(slot == 7) { // Inventory full
+   if(slot == 6) { // Inventory full
       return 0;
    }
    

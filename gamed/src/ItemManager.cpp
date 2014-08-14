@@ -20,6 +20,10 @@ void ItemManager::init() {
 
       Inibin inibin(iniFile);
       
+      if(i == 3110) {
+         inibin.printValues();
+      }
+      
       uint32 maxStack = inibin.getIntValue("DATA", "MaxStack");
       uint32 price = inibin.getIntValue("DATA", "Price");
       bool trinket = inibin.getIntValue(0x32E2CBC9);
@@ -39,6 +43,7 @@ void ItemManager::init() {
       statMods.push_back({MM_Two, FM2_Crit_Chance, inibin.getFloatValue("DATA", "FlatCritChanceMod")});
       statMods.push_back({MM_Two, FM2_Armor, inibin.getFloatValue("DATA", "FlatArmorMod")});
       statMods.push_back({MM_Two, FM2_Magic_Armor, inibin.getFloatValue("DATA", "FlatSpellBlockMod")});
+      statMods.push_back({MM_Two, FM2_Atks_multiplier, inibin.getFloatValue("DATA", "PercentAttackSpeedMod")});
       
       statMods.push_back({MM_Four, FM4_MaxHp, inibin.getFloatValue("DATA", "FlatHPPoolMod")});
       statMods.push_back({MM_Four, FM4_MaxMp, inibin.getFloatValue("DATA", "FlatMPPoolMod")});
