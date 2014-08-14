@@ -18,7 +18,7 @@ const ItemInstance* Inventory::addItem(const ItemTemplate* itemTemplate) {
 
    if(itemTemplate->getMaxStack() > 1) {
       for(slot = 0; slot < 6; ++slot) {
-         if(items[slot] == 0) { // trinket slot
+         if(items[slot] == 0) {
             continue;
          }
       
