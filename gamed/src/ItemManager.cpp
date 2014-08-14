@@ -44,7 +44,15 @@ void ItemManager::init() {
       statMods.push_back({MM_Four, FM4_MaxMp, inibin.getFloatValue("DATA", "FlatMPPoolMod")});
       statMods.push_back({MM_Four, FM4_Speed, inibin.getFloatValue("DATA", "FlatMovementSpeedMod")});
       
-      itemTemplates[i] = new ItemTemplate(i, maxStack, price, sellBack, trinket, statMods);
+      vector<uint32> recipes;
+      
+      char c = '1';
+      while(inibin.keyExists("DATA", string("RecipeItem")+c)) {
+         recipes.push_back(inibin.getIntValue("DATA", string("RecipeItem")+c));
+         ++c;
+      }
+      
+      itemTemplates[i] = new ItemTemplate(i, maxStack, price, sellBack, trinket, statMods, recipes);
    }
    
    printf("Loaded %lu items\n", itemTemplates.size());

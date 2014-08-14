@@ -83,7 +83,7 @@ protected:
 public:
 
    Stats() : updatedHealth(false), goldPerSecond(0), healthPerLevel(0), manaPerLevel(0), adPerLevel(0), armorPerLevel(0), magicArmorPerLevel(0),
-             hp5RegenPerLevel(0), mp5RegenPerLevel(0) { }
+             hp5RegenPerLevel(0), mp5RegenPerLevel(0), movementSpeedPercentageModifier(0), baseMovement(0) { }
 
    float getStat(uint8 blockId, uint32 stat) const;
    void setStat(uint8 blockId, uint32 stat, float value);
@@ -109,8 +109,6 @@ public:
        baseMovement = ms;
        setStat(MM_Four, FM4_Speed, baseMovement*getMovementSpeedPercentageModifier());
    }
-   
-   
    
    void addMovementSpeedPercentageModifier(float amount){
 
@@ -340,7 +338,7 @@ public:
     }
     
     float getTotalMovementSpeed() const {
-        return getMovementSpeedPercentageModifier() * getStat(MM_Four, FM4_Speed);
+        return getMovementSpeedPercentageModifier() * baseMovement;
     }
 
 };

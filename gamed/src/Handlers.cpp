@@ -500,18 +500,39 @@ bool Game::handleBuyItem(HANDLE_ARGS) {
       return false;
    }
    
-   if(peerInfo(peer)->getChampion()->getStats().getGold() < itemTemplate->getPrice()) {
-      return true;
+   std::vector<ItemInstance*> recipeParts = peerInfo(peer)->getChampion()->getInventory().getAvailableRecipeParts(itemTemplate);
+   uint32 price = itemTemplate->getTotalPrice();
+   const ItemInstance* i;
+   
+   if(recipeParts.empty()) {
+      if(peerInfo(peer)->getChampion()->getStats().getGold() < price) {
+         return true;
+      }
+   
+      i = peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate);
+   
+      if(i == 0) { // Slots full
+         return false;
+      }
+   } else {
+      for(ItemInstance* instance : recipeParts) {
+         price -= instance->getTemplate()->getTotalPrice();
+      }
+      
+      if(peerInfo(peer)->getChampion()->getStats().getGold() < price) {
+         return false;
+      }
+   
+      for(ItemInstance* instance : recipeParts) {
+         peerInfo(peer)->getChampion()->getInventory().removeItem(instance->getSlot());
+         // TODO : new notifier packet "remove item from slot" ?
+      }
+      
+      i = peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate);
    }
    
-   const ItemInstance* i = peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate);
-   
-   if(i == 0) {
-      return true;
-   }
-   
-   peerInfo(peer)->getChampion()->getStats().applyStatMods(i->getTemplate()->getStatMods());
-   peerInfo(peer)->getChampion()->getStats().setGold(peerInfo(peer)->getChampion()->getStats().getGold()-itemTemplate->getPrice());
+   peerInfo(peer)->getChampion()->getStats().setGold(peerInfo(peer)->getChampion()->getStats().getGold()-price);
+   peerInfo(peer)->getChampion()->getStats().applyStatMods(itemTemplate->getStatMods());
    notifyItemBought(peerInfo(peer)->getChampion(), i);
    
    return true;

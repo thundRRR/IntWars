@@ -1,5 +1,6 @@
 #include "Inventory.h"
 #include "stdafx.h"
+#include "ItemManager.h"
 
 using namespace std;
 
@@ -50,8 +51,57 @@ const ItemInstance* Inventory::addItem(const ItemTemplate* itemTemplate) {
    return items[slot];
 }
 
+vector<ItemInstance*> Inventory::getAvailableRecipeParts(const ItemTemplate* recipe) {
+   vector<ItemInstance*> toReturn;
+   
+   for(uint32 itemId : recipe->getRecipeParts()) {
+      vector<ItemInstance*> parts = _getAvailableRecipeParts(ItemManager::getInstance()->getItemTemplateById(itemId));
+      toReturn.insert(toReturn.begin(), parts.begin(), parts.end());
+   }
+   
+   for(ItemInstance* i : items) {
+      if(i) {
+         i->setRecipeSearchFlag(false);
+      }
+   }
+   
+   return toReturn;
+}
+
+vector<ItemInstance*> Inventory::_getAvailableRecipeParts(const ItemTemplate* recipe) {
+   vector<ItemInstance*> toReturn;
+   
+   for(ItemInstance* i : items) {
+      if(!i) {
+         continue;
+      }
+      
+      if(i->getTemplate()->getId() == recipe->getId() && !i->getRecipeSearchFlag()) {
+         toReturn.push_back(i);
+         i->setRecipeSearchFlag(true);
+         return toReturn;
+      }
+   }
+   
+   for(uint32 itemId : recipe->getRecipeParts()) {
+      vector<ItemInstance*> parts = _getAvailableRecipeParts(ItemManager::getInstance()->getItemTemplateById(itemId));
+      toReturn.insert(toReturn.begin(), parts.begin(), parts.end());
+   }
+   
+   return toReturn;
+}
+
 void Inventory::swapItems(uint8 slotFrom, uint8 slotTo) {
    ItemInstance* to = items[slotTo];
    items[slotTo] = items[slotFrom];
    items[slotFrom] = to;
+}
+
+void Inventory::removeItem(uint8 slot) {
+   if(items[slot] == 0) {
+      return;
+   }
+   
+   delete items[slot];
+   items[slot] = 0;
 }
