@@ -13,6 +13,7 @@
 *.bin
 *.ilk
 *.aps
+*.dll
 
 # Misc Visual Studio tmp/build related files 
 *_i.c
