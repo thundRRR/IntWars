@@ -145,7 +145,7 @@ void Spell::loadLua(LuaScript& script){
    script.lua.script("package.path = '../../lua/lib/?.lua;' .. package.path"); //automatically load vector lib so scripters dont have to worry about path
    script.lua.set_function("getOwnerX", [this]() { return owner->getX(); });
    script.lua.set_function("getOwnerY", [this]() { return owner->getY(); });
-      script.lua.set_function("getSpellLevel", [this]() { return getLevel(); });
+   script.lua.set_function("getSpellLevel", [this]() { return getLevel(); });
    script.lua.set_function("getOwnerLevel", [this]() { return owner->getLevel(); });
    script.lua.set_function("getChampionModel", [this]() { return owner->getModel(); });
    
@@ -182,6 +182,7 @@ void Spell::loadLua(LuaScript& script){
    script.lua.set_function("isDead", [this](Unit* u) { return u->isDead(); });
    
    script.lua.set_function("getProjectileSpeed", [this]() { return projectileSpeed; });
+   script.lua.set_function("getCoefficient", [this]() { return coefficient; });
    
    script.lua.set_function("addProjectile", [this](float toX, float toY) { 
       Projectile* p = new Projectile(owner->getMap(), GetNewNetID(), owner->getX(), owner->getY(), 30, owner, new Target(toX, toY), this, projectileSpeed, RAFFile::getHash(spellName +"Missile"), projectileFlags ? projectileFlags : flags);
@@ -292,6 +293,10 @@ void Spell::applyEffects(Unit* u, Projectile* p) {
       p->setToRemove();
       p->getMap()->getGame()->notifyProjectileDestroy(p);
       return;
+   });
+   
+   script.lua.set_function("getNumberObjectsHit", [this, &p]() { 
+      return p->getObjectsHit().size();
    });
    
    loadLua(script); //comment this line for no reload on the fly, better performance

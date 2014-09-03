@@ -14,7 +14,10 @@ function finishCasting()
 end
 
 function applyEffects()
-   dealPhysicalDamage(getEffectValue(0))
+
+   local reduc = math.min(getNumberObjectsHit(), 5)
+
+   dealPhysicalDamage(getEffectValue(0)*(1-reduc/10.0))
    
-   addParticleTarget("caitlyn_Base_Q_mis.troy", getTarget())
+   addParticleTarget("caitlyn_Base_peaceMaker_tar_02.troy", getTarget())
 end

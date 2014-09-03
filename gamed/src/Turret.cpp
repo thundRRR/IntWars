@@ -1,12 +1,19 @@
 #include "Turret.h"
 #include "Map.h"
+#include "TurretStats.h"
+#include "Game.h"
 
 #define TURRET_RANGE 775
 
-Turret::Turret(Map* map, uint32 id, const std::string& name, float x, float y, float hp, float ad, int side) : Unit(map, id, "", new Stats(), 50, x, y, 0), name(name)  {
+Turret::Turret(Map* map, uint32 id, const std::string& name, float x, float y, float hp, float ad, int side) : Unit(map, id, "", new TurretStats(), 50, x, y, 0), name(name)  {
    stats->setCurrentHealth(hp);
    stats->setMaxHealth(hp);
    stats->setBaseAd(ad);
+   stats->setRange(TURRET_RANGE);
+   
+   autoAttackDelay = 4.95/30;
+   autoAttackProjectileSpeed = 1200;
+   
    setSide(side);
 }
 
@@ -24,8 +31,11 @@ void Turret::update(int64 diff)
          }
 
          unitTarget = u;
+         map->getGame()->notifySetTarget(this, u);
          break;
       }
+   } else if(unitTarget && distanceWith(unitTarget) > TURRET_RANGE) {
+      setUnitTarget(0);
    }
 
    Unit::update(diff);

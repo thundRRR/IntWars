@@ -115,3 +115,8 @@ void Game::notifyRemoveItem(Champion* c, uint8 slot) {
    RemoveItem ri(c, slot);
    broadcastPacket(ri, CHL_S2C);
 }
+
+void Game::notifySetTarget(Unit* attacker, Unit* target) {
+   SetTarget st(attacker, target);
+   broadcastPacket(st, CHL_S2C);
+}

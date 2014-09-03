@@ -7,11 +7,11 @@ function finishCasting()
     to:sub(current)
     to:normalize()
 
-    local teleportTo = to.mult(-1)
+    local teleportTo = Vector2:Mult(to, -1)
 
-    teleportTo.mult(400)
+    teleportTo = Vector2:Mult(teleportTo, 400)
 
-    local trueCoords = current.add(teleportTo)
+    local trueCoords = Vector2:Add(current, teleportTo)
 
     teleportTo(trueCoords.x, trueCoords.y)
     addProjectile(getSpellToX(), getSpellToY())

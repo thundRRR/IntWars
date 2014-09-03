@@ -86,6 +86,7 @@ class Game
       void notifyItemBought(Champion* c, const ItemInstance* i);
       void notifyItemsSwapped(Champion* c, uint8 fromSlot, uint8 toSlot);
       void notifyRemoveItem(Champion* c, uint8 slot);
+      void notifySetTarget(Unit* attacker, Unit* target);
 
 		// Tools
 		static void printPacket(const uint8 *buf, uint32 len);
