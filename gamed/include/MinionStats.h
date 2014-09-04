@@ -22,6 +22,7 @@ enum MinionFieldMaskThree : uint32
 
 enum MinionFieldMaskFour : uint32
 {
+   Minion_FM4_MoveSpeed = 0x0000004
 };
 
 enum MinionFieldMaskFive : uint32
@@ -29,8 +30,6 @@ enum MinionFieldMaskFive : uint32
 };
 
 class MinionStats : public Stats {
-protected:
-   float moveSpeed;
 public:
    float getMaxHealth() const override {
       return getStat(MM_Two, Minion_FM2_MaxHp);
@@ -49,7 +48,7 @@ public:
    }
    
    float getMovementSpeed() const override {
-      return moveSpeed;
+      return getStat(MM_Four, Minion_FM4_MoveSpeed);
    }
    
 
@@ -72,7 +71,7 @@ public:
    }
    
    void setMovementSpeed(float speed) override {
-      moveSpeed = speed;
+      setStat(MM_Four, Minion_FM4_MoveSpeed, speed);
    }
    
    void setAttackSpeedMultiplier(float multiplier) override {

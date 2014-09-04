@@ -1,7 +1,9 @@
 #include "Minion.h"
 #include "MinionStats.h"
 
-Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition position) : Unit(map, id, "", new MinionStats(), 40, 0, 0, new MinionAI(this)), type(type), position(position) {
+using namespace std;
+
+Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition position, const vector<MovementVector>& constWaypoints) : Unit(map, id, "", new MinionStats(), 40, 0, 0, new MinionAI(this)), type(type), position(position), constWaypoints(constWaypoints), curConstWaypoint(0) {
    switch(position) {
    case SPAWN_BLUE_TOP:
       setSide(0);
@@ -70,4 +72,22 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
    stats->setMovementSpeed(325.f);
    stats->setBaseAttackSpeed(0.625f);
    stats->setAttackSpeedMultiplier(1.0f);
+   
+   vector<MovementVector> newWaypoints = { MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)), MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)) };
+   setWaypoints(newWaypoints);
+}
+
+void Minion::update(int64 diff) {
+   Unit::update(diff);
+   
+   if(unitTarget) {
+      return;
+   }
+   
+   // Minion reached its temporary destination
+   if(curWaypoint == 2 && ++curConstWaypoint < constWaypoints.size()) {
+      printf("Minion reached ! Going to %d;%d\n", constWaypoints[curConstWaypoint].x, constWaypoints[curConstWaypoint].y);
+      vector<MovementVector> newWaypoints = { MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)), MovementVector(constWaypoints[curConstWaypoint].x, constWaypoints[curConstWaypoint].y) };
+      setWaypoints(newWaypoints);
+   }
 }

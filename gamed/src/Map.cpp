@@ -25,8 +25,8 @@ void Map::update(int64 diff) {
          continue;
       }
       
-    if(u->buffs.size() != 0){
-          
+      if(u->buffs.size() != 0){
+    
           for(int i = u->buffs.size(); i>0;i--){
 
               if(u->buffs[i-1]->needsToRemove()){
@@ -37,7 +37,7 @@ void Map::update(int64 diff) {
               }
               u->buffs[i-1]->update(diff);
           }
-    }
+      }
       
       
       if(!u->getStats().getUpdatedStats().empty()) {
@@ -57,6 +57,22 @@ void Map::update(int64 diff) {
       
       kv->second->update(diff);
       ++kv;
+   }
+   
+   time += diff;
+   
+   if(waveNumber) { 
+      if(time >= nextSpawnTime+waveNumber*8*100000) { // Spawn new wave every 0.8s
+         if(spawn()) {
+            waveNumber = 0;
+            nextSpawnTime += spawnInterval;
+         } else {
+            ++waveNumber;
+         }
+      }  
+   } else if(time >= nextSpawnTime) {
+      spawn();
+      ++waveNumber;
    }
 }
 

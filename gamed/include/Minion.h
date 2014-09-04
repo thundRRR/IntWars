@@ -23,11 +23,19 @@ class Minion : public Unit {
 protected:
    MinionSpawnPosition position;
    MinionSpawnType type;
+   
+   /**
+    * Const waypoints that define the minion's route
+    */
+   const std::vector<MovementVector> constWaypoints;
+   int curConstWaypoint;
 
 public:
-   Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition position);
+   Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition position, const std::vector<MovementVector>& constWaypoints = std::vector<MovementVector>());
    uint32 getPosition() const { return position; }
    uint32 getType() const { return type; }
+   
+   virtual void update(int64 diff) override;
 
 };
 

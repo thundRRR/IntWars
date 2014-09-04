@@ -5,7 +5,35 @@
 
 using namespace std;
 
-SummonersRift::SummonersRift(Game* game) : Map(game) {
+const static vector<vector<MovementVector> > ConstWaypoints = 
+{
+   { // blue top
+      MovementVector((917.f-MAP_WIDTH)/2, (1720.f-MAP_HEIGHT)/2),
+      MovementVector((12511.f-MAP_WIDTH)/2, (12776.f-MAP_HEIGHT)/2)
+   },
+   { // blue bot
+      MovementVector((1487.f-MAP_WIDTH)/2, (1302.f-MAP_HEIGHT)/2),
+      MovementVector((12511.f-MAP_WIDTH)/2, (12776.f-MAP_HEIGHT)/2)
+   },
+   { // blue mid
+      MovementVector((1418.f-MAP_WIDTH)/2, (1686.f-MAP_HEIGHT)/2),
+      MovementVector((12511.f-MAP_WIDTH)/2, (12776.f-MAP_HEIGHT)/2)
+   },
+   { // red top
+      MovementVector((12451.f-MAP_WIDTH)/2, (13217.f-MAP_HEIGHT)/2),
+      MovementVector((1418.f-MAP_WIDTH)/2, (1686.f-MAP_HEIGHT)/2)
+   },
+   { // red bot
+      MovementVector((13062.f-MAP_WIDTH)/2, (12760.f-MAP_HEIGHT)/2),
+      MovementVector((1418.f-MAP_WIDTH)/2, (1686.f-MAP_HEIGHT)/2)
+   },
+   { // red mid
+      MovementVector((12511.f-MAP_WIDTH)/2, (12776.f-MAP_HEIGHT)/2),
+      MovementVector((1418.f-MAP_WIDTH)/2, (1686.f-MAP_HEIGHT)/2)
+   },
+};
+
+SummonersRift::SummonersRift(Game* game) : Map(game, 2*1000000, 15*1000000) {
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_R_03_A", 10097.62, 808.73, 2550, 156, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_R_02_A", 6512.53, 1262.62, 2550, 170, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_07_A", 3747.26, 1041.04, 2550, 190, 0));
@@ -42,5 +70,43 @@ SummonersRift::SummonersRift(Game* game) : Map(game) {
 
 void SummonersRift::update(long long diff) {
    Map::update(diff);
-   // TODO : add in here minion spawning every X seconds, jungle camp spawning [...]
+}
+
+bool SummonersRift::spawn() {
+
+   static const MinionSpawnPosition positions[] = {   
+                                                      SPAWN_BLUE_TOP,
+                                                      SPAWN_BLUE_BOT,
+                                                      SPAWN_BLUE_MID,
+                                                      SPAWN_RED_TOP,
+                                                      SPAWN_RED_BOT,
+                                                      SPAWN_RED_MID, 
+                                                   };
+
+   if(waveNumber < 3) {
+      for(int i = 0; i < 6; ++i) {
+         Minion* m = new Minion(this, GetNewNetID(), MINION_TYPE_MELEE, positions[i], ConstWaypoints[i]);
+         addObject(m);
+         game->notifyMinionSpawned(m);
+      }
+      return false;
+   }
+   
+   if(waveNumber < 6) {
+      for(int i = 0; i < 6; ++i) {
+         Minion* m = new Minion(this, GetNewNetID(), MINION_TYPE_CASTER, positions[i], ConstWaypoints[i]);
+         addObject(m);
+         game->notifyMinionSpawned(m);
+      }
+      return false;
+   }
+   
+   if(waveNumber == 6) {
+      for(int i = 0; i < 6; ++i) {
+         Minion* m = new Minion(this, GetNewNetID(), MINION_TYPE_CANNON, positions[i], ConstWaypoints[i]);
+         addObject(m);
+         game->notifyMinionSpawned(m);
+      }
+      return true;
+   }
 }

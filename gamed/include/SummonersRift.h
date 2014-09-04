@@ -12,6 +12,8 @@ public:
    virtual ~SummonersRift() { }
    virtual void update(long long diff) override;
    float getGoldPerSecond() override { return 1.9f; }
+   
+   bool spawn() override;
 
 };
 

@@ -36,6 +36,10 @@ void Unit::update(int64 diff) {
       Object::update(diff);
    }
    
+   if(!isAttacking && unitTarget && unitTarget->isDead()) {
+      setUnitTarget(0);
+   }
+   
    if(autoAttackCurrentCooldown > 0) {
       autoAttackCurrentCooldown -= diff/1000000.f;
    }

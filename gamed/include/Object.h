@@ -21,13 +21,13 @@ struct MovementVector {
     short y;
     
     MovementVector() : x(0), y(0){ }
-    MovementVector(uint16 x, uint16 y) : x(x), y(x) { }
+    MovementVector(int16 x, int16 y) : x(x), y(x) { }
     Target* toTarget() { return new Target(2.0f*x + MAP_WIDTH, 2.0f*y + MAP_HEIGHT); }
     
-    static uint16 targetXToNormalFormat(uint16 _x){
+    static int16 targetXToNormalFormat(float _x){
         return ((_x) - MAP_WIDTH)/2;
     }
-    static uint16 targetYToNormalFormat(uint16 _y){
+    static int16 targetYToNormalFormat(float _y){
         return((_y) - MAP_HEIGHT)/2;
     }
     void setCoordinatesToNormalFormat(){
