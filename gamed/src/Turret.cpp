@@ -20,7 +20,7 @@ Turret::Turret(Map* map, uint32 id, const std::string& name, float x, float y, f
 void Turret::update(int64 diff)
 {
    // No target : try to find a new one
-   if(!isAttacking && autoAttackCurrentCooldown <= 0 && !unitTarget) {
+   if(!isAttacking && !unitTarget) {
       const std::map<uint32, Object*>& objects = map->getObjects();
 
       for(auto& it : objects) {

@@ -304,7 +304,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
    ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
    //Lets do commands
    if(message->msg == '.') {
-      const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".junglespawn", ".skillpoints", ".level" };
+      const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".junglespawn", ".skillpoints", ".level", ".tp"};
       
       // help command
       if (strncmp(message->getMessage(), cmd[9], strlen(cmd[9])) == 0) {
@@ -454,6 +454,15 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
          float data = (float)atoi(&message->getMessage()[strlen(cmd[14])+1]);
 
          peerInfo(peer)->getChampion()->getStats().setLevel(data);
+         return true;
+      }
+      
+      // tp
+      if(strncmp(message->getMessage(), cmd[15], strlen(cmd[15])) == 0) {
+         float x, y;
+         sscanf(&message->getMessage()[strlen(cmd[15])+1], "%f %f", &x, &y);
+
+         notifyTeleport(peerInfo(peer)->getChampion(), x, y);
          return true;
       }
 

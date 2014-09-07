@@ -73,8 +73,16 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
    stats->setBaseAttackSpeed(0.625f);
    stats->setAttackSpeedMultiplier(1.0f);
    
-   vector<MovementVector> newWaypoints = { MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)), MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)) };
+   vector<MovementVector> newWaypoints;
+   
+   if(constWaypoints.size() > 0) {
+      newWaypoints = { constWaypoints[0], constWaypoints[0] };
+   } else {
+      newWaypoints = { MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)), MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)) };
+   }
+   
    setWaypoints(newWaypoints);
+   setMoveOrder(MOVE_ORDER_ATTACKMOVE);
 }
 
 void Minion::update(int64 diff) {
@@ -87,7 +95,7 @@ void Minion::update(int64 diff) {
    // Minion reached its temporary destination
    if(curWaypoint == 2 && ++curConstWaypoint < constWaypoints.size()) {
       printf("Minion reached ! Going to %d;%d\n", constWaypoints[curConstWaypoint].x, constWaypoints[curConstWaypoint].y);
-      vector<MovementVector> newWaypoints = { MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)), MovementVector(constWaypoints[curConstWaypoint].x, constWaypoints[curConstWaypoint].y) };
+      vector<MovementVector> newWaypoints = { MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)), constWaypoints[curConstWaypoint] };
       setWaypoints(newWaypoints);
    }
 }

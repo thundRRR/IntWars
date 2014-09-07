@@ -5,6 +5,8 @@
 
 #include <algorithm>
 
+#define DETECT_RANGE 400
+
 using namespace std;
 
 Unit::~Unit() {
@@ -33,6 +35,22 @@ void Unit::update(int64 diff) {
       }
    }
    else {
+      if(moveOrder == MOVE_ORDER_ATTACKMOVE && !unitTarget) {
+         const std::map<uint32, Object*>& objects = map->getObjects();
+
+         for(auto& it : objects) {
+            Unit* u = dynamic_cast<Unit*>(it.second);
+
+            if(!u || u->isDead() || u->getSide() == getSide() || distanceWith(u) > DETECT_RANGE) {
+               continue;
+            }
+
+            unitTarget = u;
+            
+            break;
+         }
+      }
+   
       Object::update(diff);
    }
    
