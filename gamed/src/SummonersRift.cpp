@@ -33,7 +33,7 @@ const static vector<vector<MovementVector> > ConstWaypoints =
    },
 };
 
-SummonersRift::SummonersRift(Game* game) : Map(game, 15*1000000, 30*1000000) {
+SummonersRift::SummonersRift(Game* game) : Map(game, 90*1000000, 30*1000000) {
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_R_03_A", 10097.62, 808.73, 2550, 156, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_R_02_A", 6512.53, 1262.62, 2550, 170, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_07_A", 3747.26, 1041.04, 2550, 190, 0));
