@@ -17,6 +17,11 @@ Unit::~Unit() {
 }
 
 void Unit::update(int64 diff) {
+
+   if(isDead()) {
+      return;
+   }
+
    if(isAttacking) {
       autoAttackCurrentDelay += diff/1000000.f;
       if(autoAttackCurrentDelay >= autoAttackDelay) {
@@ -83,11 +88,15 @@ void Unit::autoAttackHit(Unit* target) {
 void Unit::dealDamageTo(Unit* target, float damage, DamageType type, DamageSource source) {
    printf("0x%08X deals %f damage to 0x%08X !\n", getNetId(), damage, target->getNetId());
    target->getStats().setCurrentHealth(max(0.f, target->getStats().getCurrentHealth()-damage));
+   if(!target->deathFlag && target->getStats().getCurrentHealth() <= 0) {
+      target->deathFlag = true;
+      target->die(this);
+   }
    map->getGame()->notifyDamageDone(this, target, damage);
 }
 
 bool Unit::isDead() const {
-   return stats->getCurrentHealth() <= 0;
+   return deathFlag;
 }
 
 void Unit::setModel(const std::string& newModel) {
@@ -97,4 +106,8 @@ void Unit::setModel(const std::string& newModel) {
 
 const std::string& Unit::getModel() {
     return model;
+}
+
+void Unit::die(Unit* killer) {
+   // TODO : implement minion/mosnter death
 }

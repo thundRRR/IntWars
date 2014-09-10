@@ -146,7 +146,7 @@ void Spell::loadLua(LuaScript& script){
    script.lua.set_function("getOwnerX", [this]() { return owner->getX(); });
    script.lua.set_function("getOwnerY", [this]() { return owner->getY(); });
    script.lua.set_function("getSpellLevel", [this]() { return getLevel(); });
-   script.lua.set_function("getOwnerLevel", [this]() { return owner->getLevel(); });
+   script.lua.set_function("getOwnerLevel", [this]() { return owner->getStats().getLevel(); });
    script.lua.set_function("getChampionModel", [this]() { return owner->getModel(); });
    
    script.lua.set_function("setChampionModel", [this](const std::string& newModel) {

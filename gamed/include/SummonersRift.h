@@ -13,6 +13,8 @@ public:
    virtual void update(long long diff) override;
    float getGoldPerSecond() override { return 1.9f; }
    
+   const Target getRespawnLoc(int side) const override;
+   
    bool spawn() override;
 
 };

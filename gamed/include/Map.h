@@ -33,6 +33,8 @@ public:
    void addObject(Object* o);
    const std::vector<uint32>& getExpToLevelUp() { return expToLevelUp; }
    
+   virtual const Target getRespawnLoc(int side) const = 0;
+   
    Game* getGame() const { return game; }
    
    const std::map<uint32, Object*>& getObjects() { return objects; }

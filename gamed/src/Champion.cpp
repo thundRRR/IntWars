@@ -4,7 +4,7 @@
 #include "Map.h"
 #include "Game.h"
 
-Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id, type, new Stats()), type(type), skillPoints(0), level(1)  {
+Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id, type, new Stats()), type(type), skillPoints(0), respawnTimer(0)  {
    stats->setGold(475.0f);
    stats->setAttackSpeedMultiplier(1.0f);
    stats->setGoldPerSecond(map->getGoldPerSecond());
@@ -93,6 +93,17 @@ Spell* Champion::levelUpSpell(uint8 slot) {
 void Champion::update(int64 diff) {
    Unit::update(diff);
    
+   if(respawnTimer > 0) {
+      respawnTimer -= diff;
+      if(respawnTimer <= 0) {
+         setPosition(map->getRespawnLoc(side).getX(), map->getRespawnLoc(side).getY());
+         map->getGame()->notifyChampionRespawn(this);
+         getStats().setCurrentHealth(getStats().getMaxHealth());
+         getStats().setCurrentMana(getStats().getMaxMana());
+         deathFlag = false;
+      }
+   }
+   
    bool levelup = false;
    
    while(getStats().getLevel() < map->getExpToLevelUp().size() && getStats().getExp() >= map->getExpToLevelUp()[getStats().getLevel()]) {
@@ -107,6 +118,8 @@ void Champion::update(int64 diff) {
    for(Spell* s : spells) {
       s->update(diff);
    }
+
+   
 }
 
 uint32 Champion::getChampionHash() {
@@ -130,4 +143,9 @@ void Champion::levelUp() {
    printf("Champion %s Levelup to %d\n", getType().c_str(), getStats().getLevel()+1);
    getStats().levelUp();
    ++skillPoints;
+}
+
+void Champion::die(Unit* killer) {
+   respawnTimer = 5000000 + getStats().getLevel()*2500000;
+   map->getGame()->notifyChampionDie(this, killer);
 }

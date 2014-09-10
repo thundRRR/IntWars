@@ -110,3 +110,14 @@ bool SummonersRift::spawn() {
       return true;
    }
 }
+
+const Target SummonersRift::getRespawnLoc(int side) const {
+   switch(side) {
+   case 0:
+      return Target(25.90f, 280);
+   case 1:
+      return Target(14119, 14063);
+   }
+   
+   return Target(25.90f, 280);
+}

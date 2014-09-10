@@ -786,6 +786,24 @@ public:
 
 };
 
+class ChampionDie : public BasePacket {
+public:
+   ChampionDie(Champion* die, Unit* killer) : BasePacket(PKT_S2C_ChampionDie, die->getNetId()) {
+      buffer << killer->getNetId();
+      buffer << (uint32)0; // unk
+      buffer << (uint32)7; // unk
+      buffer << die->getRespawnTimer()/1000000.f; // Respawn timer
+      buffer << (uint16)0x9F00; // unk
+   }
+};
+
+class ChampionRespawn : public BasePacket {
+public:
+   ChampionRespawn(Champion* c) : BasePacket(PKT_S2C_ChampionRespawn, c->getNetId()) {
+      buffer << c->getX() << 230.f << c->getY();
+   } 
+};
+
 class SetHealth : public BasePacket {
 public:
    SetHealth(Unit* u) : BasePacket(PKT_S2C_SetHealth, u->getNetId()) {

@@ -120,3 +120,13 @@ void Game::notifySetTarget(Unit* attacker, Unit* target) {
    SetTarget st(attacker, target);
    broadcastPacket(st, CHL_S2C);
 }
+
+void Game::notifyChampionDie(Champion* die, Unit* killer) {
+   ChampionDie cd(die, killer);
+   broadcastPacket(cd, CHL_S2C);
+}
+
+void Game::notifyChampionRespawn(Champion* c) {
+   ChampionRespawn cr(c);
+   broadcastPacket(cr, CHL_S2C);
+}

@@ -15,10 +15,7 @@ void Map::update(int64 diff) {
       }
       
       Unit* u = dynamic_cast<Unit*>(kv->second);
-      
 
-      
-      
       if(!u) {
          kv->second->update(diff);
          ++kv;
