@@ -89,6 +89,7 @@ class Game
       void notifySetTarget(Unit* attacker, Unit* target);
       void notifyChampionDie(Champion* die, Unit* killer);
       void notifyChampionRespawn(Champion* c);
+      void notifyShowProjectile(Projectile* p);
 
 		// Tools
 		static void printPacket(const uint8 *buf, uint32 len);

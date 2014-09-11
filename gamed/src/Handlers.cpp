@@ -304,7 +304,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
    ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
    //Lets do commands
    if(message->msg == '.') {
-      const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".junglespawn", ".skillpoints", ".level", ".tp"};
+      const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".junglespawn", ".skillpoints", ".level", ".tp", ".coords"};
       
       // help command
       if (strncmp(message->getMessage(), cmd[9], strlen(cmd[9])) == 0) {
@@ -463,6 +463,12 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
          sscanf(&message->getMessage()[strlen(cmd[15])+1], "%f %f", &x, &y);
 
          notifyTeleport(peerInfo(peer)->getChampion(), x, y);
+         return true;
+      }
+      
+       // coords
+      if(strncmp(message->getMessage(), cmd[16], strlen(cmd[16])) == 0) {
+         printf("At %f;%f\n", peerInfo(peer)->getChampion()->getX(), peerInfo(peer)->getChampion()->getY());
          return true;
       }
 

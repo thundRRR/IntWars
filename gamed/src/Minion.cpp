@@ -37,16 +37,28 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
       stats->setCurrentHealth(475.0f);
       stats->setMaxHealth(475.0f);
       stats->setBaseAd(12.0f);
+      stats->setRange(73.9f);
+      stats->setBaseAttackSpeed(1.250f);
+      autoAttackDelay = 15.f/30;
+      autoAttackProjectileSpeed = 9999; // TODO : handle isMelee 
       break;
    case MINION_TYPE_CASTER:
       stats->setCurrentHealth(279.0f);
       stats->setMaxHealth(279.0f);
       stats->setBaseAd(23.0f);
+      stats->setRange(600.f);
+      stats->setBaseAttackSpeed(0.670f);
+      autoAttackDelay = 14.1f/30;
+      autoAttackProjectileSpeed = 650;
       break;
    case MINION_TYPE_CANNON:
       stats->setCurrentHealth(600.0f);
       stats->setMaxHealth(600.0f);
       stats->setBaseAd(40.0f);
+      stats->setRange(450.f);
+      stats->setBaseAttackSpeed(1.0f);
+      autoAttackDelay = 9.f/30;
+      autoAttackProjectileSpeed = 1200;
       break;
    }
    
@@ -93,9 +105,9 @@ void Minion::update(int64 diff) {
    }
    
    // Minion reached its temporary destination
-   if(curWaypoint == 2 && ++curConstWaypoint < constWaypoints.size()) {
+   if((waypoints.size() == 1) || (curWaypoint == 2 && ++curConstWaypoint < constWaypoints.size())) {
       //printf("Minion reached ! Going to %d;%d\n", constWaypoints[curConstWaypoint].x, constWaypoints[curConstWaypoint].y);
-      vector<MovementVector> newWaypoints = { MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)), constWaypoints[curConstWaypoint] };
+      vector<MovementVector> newWaypoints = { MovementVector(x, y), constWaypoints[curConstWaypoint] };
       setWaypoints(newWaypoints);
    }
 }

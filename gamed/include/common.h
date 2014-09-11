@@ -74,7 +74,7 @@ enum PacketCmd : uint8
    PKT_S2C_LoadScreenInfo = 0x67,
    PKT_ChatBoxMessage = 0x68,
    PKT_S2C_SetTarget = 0x6A,
-   PKT_S2C_Unk2 = 0x6E,
+   PKT_S2C_ShowProjectile = 0x6E,
    PKT_S2C_BuyItemAns = 0x6F,
 
    PKT_C2S_MoveReq = 0x72,

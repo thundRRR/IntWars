@@ -8,32 +8,72 @@ using namespace std;
 const static vector<vector<MovementVector> > ConstWaypoints = 
 {
    { // blue top
-      MovementVector((917.f-MAP_WIDTH)/2, (1720.f-MAP_HEIGHT)/2),
-      MovementVector((12511.f-MAP_WIDTH)/2, (12776.f-MAP_HEIGHT)/2)
+      MovementVector(917.f, 1725.f),
+      MovementVector(1170.f, 4041.f),
+      MovementVector(861.f, 6459.f),
+      MovementVector(880.f, 10180.f),
+      MovementVector(1268.f, 11675.f),
+      MovementVector(2806.f, 13075.f),
+      MovementVector(3907.f, 13243.f),
+      MovementVector(7550.f, 13407.f),
+      MovementVector(10244.f, 13238.f),
+      MovementVector(10947.f, 13135.f),
+      MovementVector(12511.f, 12776.f)
    },
    { // blue bot
-      MovementVector((1487.f-MAP_WIDTH)/2, (1302.f-MAP_HEIGHT)/2),
-      MovementVector((12511.f-MAP_WIDTH)/2, (12776.f-MAP_HEIGHT)/2)
+      MovementVector(1487.f, 1302.f),
+      MovementVector(3789.f, 1346.f),
+      MovementVector(6430.f, 1005.f),
+      MovementVector(10995.f, 1234.f),
+      MovementVector(12841.f, 3051.f),
+      MovementVector(13148.f, 4202.f),
+      MovementVector(13249.f, 7884.f),
+      MovementVector(12886.f, 10356.f),
+      MovementVector(12511.f, 12776.f)
    },
    { // blue mid
-      MovementVector((1418.f-MAP_WIDTH)/2, (1686.f-MAP_HEIGHT)/2),
-      MovementVector((12511.f-MAP_WIDTH)/2, (12776.f-MAP_HEIGHT)/2)
+      MovementVector(1418.f, 1686.f),
+      MovementVector(2997.f, 2781.f),
+      MovementVector(4472.f, 4727.f),
+      MovementVector(8375.f, 8366.f),
+      MovementVector(10948.f, 10821.f),
+      MovementVector(12511.f, 12776.f)
    },
    { // red top
-      MovementVector((12451.f-MAP_WIDTH)/2, (13217.f-MAP_HEIGHT)/2),
-      MovementVector((1418.f-MAP_WIDTH)/2, (1686.f-MAP_HEIGHT)/2)
+      MovementVector(12451.f, 13217.f),
+      MovementVector(10947.f, 13135.f),
+      MovementVector(10244.f, 13238.f),
+      MovementVector(7550.f, 13407.f),
+      MovementVector(3907.f, 13243.f),
+      MovementVector(2806.f, 13075.f),
+      MovementVector(1268.f, 11675.f),
+      MovementVector(880.f, 10180.f),
+      MovementVector(861.f, 6459.f),
+      MovementVector(1170.f, 4041.f),
+      MovementVector(1418.f, 1686.f)
    },
    { // red bot
-      MovementVector((13062.f-MAP_WIDTH)/2, (12760.f-MAP_HEIGHT)/2),
-      MovementVector((1418.f-MAP_WIDTH)/2, (1686.f-MAP_HEIGHT)/2)
+      MovementVector(13062.f, 12760.f),
+      MovementVector(12886.f, 10356.f),
+      MovementVector(13249.f, 7884.f),
+      MovementVector(13148.f, 4202.f),
+      MovementVector(12841.f, 3051.f),
+      MovementVector(10995.f, 1234.f),
+      MovementVector(6430.f, 1005.f),
+      MovementVector(3789.f, 1346.f),
+      MovementVector(1418.f, 1686.f)
    },
    { // red mid
-      MovementVector((12511.f-MAP_WIDTH)/2, (12776.f-MAP_HEIGHT)/2),
-      MovementVector((1418.f-MAP_WIDTH)/2, (1686.f-MAP_HEIGHT)/2)
+      MovementVector(12511.f, 12776.f),
+      MovementVector(10948.f, 10821.f),
+      MovementVector(8375.f, 8366.f),
+      MovementVector(4472.f, 4727.f),
+      MovementVector(2997.f, 2781.f),
+      MovementVector(1418.f, 1686.f)
    },
 };
 
-SummonersRift::SummonersRift(Game* game) : Map(game, 90*1000000, 30*1000000) {
+SummonersRift::SummonersRift(Game* game) : Map(game, 5*1000000, 30*1000000) {
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_R_03_A", 10097.62, 808.73, 2550, 156, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_R_02_A", 6512.53, 1262.62, 2550, 170, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_07_A", 3747.26, 1041.04, 2550, 190, 0));

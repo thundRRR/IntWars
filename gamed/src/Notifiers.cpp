@@ -130,3 +130,8 @@ void Game::notifyChampionRespawn(Champion* c) {
    ChampionRespawn cr(c);
    broadcastPacket(cr, CHL_S2C);
 }
+
+void Game::notifyShowProjectile(Projectile* p) {
+   ShowProjectile sp(p);
+   broadcastPacket(sp, CHL_S2C);
+}

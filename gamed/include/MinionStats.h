@@ -30,6 +30,8 @@ enum MinionFieldMaskFive : uint32
 };
 
 class MinionStats : public Stats {
+protected:
+   float range;
 public:
    float getMaxHealth() const override {
       return getStat(MM_Two, Minion_FM2_MaxHp);
@@ -43,12 +45,20 @@ public:
       return getStat(MM_Two, Minion_FM2_Ad);
    }
    
+   float getRange() const override {
+      return range;
+   }
+   
    float getBaseAttackSpeed() const override {
       return getStat(MM_Two, Minion_FM2_Atks);
    }
    
    float getMovementSpeed() const override {
       return getStat(MM_Four, Minion_FM4_MoveSpeed);
+   }
+
+   float getAttackSpeedMultiplier() const override {
+      return 1.f;
    }
    
 
@@ -64,6 +74,10 @@ public:
    
    void setBaseAd(float ad) override {
       setStat(MM_Two, Minion_FM2_Ad, ad);
+   }
+   
+   void setRange(float range) override {
+      this->range = range;
    }
    
    void setBaseAttackSpeed(float speed) override {

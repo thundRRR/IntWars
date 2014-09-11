@@ -504,16 +504,6 @@ struct Click {
 
 };
 
-struct Unk2 {
-   Unk2(uint32 sourceNetId, uint32 targetNetId)  : targetNetId(targetNetId) {
-      header.cmd = PKT_S2C_Unk2;
-      header.netId = sourceNetId;
-   }
-
-   PacketHeader header;
-   uint32 targetNetId;
-};
-
 class HeroSpawn : public Packet {
 public:
 	HeroSpawn(ClientInfo* player, int playerId) : Packet(PKT_S2C_HeroSpawn) {
@@ -802,6 +792,13 @@ public:
    ChampionRespawn(Champion* c) : BasePacket(PKT_S2C_ChampionRespawn, c->getNetId()) {
       buffer << c->getX() << 230.f << c->getY();
    } 
+};
+
+class ShowProjectile : public BasePacket {
+public:
+   ShowProjectile(Projectile* p) : BasePacket(PKT_S2C_ShowProjectile, p->getOwner()->getNetId()) {
+      buffer << p->getNetId();
+   }
 };
 
 class SetHealth : public BasePacket {
