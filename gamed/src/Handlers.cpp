@@ -304,7 +304,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
    ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
    //Lets do commands
    if(message->msg == '.') {
-      const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".junglespawn", ".skillpoints", ".level" };
+      const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".junglespawn", ".skillpoints", ".level", ".tp", ".coords"};
       
       // help command
       if (strncmp(message->getMessage(), cmd[9], strlen(cmd[9])) == 0) {
@@ -456,6 +456,21 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
          peerInfo(peer)->getChampion()->getStats().setLevel(data);
          return true;
       }
+      
+      // tp
+      if(strncmp(message->getMessage(), cmd[15], strlen(cmd[15])) == 0) {
+         float x, y;
+         sscanf(&message->getMessage()[strlen(cmd[15])+1], "%f %f", &x, &y);
+
+         notifyTeleport(peerInfo(peer)->getChampion(), x, y);
+         return true;
+      }
+      
+       // coords
+      if(strncmp(message->getMessage(), cmd[16], strlen(cmd[16])) == 0) {
+         printf("At %f;%f\n", peerInfo(peer)->getChampion()->getX(), peerInfo(peer)->getChampion()->getY());
+         return true;
+      }
 
    }
 
@@ -500,18 +515,40 @@ bool Game::handleBuyItem(HANDLE_ARGS) {
       return false;
    }
    
-   if(peerInfo(peer)->getChampion()->getStats().getGold() < itemTemplate->getPrice()) {
-      return true;
+   std::vector<ItemInstance*> recipeParts = peerInfo(peer)->getChampion()->getInventory().getAvailableRecipeParts(itemTemplate);
+   uint32 price = itemTemplate->getTotalPrice();
+   const ItemInstance* i;
+   
+   if(recipeParts.empty()) {
+      if(peerInfo(peer)->getChampion()->getStats().getGold() < price) {
+         return true;
+      }
+   
+      i = peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate);
+   
+      if(i == 0) { // Slots full
+         return false;
+      }
+   } else {
+      for(ItemInstance* instance : recipeParts) {
+         price -= instance->getTemplate()->getTotalPrice();
+      }
+      
+      if(peerInfo(peer)->getChampion()->getStats().getGold() < price) {
+         return false;
+      }
+   
+      for(ItemInstance* instance : recipeParts) {
+         peerInfo(peer)->getChampion()->getStats().unapplyStatMods(instance->getTemplate()->getStatMods());
+         notifyRemoveItem(peerInfo(peer)->getChampion(), instance->getSlot());
+         peerInfo(peer)->getChampion()->getInventory().removeItem(instance->getSlot());
+      }
+      
+      i = peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate);
    }
    
-   const ItemInstance* i = peerInfo(peer)->getChampion()->getInventory().addItem(itemTemplate);
-   
-   if(i == 0) {
-      return true;
-   }
-   
-   peerInfo(peer)->getChampion()->getStats().applyStatMods(i->getTemplate()->getStatMods());
-   peerInfo(peer)->getChampion()->getStats().setGold(peerInfo(peer)->getChampion()->getStats().getGold()-itemTemplate->getPrice());
+   peerInfo(peer)->getChampion()->getStats().setGold(peerInfo(peer)->getChampion()->getStats().getGold()-price);
+   peerInfo(peer)->getChampion()->getStats().applyStatMods(itemTemplate->getStatMods());
    notifyItemBought(peerInfo(peer)->getChampion(), i);
    
    return true;

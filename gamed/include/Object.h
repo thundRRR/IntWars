@@ -21,13 +21,14 @@ struct MovementVector {
     short y;
     
     MovementVector() : x(0), y(0){ }
-    MovementVector(uint16 x, uint16 y) : x(x), y(x) { }
+    MovementVector(int16 x, int16 y) : x(x), y(y) { }
+    MovementVector(float x, float y) : x(targetXToNormalFormat(x)), y(targetYToNormalFormat(y)) { }
     Target* toTarget() { return new Target(2.0f*x + MAP_WIDTH, 2.0f*y + MAP_HEIGHT); }
     
-    static uint16 targetXToNormalFormat(uint16 _x){
+    static int16 targetXToNormalFormat(float _x){
         return ((_x) - MAP_WIDTH)/2;
     }
-    static uint16 targetYToNormalFormat(uint16 _y){
+    static int16 targetYToNormalFormat(float _y){
         return((_y) - MAP_HEIGHT)/2;
     }
     void setCoordinatesToNormalFormat(){
@@ -48,11 +49,7 @@ protected:
     * Current target the object running to (can be coordinates or an object)
     */
 	Target* target;
-   
-   /**
-    * Unit we want to attack as soon as in range
-    */
-   Unit* unitTarget;
+
    std::vector<MovementVector> waypoints;
    uint32 curWaypoint;
    Map* map;
@@ -90,7 +87,6 @@ public:
 
    Target* getTarget() { return target; }
    void setTarget(Target* target);
-   void setUnitTarget(Unit* target) { unitTarget = target; }
    void setWaypoints(const std::vector<MovementVector>& waypoints);
 
    const std::vector<MovementVector>& getWaypoints() { return waypoints; }

@@ -5,6 +5,8 @@
 
 #include <algorithm>
 
+#define DETECT_RANGE 400
+
 using namespace std;
 
 Unit::~Unit() {
@@ -15,16 +17,27 @@ Unit::~Unit() {
 }
 
 void Unit::update(int64 diff) {
+
+   if(isDead()) {
+      return;
+   }
+
+   if(!isAttacking && unitTarget && unitTarget->isDead()) {
+      setUnitTarget(0);
+   }
+
    if(isAttacking) {
       autoAttackCurrentDelay += diff/1000000.f;
       if(autoAttackCurrentDelay >= autoAttackDelay) {
          Projectile* p = new Projectile(map, autoAttackProjId, x, y, 5, this, unitTarget, 0, autoAttackProjectileSpeed, RAFFile::getHash("EzrealMysticShotMissile"));
          map->addObject(p);
+         map->getGame()->notifyShowProjectile(p);
          autoAttackCurrentCooldown = 1.f/(stats->getTotalAttackSpeed());
          isAttacking = false;
       }
    }
    else if(unitTarget && distanceWith(unitTarget) <= stats->getRange()) {
+      refreshWaypoints();
       if(autoAttackCurrentCooldown <= 0) {
          isAttacking = true;
          autoAttackCurrentDelay = 0;
@@ -33,6 +46,23 @@ void Unit::update(int64 diff) {
       }
    }
    else {
+      refreshWaypoints();
+      if(moveOrder == MOVE_ORDER_ATTACKMOVE && !unitTarget) {
+         const std::map<uint32, Object*>& objects = map->getObjects();
+
+         for(auto& it : objects) {
+            Unit* u = dynamic_cast<Unit*>(it.second);
+
+            if(!u || u->isDead() || u->getSide() == getSide() || distanceWith(u) > DETECT_RANGE) {
+               continue;
+            }
+
+            setUnitTarget(u);
+            
+            break;
+         }
+      }
+   
       Object::update(diff);
    }
    
@@ -59,13 +89,17 @@ void Unit::autoAttackHit(Unit* target) {
  * TODO : handle armor, magic resistance [...]
  */
 void Unit::dealDamageTo(Unit* target, float damage, DamageType type, DamageSource source) {
-   printf("0x%08X deals %f damage to 0x%08X !\n", getNetId(), damage, target->getNetId());
+   //printf("0x%08X deals %f damage to 0x%08X !\n", getNetId(), damage, target->getNetId());
    target->getStats().setCurrentHealth(max(0.f, target->getStats().getCurrentHealth()-damage));
+   if(!target->deathFlag && target->getStats().getCurrentHealth() <= 0) {
+      target->deathFlag = true;
+      target->die(this);
+   }
    map->getGame()->notifyDamageDone(this, target, damage);
 }
 
 bool Unit::isDead() const {
-   return stats->getCurrentHealth() <= 0;
+   return deathFlag;
 }
 
 void Unit::setModel(const std::string& newModel) {
@@ -75,4 +109,25 @@ void Unit::setModel(const std::string& newModel) {
 
 const std::string& Unit::getModel() {
     return model;
+}
+
+void Unit::die(Unit* killer) {
+   // TODO : implement minion/mosnter death
+}
+
+void Unit::setUnitTarget(Unit* target) {
+   unitTarget = target;
+   refreshWaypoints();
+}
+
+void Unit::refreshWaypoints() {
+   if(!unitTarget || waypoints.size() == 1) {
+      return;
+   }
+   
+   if(distanceWith(unitTarget) <= stats->getRange()) {
+      setWaypoints({ MovementVector(x, y)});
+   } else {
+      setWaypoints({ MovementVector(x, y), MovementVector(unitTarget->getX(), unitTarget->getY()) });
+   }
 }

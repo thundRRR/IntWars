@@ -39,12 +39,24 @@ void ItemManager::init() {
       statMods.push_back({MM_Two, FM2_Crit_Chance, inibin.getFloatValue("DATA", "FlatCritChanceMod")});
       statMods.push_back({MM_Two, FM2_Armor, inibin.getFloatValue("DATA", "FlatArmorMod")});
       statMods.push_back({MM_Two, FM2_Magic_Armor, inibin.getFloatValue("DATA", "FlatSpellBlockMod")});
+      statMods.push_back({MM_Two, FM2_Atks_multiplier, inibin.getFloatValue("DATA", "PercentAttackSpeedMod")});
       
       statMods.push_back({MM_Four, FM4_MaxHp, inibin.getFloatValue("DATA", "FlatHPPoolMod")});
       statMods.push_back({MM_Four, FM4_MaxMp, inibin.getFloatValue("DATA", "FlatMPPoolMod")});
       statMods.push_back({MM_Four, FM4_Speed, inibin.getFloatValue("DATA", "FlatMovementSpeedMod")});
       
-      itemTemplates[i] = new ItemTemplate(i, maxStack, price, sellBack, trinket, statMods);
+      vector<uint32> recipes;
+      
+      char c = '1';
+      while(inibin.keyExists("DATA", string("RecipeItem")+c)) {
+         uint32 componentId = inibin.getIntValue("DATA", string("RecipeItem")+c);
+         if(componentId) { // sometimes there are "0" entries
+            recipes.push_back(componentId);
+         }
+         ++c;
+      }
+      
+      itemTemplates[i] = new ItemTemplate(i, maxStack, price, sellBack, trinket, statMods, recipes);
    }
    
    printf("Loaded %lu items\n", itemTemplates.size());

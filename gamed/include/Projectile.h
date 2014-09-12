@@ -25,6 +25,7 @@ public:
    void update(int64 diff) override;
    float getMoveSpeed() const { return moveSpeed; }
    Unit* getOwner() const { return owner; }
+   const std::vector<Object*>& getObjectsHit() { return objectsHit; };
    
    uint32 getProjectileId() const { return projectileId;}
    

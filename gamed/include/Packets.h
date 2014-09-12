@@ -294,7 +294,7 @@ public:
       buffer << (uint8)m->getType();
       buffer << (uint8)0; // unk
       buffer << (uint8)1; // unk
-      buffer << "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27\x00";
+      buffer << "\x0a\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x3f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x2c\x27";
       buffer << (uint8)2; // coordCount
       buffer << m->getNetId();
       buffer << (uint8)0; // movement mask
@@ -504,16 +504,6 @@ struct Click {
 
 };
 
-struct Unk2 {
-   Unk2(uint32 sourceNetId, uint32 targetNetId)  : targetNetId(targetNetId) {
-      header.cmd = PKT_S2C_Unk2;
-      header.netId = sourceNetId;
-   }
-
-   PacketHeader header;
-   uint32 targetNetId;
-};
-
 class HeroSpawn : public Packet {
 public:
 	HeroSpawn(ClientInfo* player, int playerId) : Packet(PKT_S2C_HeroSpawn) {
@@ -631,6 +621,14 @@ typedef struct _BuyItemAns {
     uint8 unk2;
     uint8 unk3;
 } BuyItemAns;
+
+class RemoveItem : public BasePacket {
+public:
+   RemoveItem(Unit* u, uint8 slot) : BasePacket(PKT_S2C_RemoveItem, u->getNetId()) {
+      buffer << slot;
+      buffer << (uint8)0; // unk
+   }
+};
 
 typedef struct _EmotionPacket {
     PacketHeader header;
@@ -776,6 +774,31 @@ public:
       buffer << attacked->getNetId();
    }
 
+};
+
+class ChampionDie : public BasePacket {
+public:
+   ChampionDie(Champion* die, Unit* killer) : BasePacket(PKT_S2C_ChampionDie, die->getNetId()) {
+      buffer << killer->getNetId();
+      buffer << (uint32)0; // unk
+      buffer << (uint32)7; // unk
+      buffer << die->getRespawnTimer()/1000000.f; // Respawn timer
+      buffer << (uint16)0x9F00; // unk
+   }
+};
+
+class ChampionRespawn : public BasePacket {
+public:
+   ChampionRespawn(Champion* c) : BasePacket(PKT_S2C_ChampionRespawn, c->getNetId()) {
+      buffer << c->getX() << 230.f << c->getY();
+   } 
+};
+
+class ShowProjectile : public BasePacket {
+public:
+   ShowProjectile(Projectile* p) : BasePacket(PKT_S2C_ShowProjectile, p->getOwner()->getNetId()) {
+      buffer << p->getNetId();
+   }
 };
 
 class SetHealth : public BasePacket {

@@ -8,7 +8,7 @@ using namespace std;
 
 void Game::notifyMinionSpawned(Minion* m) {
    MinionSpawn ms(m);
-   broadcastPacket(reinterpret_cast<uint8*>(&ms),sizeof(ms), CHL_S2C);
+   broadcastPacket(ms, CHL_S2C);
    notifySetHealth(m);
 }
 
@@ -46,9 +46,9 @@ void Game::notifyMovement(Object* o) {
    const std::vector<MovementVector>& waypoints = o->getWaypoints();
    MovementAns *answer = MovementAns::create(waypoints.size()*2);
    
-   for(size_t i = 0; i < waypoints.size(); i++) {
+   /*for(size_t i = 0; i < waypoints.size(); i++) {
       printf("     Vector %lu, x: %f, y: %f\n", i, 2.0 * waypoints[i].x + MAP_WIDTH, 2.0 * waypoints[i].y + MAP_HEIGHT);
-   }
+   }*/
    
    answer->nbUpdates = 1;
    answer->netId = o->getNetId();
@@ -109,4 +109,29 @@ void Game::notifyItemsSwapped(Champion* c, uint8 fromSlot, uint8 toSlot) {
 void Game::notifyLevelUp(Champion* c) {
    LevelUp lu(c);
    broadcastPacket(lu, CHL_S2C);
+}
+
+void Game::notifyRemoveItem(Champion* c, uint8 slot) {
+   RemoveItem ri(c, slot);
+   broadcastPacket(ri, CHL_S2C);
+}
+
+void Game::notifySetTarget(Unit* attacker, Unit* target) {
+   SetTarget st(attacker, target);
+   broadcastPacket(st, CHL_S2C);
+}
+
+void Game::notifyChampionDie(Champion* die, Unit* killer) {
+   ChampionDie cd(die, killer);
+   broadcastPacket(cd, CHL_S2C);
+}
+
+void Game::notifyChampionRespawn(Champion* c) {
+   ChampionRespawn cr(c);
+   broadcastPacket(cr, CHL_S2C);
+}
+
+void Game::notifyShowProjectile(Projectile* p) {
+   ShowProjectile sp(p);
+   broadcastPacket(sp, CHL_S2C);
 }

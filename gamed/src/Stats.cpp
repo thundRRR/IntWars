@@ -88,3 +88,13 @@ void Stats::applyStatMods(const std::vector<StatMod>& statMods) {
       setStat(stat.blockId, stat.mask, getStat(stat.blockId, stat.mask)+stat.value);
    }
 }
+
+void Stats::unapplyStatMods(const std::vector<StatMod>& statMods) {
+   for(StatMod stat : statMods) {
+      if(stat.value == 0) {
+         continue;
+      }
+
+      setStat(stat.blockId, stat.mask, getStat(stat.blockId, stat.mask)-stat.value);
+   }
+}

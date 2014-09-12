@@ -9,6 +9,7 @@
 class Inventory {
 private:
    std::vector<ItemInstance*> items;
+   std::vector<ItemInstance*> _getAvailableRecipeParts(const ItemTemplate* recipe);
 
 public:
     
@@ -19,6 +20,9 @@ public:
    const ItemInstance* addItem(const ItemTemplate* itemTemplate);
    void swapItems(uint8 slotFrom, uint8 slotTo);
    const std::vector<ItemInstance*>& getItems() const { return items; }
+   void removeItem(uint8 slot);
+   
+   std::vector<ItemInstance*> getAvailableRecipeParts(const ItemTemplate* recipe);
     
 };
 
