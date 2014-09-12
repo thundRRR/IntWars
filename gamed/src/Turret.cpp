@@ -36,6 +36,7 @@ void Turret::update(int64 diff)
       }
    } else if(unitTarget && distanceWith(unitTarget) > TURRET_RANGE) {
       setUnitTarget(0);
+      map->getGame()->notifySetTarget(this, 0);
    }
 
    Unit::update(diff);

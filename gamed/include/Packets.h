@@ -771,7 +771,11 @@ public:
 class SetTarget : public BasePacket {
 public:
    SetTarget(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_SetTarget, attacker->getNetId()) {
-      buffer << attacked->getNetId();
+      if (attacked != 0) {
+         buffer << attacked->getNetId();
+      } else {
+         buffer << (uint32)0;
+      }
    }
 
 };
