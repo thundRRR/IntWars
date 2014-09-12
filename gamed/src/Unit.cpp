@@ -24,6 +24,7 @@ void Unit::update(int64 diff) {
 
    if(!isAttacking && unitTarget && unitTarget->isDead()) {
       setUnitTarget(0);
+      map->getGame()->notifySetTarget(this, 0);
    }
 
    if(isAttacking) {
@@ -58,6 +59,7 @@ void Unit::update(int64 diff) {
             }
 
             setUnitTarget(u);
+            map->getGame()->notifySetTarget(this, u);
             
             break;
          }
