@@ -66,12 +66,12 @@ Spell* Champion::castSpell(uint8 slot, float x, float y, Unit* target, uint32 fu
    
    s->setSlot(slot);//temporary hack until we redo spells to be almost fully lua-based
    
-   if(s->getCost() > stats->getCurrentMana() || s->getState() != STATE_READY) {
+   if((s->getCost() * (1 - stats->getSpellCostReduction())) > stats->getCurrentMana() || s->getState() != STATE_READY) {
       return 0;
    }
    
    s->cast(x, y, target, futureProjNetId);
-   stats->setCurrentMana(stats->getCurrentMana()-s->getCost());
+   stats->setCurrentMana(stats->getCurrentMana() - (s->getCost() * (1 - stats->getSpellCostReduction())));
    return s;
 }
 

@@ -233,7 +233,7 @@ void Spell::loadLua(LuaScript& script){
 
 void Spell::doLua(){
    
-   LuaScript script;
+   LuaScript script(true);
     
    loadLua(script); //comment this line for no reload on the fly, better performance
 
@@ -275,7 +275,7 @@ uint32 Spell::getId() const {
 
 void Spell::applyEffects(Unit* u, Projectile* p) {
 
-   LuaScript script;
+   LuaScript script(true);
    
    script.lua.set_function("getTarget", [&u]() { return u; });
    

@@ -97,7 +97,7 @@ bool Game::initialize(ENetAddress *address, const char *baseKey){
    
    //TODO: better lua implementation
    
-   LuaScript script;
+   LuaScript script(false);
    
    script.loadScript("../../lua/config.lua");
    
