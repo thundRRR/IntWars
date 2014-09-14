@@ -668,6 +668,17 @@ public:
    }
 };
 
+class NpcDie : public BasePacket {
+public:
+   NpcDie(Unit* die, Unit* killer) : BasePacket(PKT_S2C_NPC_Die, die->getNetId()) {
+      buffer << killer->getNetId();
+      buffer << (uint32)0; // unk
+      buffer << (uint32)7; // unk
+      buffer << (uint16)0; // unk
+      buffer << (uint32)0xE80000B3; // unk
+   }
+};
+
 class LoadScreenPlayerName : public Packet {
 public:
    LoadScreenPlayerName(const ClientInfo& player) : Packet(PKT_S2C_LoadName) {

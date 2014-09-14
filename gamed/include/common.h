@@ -90,6 +90,7 @@ enum PacketCmd : uint8
    PKT_S2C_Ping_Load_Info = 0x95,
    PKT_C2S_CastSpell = 0x9A,
    PKT_S2C_TurretSpawn = 0x9D,
+   PKT_S2C_NPC_Die = 0x9E,
 
    PKT_C2S_Surrender = 0xA4,
    PKT_C2S_StatsConfirm = 0xA8, 

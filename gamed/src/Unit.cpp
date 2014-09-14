@@ -136,7 +136,8 @@ const std::string& Unit::getModel() {
 }
 
 void Unit::die(Unit* killer) {
-    // TODO : implement minion/mosnter death
+    map->getGame()->notifyNpcDie(this, killer);
+    // setToRemove() ; can't do it now because some projectiles might still be aimed at this unit, causing pointer dereference
 }
 
 void Unit::setUnitTarget(Unit* target) {

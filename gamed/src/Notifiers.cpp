@@ -135,3 +135,8 @@ void Game::notifyShowProjectile(Projectile* p) {
    ShowProjectile sp(p);
    broadcastPacket(sp, CHL_S2C);
 }
+
+void Game::notifyNpcDie(Unit* die, Unit* killer) {
+   NpcDie nd(die, killer);
+   broadcastPacket(nd, CHL_S2C);
+}
