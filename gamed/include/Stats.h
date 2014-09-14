@@ -84,7 +84,7 @@ protected:
 public:
 
     Stats() : updatedHealth(false), goldPerSecond(0), healthPerLevel(0), manaPerLevel(0), adPerLevel(0), armorPerLevel(0), magicArmorPerLevel(0),
-    hp5RegenPerLevel(0), mp5RegenPerLevel(0), movementSpeedPercentageModifier(0), baseMovement(0), baseAttackSpeed(0.625f), spellCostReduction (0) {
+              hp5RegenPerLevel(0), mp5RegenPerLevel(0), movementSpeedPercentageModifier(0), baseMovement(0), baseAttackSpeed(0.625f), spellCostReduction(0) {
     }
 
     float getStat(uint8 blockId, uint32 stat) const;

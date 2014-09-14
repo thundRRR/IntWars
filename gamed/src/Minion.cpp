@@ -37,10 +37,10 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
       stats->setCurrentHealth(475.0f);
       stats->setMaxHealth(475.0f);
       stats->setBaseAd(12.0f);
-      stats->setRange(73.9f);
+      stats->setRange(180.f);
       stats->setBaseAttackSpeed(1.250f);
-      autoAttackDelay = 15.f/30;
-      autoAttackProjectileSpeed = 9999; // TODO : handle isMelee 
+      autoAttackDelay = 11.8f/30.f;
+      setMelee(true);
       break;
    case MINION_TYPE_CASTER:
       stats->setCurrentHealth(279.0f);
@@ -48,8 +48,8 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
       stats->setBaseAd(23.0f);
       stats->setRange(600.f);
       stats->setBaseAttackSpeed(0.670f);
-      autoAttackDelay = 14.1f/30;
-      autoAttackProjectileSpeed = 650;
+      autoAttackDelay = 14.1f/30.f;
+      autoAttackProjectileSpeed = 650.f;
       break;
    case MINION_TYPE_CANNON:
       stats->setCurrentHealth(600.0f);
@@ -57,8 +57,8 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
       stats->setBaseAd(40.0f);
       stats->setRange(450.f);
       stats->setBaseAttackSpeed(1.0f);
-      autoAttackDelay = 9.f/30;
-      autoAttackProjectileSpeed = 1200;
+      autoAttackDelay = 9.f/30.f;
+      autoAttackProjectileSpeed = 1200.f;
       break;
    }
    

@@ -774,8 +774,19 @@ public:
       buffer << attacked->getNetId();
       buffer << (uint8)0x80; // unk
       buffer << futureProjNetId; // Basic attack projectile ID, to be spawned later
-      buffer << (uint8)0x40; // unk
+      buffer << (uint8)0x40; // unk -- seems to be flags related to things like critical strike (0x49)
       buffer << attacker->getX() << attacker->getY();
+   }
+};
+
+class AutoAttackMelee : public BasePacket {
+public:
+   AutoAttackMelee(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_Melee_AutoAttack, attacker->getNetId()) {
+      buffer << attacked->getNetId();
+      buffer << (uint16)0; // unk
+      buffer << (uint16)1; // unk
+      buffer << (uint8)0x40; // unk
+      buffer << (uint8)0x40; // unk
    }
 };
 

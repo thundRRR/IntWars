@@ -91,6 +91,7 @@ class Game
       void notifyChampionRespawn(Champion* c);
       void notifyShowProjectile(Projectile* p);
       void notifyNpcDie(Unit* die, Unit* killer);
+      void notifyAutoAttackMelee(Unit* attacker, Unit* target);
 
 		// Tools
 		static void printPacket(const uint8 *buf, uint32 len);

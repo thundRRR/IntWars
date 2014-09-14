@@ -18,67 +18,75 @@ Unit::~Unit() {
 
 void Unit::update(int64 diff) {
 
-    if (isDead()) {
-        return;
-    }
+   if (isDead()) {
+   return;
+   }
 
-    if (!isAttacking && unitTarget && unitTarget->isDead()) {
-        setUnitTarget(0);
-        map->getGame()->notifySetTarget(this, 0);
-    }
+   if (!isAttacking && unitTarget && unitTarget->isDead()) {
+      setUnitTarget(0);
+      map->getGame()->notifySetTarget(this, 0);
+   }
 
-    if (isAttacking) {
-        autoAttackCurrentDelay += diff / 1000000.f;
-        if (autoAttackCurrentDelay >= autoAttackDelay) {
-            Projectile* p = new Projectile(map, autoAttackProjId, x, y, 5, this, unitTarget, 0, autoAttackProjectileSpeed, RAFFile::getHash("EzrealMysticShotMissile"));
+   if (isAttacking) {
+      autoAttackCurrentDelay += diff / 1000000.f;
+      if (autoAttackCurrentDelay >= autoAttackDelay) {
+         if(!isMelee()) {
+            Projectile* p = new Projectile(map, autoAttackProjId, x, y, 5, this, unitTarget, 0, autoAttackProjectileSpeed, 0);
             map->addObject(p);
             map->getGame()->notifyShowProjectile(p);
-            autoAttackCurrentCooldown = 1.f / (stats->getTotalAttackSpeed());
-            isAttacking = false;
-        }
-    } else if (unitTarget && distanceWith(unitTarget) <= stats->getRange()) {
-        refreshWaypoints();
-        if (autoAttackCurrentCooldown <= 0) {
-            isAttacking = true;
-            autoAttackCurrentDelay = 0;
+         } else {
+            autoAttackHit(unitTarget);
+         }
+         autoAttackCurrentCooldown = 1.f / (stats->getTotalAttackSpeed());
+         isAttacking = false;
+      }
+   } else if (unitTarget && distanceWith(unitTarget) <= stats->getRange()) {
+      refreshWaypoints();
+      if (autoAttackCurrentCooldown <= 0) {
+         isAttacking = true;
+         autoAttackCurrentDelay = 0;
+         if(!isMelee()) {
             autoAttackProjId = GetNewNetID();
             map->getGame()->notifyAutoAttack(this, unitTarget, autoAttackProjId);
-        }
-    } else {
-        refreshWaypoints();
-        if (moveOrder == MOVE_ORDER_ATTACKMOVE && !unitTarget) {
-            const std::map<uint32, Object*>& objects = map->getObjects();
+         } else {
+            map->getGame()->notifyAutoAttackMelee(this, unitTarget);
+         }
+      }
+   } else {
+      refreshWaypoints();
+      if (moveOrder == MOVE_ORDER_ATTACKMOVE && !unitTarget) {
+         const std::map<uint32, Object*>& objects = map->getObjects();
 
-            for (auto& it : objects) {
-                Unit* u = dynamic_cast<Unit*> (it.second);
+         for (auto& it : objects) {
+            Unit* u = dynamic_cast<Unit*> (it.second);
 
-                if (!u || u->isDead() || u->getSide() == getSide() || distanceWith(u) > DETECT_RANGE) {
-                    continue;
-                }
-
-                setUnitTarget(u);
-                map->getGame()->notifySetTarget(this, u);
-
-                break;
+            if (!u || u->isDead() || u->getSide() == getSide() || distanceWith(u) > DETECT_RANGE) {
+               continue;
             }
-        }
 
-        Object::update(diff);
-    }
+            setUnitTarget(u);
+            map->getGame()->notifySetTarget(this, u);
 
-    if (autoAttackCurrentCooldown > 0) {
-        autoAttackCurrentCooldown -= diff / 1000000.f;
-    }
+            break;
+         }
+      }
 
-    if (ai) {
-        ai->update(diff);
-    }
+      Object::update(diff);
+   }
 
-    statUpdateTimer += diff;
-    if (statUpdateTimer >= 500000) { // update stats (hpregen, manaregen) every 0.5 seconds
-        stats->update(statUpdateTimer);
-        statUpdateTimer = 0;
-    }
+   if (autoAttackCurrentCooldown > 0) {
+      autoAttackCurrentCooldown -= diff / 1000000.f;
+   }
+
+   if (ai) {
+      ai->update(diff);
+   }
+
+   statUpdateTimer += diff;
+   if (statUpdateTimer >= 500000) { // update stats (hpregen, manaregen) every 0.5 seconds
+      stats->update(statUpdateTimer);
+      statUpdateTimer = 0;
+   }
 }
 
 void Unit::autoAttackHit(Unit* target) {

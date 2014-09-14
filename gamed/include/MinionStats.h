@@ -33,6 +33,9 @@ class MinionStats : public Stats {
 protected:
    float range;
 public:
+
+   MinionStats() : range(0) {}
+
    float getMaxHealth() const override {
       return getStat(MM_Two, Minion_FM2_MaxHp);
    }

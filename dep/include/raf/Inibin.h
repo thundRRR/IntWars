@@ -231,6 +231,9 @@ public:
    }
    
    bool getBoolValue(const std::string& sectionName, const std::string& varName) {
+      if(values[getKeyHash(sectionName, varName)].stringV.length() > 0) {
+         return values[getKeyHash(sectionName, varName)].stringV == "Yes";
+      }
       return values[getKeyHash(sectionName, varName)].boolV;
    }
    

@@ -71,6 +71,11 @@ void Game::notifyAutoAttack(Unit* attacker, Unit* victim, uint32 futureProjNetId
    broadcastPacket(aa, CHL_S2C);
 }
 
+void Game::notifyAutoAttackMelee(Unit* attacker, Unit* target) {
+   AutoAttackMelee aa(attacker, target);
+   broadcastPacket(aa, CHL_S2C);
+}
+
 void Game::notifyProjectileSpawn(Projectile* p) {
    SpawnProjectile sp(p);
    broadcastPacket(sp, CHL_S2C);

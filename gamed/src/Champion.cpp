@@ -43,6 +43,8 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell3"), 2));
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell4"), 3));
    
+   setMelee(inibin.getBoolValue("DATA", "IsMelee"));
+   
    iniFile.clear();
    if(!RAFManager::getInstance()->readFile("DATA/Characters/"+type+"/Spells/"+type+"BasicAttack.inibin", iniFile)) {
       if(!RAFManager::getInstance()->readFile("DATA/Spells/"+type+"BasicAttack.inibin", iniFile)) {
