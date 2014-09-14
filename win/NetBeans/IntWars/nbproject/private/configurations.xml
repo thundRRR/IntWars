@@ -56,6 +56,7 @@
           <in>tinydir.h</in>
         </df>
         <df name="sol">
+          <in>debug.hpp</in>
           <in>default_construct.hpp</in>
           <in>demangle.hpp</in>
           <in>deprecate.hpp</in>
@@ -65,6 +66,7 @@
           <in>object.hpp</in>
           <in>proxy.hpp</in>
           <in>reference.hpp</in>
+          <in>resolve.hpp</in>
           <in>sol.hpp</in>
           <in>stack.hpp</in>
           <in>state.hpp</in>
@@ -150,6 +152,7 @@
           <in>platforms-time.h</in>
         </df>
         <in>AI.h</in>
+        <in>Buff.h</in>
         <in>Buffer.h</in>
         <in>Champion.h</in>
         <in>ChampionFactory.h</in>
@@ -159,6 +162,7 @@
         <in>Inventory.h</in>
         <in>Item.h</in>
         <in>ItemFactory.h</in>
+        <in>ItemManager.h</in>
         <in>LevelProp.h</in>
         <in>LuaScript.h</in>
         <in>Map.h</in>
@@ -172,18 +176,25 @@
         <in>SummonersRift.h</in>
         <in>Target.h</in>
         <in>Turret.h</in>
+        <in>TurretStats.h</in>
         <in>Unit.h</in>
         <in>Vector2.h</in>
         <in>common.h</in>
         <in>stdafx.h</in>
       </df>
       <df name="src">
+        <in>Buff.cpp</in>
         <in>Champion.cpp</in>
         <in>Game.cpp</in>
         <in>Handlers.cpp</in>
         <in>Inventory.cpp</in>
         <in>Item.cpp</in>
+        <in>ItemManager.cpp</in>
+        <in>LuaChampion.cpp</in>
+        <in>LuaGame.cpp</in>
+        <in>LuaItem.cpp</in>
         <in>LuaScript.cpp</in>
+        <in>LuaUnit.cpp</in>
         <in>Map.cpp</in>
         <in>Minion.cpp</in>
         <in>Notifiers.cpp</in>
@@ -212,6 +223,9 @@
         <in>blowfish.cpp</in>
         <in>blowfish.h</in>
         <in>pcapDecrypt.cpp</in>
+      </df>
+      <df name="wireshark">
+        <in>blowfish.c</in>
       </df>
       <in>HashGenerator.cpp</in>
     </df>
