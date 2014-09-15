@@ -22,6 +22,16 @@ void Game::notifyUpdatedStats(Unit* u) {
    broadcastPacket(us, CHL_LOW_PRIORITY, 2);
 }
 
+void Game::notifyAddBuff(Unit* u, std::string buffName) {
+   AddBuff add(u, 1, buffName);
+   broadcastPacket(add, CHL_S2C);
+}
+
+void Game::notifyRemoveBuff(Unit* u, std::string buffName) {
+   RemoveBuff remove(u, buffName);
+   broadcastPacket(remove, CHL_S2C);
+}
+
 void Game::notifyTeleport(Unit* u, float _x, float _y){
     
    // TeleportRequest first(u->getNetId(), u->teleportToX, u->teleportToY, true);

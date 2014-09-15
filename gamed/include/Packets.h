@@ -658,6 +658,44 @@ typedef struct _EmotionResponse {
 
 /* New Style Packets */
 
+
+class AddBuff : public Packet {
+public:
+   AddBuff(Unit* u, int stacks, std::string name) : Packet(PKT_S2C_AddBuff) {
+      buffer << u->getNetId();//target
+      
+      buffer << (uint8) 0x05; //maybe type?
+      buffer << (uint8) 0x02;
+      buffer << (uint8) 0x01; // stacks
+      buffer << (uint8) 0x00;
+      buffer << RAFFile::getHash(name);
+      buffer << (uint8) 0xde;
+      buffer << (uint8) 0x88;
+      buffer << (uint8) 0xc6;
+      buffer << (uint8) 0xee;
+      buffer << (uint8) 0x00;
+      buffer << (uint8) 0x00;
+      buffer << (uint8) 0x00;
+      buffer << (uint8) 0x00;
+      buffer << (uint8) 0x00;
+      buffer << (uint8) 0x50;
+      buffer << (uint8) 0xc3;
+      buffer << (uint8) 0x46;
+     
+      buffer << u->getNetId();//source?
+   }
+};
+
+class RemoveBuff : public BasePacket {
+public:
+   RemoveBuff(Unit* u, std::string name) : BasePacket(PKT_S2C_RemoveBuff, u->getNetId()) {
+      buffer << (uint8)0x05;
+      buffer << RAFFile::getHash(name);
+      buffer << (uint32) 0x0;
+      //buffer << u->getNetId();//source?
+   }
+};
+
 class DamageDone : public BasePacket {
 public:
    DamageDone(Unit* source, Unit* target, float amount) : BasePacket(PKT_S2C_DamageDone, target->getNetId()) {

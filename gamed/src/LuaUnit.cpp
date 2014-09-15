@@ -65,7 +65,17 @@ void LuaScript::addUnit() {
             //"distanceWith", &Unit::distanceWith, //Will not work
             "getX", &Unit::getX, // some Target methods
             "getY", &Unit::getY);
+            
     lua.set_userdata(unitUserData); //Add the userData to lua
+
+            
+    sol::constructors <sol::types < std::string, float, Unit*>> buffCtr;
+    sol::userdata <Buff> buffUserData(// this is the actual user data.
+            "Buff", buffCtr, //Unit's constructor, not really useful, but necessary.
+            "getName", &Buff::getName,
+            "setMovementSpeedPercentModifier", &Buff::setMovementSpeedPercentModifier
+            );//"methodName", &Class::method);
+    lua.set_userdata(buffUserData); //Add the userData to lua
     //Setting lua values:
     lua.set("DAMAGE_TYPE_PHYSICAL", DAMAGE_TYPE_PHYSICAL);
     lua.set("DAMAGE_TYPE_MAGICAL", DAMAGE_TYPE_MAGICAL);

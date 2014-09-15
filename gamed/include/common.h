@@ -37,6 +37,7 @@ enum PacketCmd : uint8
    PKT_S2C_SkillUp = 0x15,
    PKT_C2S_Ping_Load_Info = 0x16,
    PKT_S2C_AutoAttack = 0x1A,
+   PKT_S2C_EditBuff = 0x1C,//unsure
    PKT_C2S_SwapItems = 0x20,
    
    PKT_S2C_PlayerInfo = 0x2A,
@@ -77,9 +78,11 @@ enum PacketCmd : uint8
    PKT_S2C_SetTarget = 0x6A,
    PKT_S2C_ShowProjectile = 0x6E,
    PKT_S2C_BuyItemAns = 0x6F,
+   PKT_S2C_AddBuff = 0xB7,
 
    PKT_C2S_MoveReq = 0x72,
    PKT_C2S_MoveConfirm = 0x77,
+   PKT_S2C_RemoveBuff = 0x7B,
 
    PKT_C2S_LockCamera = 0x81,
    PKT_C2S_BuyItemReq = 0x82,

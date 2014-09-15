@@ -6,10 +6,10 @@
 
 class LuaScript{
 private:
-
+bool loaded = false;
 public:
     LuaScript(bool defineClasses);
-    
+    bool isLoaded() { return loaded; }
     void loadScript(std::string location);
     sol::table getTable(std::string name);
     void setFunction();

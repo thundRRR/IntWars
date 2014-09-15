@@ -92,6 +92,8 @@ class Game
       void notifyShowProjectile(Projectile* p);
       void notifyNpcDie(Unit* die, Unit* killer);
       void notifyAutoAttackMelee(Unit* attacker, Unit* target);
+      void notifyAddBuff(Unit* u, std::string buffName);
+      void notifyRemoveBuff(Unit* u, std::string buffName);
 
 		// Tools
 		static void printPacket(const uint8 *buf, uint32 len);

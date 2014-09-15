@@ -57,6 +57,14 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    
    autoAttackDelay = autoAttack.getFloatValue("SpellData", "castFrame")/30.f;
    autoAttackProjectileSpeed = autoAttack.getFloatValue("SpellData", "MissileSpeed");
+   
+      std::string scriptloc = "../../lua/champions/" + this->getType() + "/Passive.lua";
+	printf("Loading %s\n", scriptloc.c_str());
+   try{
+    unitScript.loadScript(scriptloc);
+   }catch(sol::error e){//lua error? don't crash the whole server
+      printf("%s", e.what());
+   }
 }
 
 Spell* Champion::castSpell(uint8 slot, float x, float y, Unit* target, uint32 futureProjNetId) {

@@ -161,11 +161,16 @@ void Spell::loadLua(LuaScript& script){
       return;
    });
    
-   script.lua.set_function("addMovementSpeedBuff", [this](Unit* u, float amount, float duration) { // expose teleport to lua
+   /*script.lua.set_function("addMovementSpeedBuff", [this](Unit* u, float amount, float duration) { // expose teleport to lua
        Buff* b = new Buff(duration);
        b->setMovementSpeedPercentModifier(amount);
        u->addBuff(b);
        u->getStats().addMovementSpeedPercentageModifier(b->getMovementSpeedPercentModifier());
+      return;
+   });*/
+   
+      script.lua.set_function("addBuff", [this](Buff b){
+      owner->addBuff(new Buff(b));
       return;
    });
    

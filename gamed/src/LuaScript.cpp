@@ -17,5 +17,6 @@ sol::table LuaScript::getTable(std::string name){
 }
 
 void LuaScript::loadScript(std::string location){
+        loaded = true;
         lua.open_file(location);
 }
