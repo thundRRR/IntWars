@@ -1,5 +1,9 @@
-functions avaiable in finishCasting()
+Lua API
+==================
 
+
+Functions available in finishCasting() for champions
+------
 addMovementSpeedBuff(target, float percentModifier, float duration) -> Applies a movement speed buff to the target
 addParticle(string particle, float toX, float toY) -> Adds a particle to the given coords
 addParticleTarget(string particle, target) -> Adds a particle to the target
@@ -19,8 +23,8 @@ isDead(unit) -> Return true if the unit is dead
 setChampionModel(string newModel) -> Sets caster champion's model
 teleportTo(float x, float y) -> Teleports the champion to specified coords
 
-functions avaiable in applyEffects()
-
+Functions available in applyEffects()
+------
 dealMagicalDamage(float amount) -> Deals magical damage
 dealPhysicalDamage(float amount) -> Deals physical damage
 destroyProjectile() -> Destroys the projectile
