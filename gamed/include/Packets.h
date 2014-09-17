@@ -130,7 +130,7 @@ public:
          buffer << (uint16)p->getRibbon();
       }
       
-      for(int i = 0; i < 12-players.size(); ++i) {
+      for(size_t i = 0; i < 12-players.size(); ++i) {
          buffer << (int64)-1;
          buffer.fill(0, 173);
       }
@@ -196,7 +196,7 @@ public:
            }
         }
         
-        for(int i = 0; i < 6-currentBlue; ++i) {
+        for(size_t i = 0; i < 6-currentBlue; ++i) {
            buffer << (uint64)0;
         }
         
@@ -1092,10 +1092,10 @@ public:
                   }
                   buffer << f;
                } else if(u->getStats().getSize(m, tmpMask) == 2) {
-                  uint16 stat = floor(u->getStats().getStat(m, tmpMask) + 0.5);
+                  uint16 stat = (uint16)floor(u->getStats().getStat(m, tmpMask) + 0.5);
                   buffer << stat;
                } else {
-                  uint8 stat = floor(u->getStats().getStat(m, tmpMask) + 0.5);
+                  uint8 stat = (uint8)floor(u->getStats().getStat(m, tmpMask) + 0.5);
                   buffer << stat;
                }
             }

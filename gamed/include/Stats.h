@@ -115,7 +115,7 @@ public:
     virtual uint8 getSize(uint8 blockId, uint32 stat);
 
     virtual float getMovementSpeedPercentageModifier() const {
-        return 1.0 + (movementSpeedPercentageModifier / 100.0);
+        return 1.f + (movementSpeedPercentageModifier / 100.f);
     }
 
     void setBaseMovementSpeed(float ms) {
@@ -238,7 +238,7 @@ public:
     }
 
     virtual uint8 getLevel() {
-        return floor(getStat(MM_Four, FM4_Level) + 0.5f);
+        return (uint8)floor(getStat(MM_Four, FM4_Level) + 0.5f);
     }
 
     virtual float getExp() {

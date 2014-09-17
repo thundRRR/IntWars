@@ -105,16 +105,16 @@ public:
       }
    }
    
-   std::vector<uint32> readKeys(uint8 nbKeys) {
+   std::vector<uint32> readKeys(uint16 nbKeys) {
       std::vector<uint32> toReturn;
-      
-      for(uint8 i = 0; i < nbKeys; ++i) {
+
+      for(uint16 i = 0; i < nbKeys; ++i) {
          uint32 key;
          buffer >> key;
          toReturn.push_back(key);
       }
-      
-      return toReturn;std::vector<unsigned char> iniFile;
+
+      return toReturn;
    }
    
    static uint32 getKeyHash(const std::string& sectionName, const std::string& varName) {
@@ -138,7 +138,7 @@ public:
          buffer >> v;
       
          Value value;
-         value.floatV = v;
+         value.floatV = (float)v;
          value.intV = v;
          
          values[key] = value;
@@ -151,7 +151,7 @@ public:
          buffer >> v;
          
          Value value;
-         value.floatV = v;
+         value.floatV = (float)v;
          value.intV = v;
          values[key] = value;
       }
@@ -225,7 +225,7 @@ public:
          
    float getFloatValue(const std::string& sectionName, const std::string& varName) {
       if(values[getKeyHash(sectionName, varName)].floatV == 0 && values[getKeyHash(sectionName, varName)].stringV.length() > 0) {
-         return atof(values[getKeyHash(sectionName, varName)].stringV.c_str());
+         return (float)atof(values[getKeyHash(sectionName, varName)].stringV.c_str());
       }
       return values[getKeyHash(sectionName, varName)].floatV;
    }

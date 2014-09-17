@@ -4,7 +4,7 @@
 
 
 void Buff::update(int64 diff){
-   timeElapsed += (float)diff/1000000.0;
+   timeElapsed += (float)diff/1000000.0f;
    if(timeElapsed >= duration){
       if(name != ""){ // empty name = no buff icon
          attachedTo->getMap()->getGame()->notifyRemoveBuff(attachedTo, name);
@@ -14,7 +14,7 @@ void Buff::update(int64 diff){
    }
 }
 
-Buff::Buff(std::string buffName, float dur, Unit* u)  : duration(dur),  name(buffName), timeElapsed(0), remove(false), attachedTo(u){
+Buff::Buff(const std::string& buffName, float dur, Unit* u)  : duration(dur),  name(buffName), timeElapsed(0), remove(false), attachedTo(u), movementSpeedPercentModifier(0){
    if(name != ""){ // empty name = no buff icon
       attachedTo->getMap()->getGame()->notifyAddBuff(attachedTo, name);
    }

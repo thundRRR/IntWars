@@ -19,7 +19,7 @@ RAFFile::RAFFile(const std::string& filename) : filename(filename) {
    rafHeaderFile.seek(header.fileListOffset);
    rafHeaderFile >> fileCount;
    
-   for(int i = 0; i < fileCount; ++i) {
+   for(uint32 i = 0; i < fileCount; ++i) {
       FileEntry entry;
       uint32 hash;
       
