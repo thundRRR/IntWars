@@ -5,7 +5,7 @@
 
 
 void Buff::update(int64 diff){
-   timeElapsed += (float)diff/1000000.0;
+   timeElapsed += (float)diff/1000000.0f;
    
    
       if(buffScript != 0 && buffScript->isLoaded()){
@@ -18,7 +18,6 @@ void Buff::update(int64 diff){
             attachedTo->getMap()->getGame()->notifyRemoveBuff(attachedTo, name);
          }
       remove = true;
-
       }
    }
 }

@@ -18,7 +18,7 @@ bool RAFManager::init(const string& rootDirectory) {
       return false;
    }
 
-   for (int i = 0; i < dir.n_files; i++)
+   for (size_t i = 0; i < dir.n_files; i++)
    {
       tinydir_file file;
       tinydir_readfile_n(&dir, &file, i);
@@ -30,7 +30,7 @@ bool RAFManager::init(const string& rootDirectory) {
       tinydir_dir subDir;
       tinydir_open_sorted(&subDir, (rootDirectory + '/' + file.name).c_str());
       
-      for (int j = 0; j < subDir.n_files; j++)
+      for (size_t j = 0; j < subDir.n_files; j++)
       {
          tinydir_file subFile;
          tinydir_readfile_n(&subDir, &subFile, j);
@@ -87,7 +87,7 @@ std::string RAFManager::findGameBasePath()
 
 
 	//Check CURRENT_USER keys
-	for(int i=0; i< strKeyPathCU.size();i++)
+	for(size_t i=0; i< strKeyPathCU.size();i++)
 	{
 		if( RegOpenKeyExA(HKEY_CURRENT_USER, strKeyPathCU[i].c_str(), 0, KEY_ALL_ACCESS, &hKey) != ERROR_SUCCESS )
 		{
@@ -108,7 +108,7 @@ std::string RAFManager::findGameBasePath()
 
 	//Check LOCAL_MACHINE keys
 
-	for(int i=0; i< strKeyPathLM.size();i++)
+	for(size_t i=0; i< strKeyPathLM.size();i++)
 	{
 		if( RegOpenKeyExA(HKEY_CURRENT_USER, strKeyPathLM[i].c_str(), 0, KEY_ALL_ACCESS, &hKey) != ERROR_SUCCESS )
 		{

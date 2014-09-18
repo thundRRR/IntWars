@@ -49,18 +49,18 @@ uint8 Stats::getSize(uint8 blockId, uint32 stat) {
 
 void Stats::update(int64 diff) {
    if(getHp5() > 0 && getCurrentHealth() < getMaxHealth()) {
-      float newHealth = getCurrentHealth()+(getHp5()*diff*0.000001);
+      float newHealth = getCurrentHealth()+(getHp5()*diff*0.000001f);
       newHealth = std::min(getMaxHealth(), newHealth);
       setCurrentHealth(newHealth);
    }
    
    if(getMana5() > 0 && getCurrentMana() < getMaxMana()) {
-      float newMana = getCurrentMana()+(getMana5()*diff*0.000001);
+      float newMana = getCurrentMana()+(getMana5()*diff*0.000001f);
       newMana = std::min(getMaxMana(), newMana);
       setCurrentMana(newMana);
    }
    if(getGoldPerSecond() > 0){//todo: only generate gold if time > whatever time gold starts generating
-     float newGold = getGold()+getGoldPerSecond()*(diff*0.000001);
+     float newGold = getGold()+getGoldPerSecond()*(diff*0.000001f);
      setGold(newGold);
    }
 }

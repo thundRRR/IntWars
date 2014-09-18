@@ -22,21 +22,21 @@ protected:
    bool remove;
    Unit* attachedTo;
    Unit* attacker; // who added this buff to the unit it's attached to
-   std::string name = "";
    BuffType buffType;
    LuaScript* buffScript;
    
    void init();
+   std::string name;
 
 public:
 
    BuffType const getBuffType(){return buffType;}
    Unit* const getUnit(){
-   return attachedTo;
+      return attachedTo;
    }
    
-   void setName(std::string naame){
-   name = naame;
+   void setName(const std::string& name){
+      this->name = name;
    }
    
     
@@ -48,8 +48,8 @@ public:
 
    void setMovementSpeedPercentModifier(float modifier){ movementSpeedPercentModifier = modifier; }
    
-   std::string const getName(){
-   return name;
+   std::string getName() const {
+      return name;
    }
    
    void setTimeElapsed(float time){

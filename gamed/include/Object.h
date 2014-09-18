@@ -5,6 +5,7 @@
 
 #ifndef OBJECT_H_
 #define OBJECT_H_
+#pragma warning(disable:4458)
 
 #include <vector>
 
@@ -26,10 +27,10 @@ struct MovementVector {
     Target* toTarget() { return new Target(2.0f*x + MAP_WIDTH, 2.0f*y + MAP_HEIGHT); }
     
     static int16 targetXToNormalFormat(float _x){
-        return ((_x) - MAP_WIDTH)/2;
+        return (int16)((_x) - MAP_WIDTH)/2;
     }
     static int16 targetYToNormalFormat(float _y){
-        return((_y) - MAP_HEIGHT)/2;
+        return (int16)((_y) - MAP_HEIGHT)/2;
     }
     void setCoordinatesToNormalFormat(){
         x = targetXToNormalFormat(x);

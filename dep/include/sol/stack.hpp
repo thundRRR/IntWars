@@ -92,7 +92,9 @@ template<typename T, typename>
 struct getter {
     template<typename U = T, EnableIf<std::is_floating_point<U>> = 0>
     static U get(lua_State* L, int index = -1) {
+        #pragma warning(disable : 4244)
         return lua_tonumber(L, index);
+        #pragma warning(default : 4244)
     }
 
     template<typename U = T, EnableIf<std::is_integral<U>, std::is_signed<U>> = 0>

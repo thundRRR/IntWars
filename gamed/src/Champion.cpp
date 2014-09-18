@@ -36,7 +36,7 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    stats->setMagicArmorPerLevel(inibin.getFloatValue("DATA", "SpellBlockPerLevel"));
    stats->setHp5RegenPerLevel(inibin.getFloatValue("DATA", "HPRegenPerLevel"));
    stats->setMp5RegenPerLevel(inibin.getFloatValue("DATA", "MPRegenPerLevel"));
-   stats->setBaseAttackSpeed(0.625/(1+inibin.getFloatValue("DATA", "AttackDelayOffsetPercent")));
+   stats->setBaseAttackSpeed(0.625f/(1+inibin.getFloatValue("DATA", "AttackDelayOffsetPercent")));
    
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell1"), 0));
    spells.push_back(new Spell(this, inibin.getStringValue("Data", "Spell2"), 1));
