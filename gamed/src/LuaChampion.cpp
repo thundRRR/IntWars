@@ -11,6 +11,7 @@ void LuaScript::addChampion() {
     sol::constructors <sol::types < std::string, Map*, uint32>> championCtr;
     sol::userdata <Champion> championUserData(
             "Champion", championCtr,
+            "getSpell", &Champion::getSpell,
             "getStats", &Champion::getStats,
             "getMoveSpeed", &Champion::getMoveSpeed,
             "getModel", &Champion::getModel,
@@ -26,7 +27,8 @@ void LuaScript::addChampion() {
             "getX", &Champion::getX,
             "getY", &Champion::getY,
             "setTarget", &Champion::setTarget,
-            "setUnitTarget", &Champion::setUnitTarget); //Also inherited from unit
+            "setUnitTarget", &Champion::setUnitTarget,
+            "getBuff", &Champion::getBuff); //Also inherited from unit
             //"distanceWith", &Champion::distanceWith); //Will simply not work
     lua.set_userdata(championUserData);
 

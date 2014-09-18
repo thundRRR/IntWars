@@ -868,7 +868,7 @@ public:
 class SetHealth : public BasePacket {
 public:
    SetHealth(Unit* u) : BasePacket(PKT_S2C_SetHealth, u->getNetId()) {
-      buffer << (uint16)0x0000; // unk
+      buffer << (uint16)0x0000; // unk,maybe flags for physical/magical/true dmg
       buffer << u->getStats().getMaxHealth();
       buffer << u->getStats().getCurrentHealth();
    }

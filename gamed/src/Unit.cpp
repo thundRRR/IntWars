@@ -99,6 +99,13 @@ void Unit::update(int64 diff) {
 
 void Unit::autoAttackHit(Unit* target) {
     dealDamageTo(target, stats->getTotalAd(), DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_ATTACK);
+       if(unitScript.isLoaded()){
+      try{
+         unitScript.lua.get <sol::function> ("onAutoAttack").call <void> (target);
+      }catch(sol::error e){
+         printf("Error callback ondealdamage: \n%s", e.what());
+      }
+   }
 }
 
 /**
@@ -106,6 +113,15 @@ void Unit::autoAttackHit(Unit* target) {
  */
 void Unit::dealDamageTo(Unit* target, float damage, DamageType type, DamageSource source) {
     //printf("0x%08X deals %f damage to 0x%08X !\n", getNetId(), damage, target->getNetId());
+    
+   if(unitScript.isLoaded()){
+      try{
+         /*damage = */ unitScript.lua.get <sol::function> ("onDealDamage").call <void> (target, damage, type, source);
+      }catch(sol::error e){
+         printf("Error callback ondealdamage: \n%s", e.what());
+      }
+   }
+    
     
     float defense = 0;
     float regain = 0;
@@ -171,4 +187,13 @@ void Unit::refreshWaypoints() {
     } else {
         setWaypoints({MovementVector(x, y), MovementVector(unitTarget->getX(), unitTarget->getY())});
     }
+}
+
+Buff* Unit::getBuff(std::string name){
+   for(auto& buff : buffs){
+      if(buff->getName() == name){
+         return buff;
+       }
+   }
+   return 0;
 }

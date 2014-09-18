@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "Target.h"
 
+
 void LuaScript::addUnit() {
     sol::constructors <sol::types<float, float>> targetCtr;
     sol::userdata <Target> targetUserData(
@@ -64,18 +65,20 @@ void LuaScript::addUnit() {
             "getCollisionRadius", &Unit::getCollisionRadius,
             //"distanceWith", &Unit::distanceWith, //Will not work
             "getX", &Unit::getX, // some Target methods
-            "getY", &Unit::getY);
+            "getY", &Unit::getY,
+            "getBuff", &Unit::getBuff);
             
     lua.set_userdata(unitUserData); //Add the userData to lua
 
             
-    sol::constructors <sol::types < std::string, float, Unit*>> buffCtr;
+    sol::constructors <sol::types < std::string, float, BuffType, Unit*>, sol::types<std::string, float, BuffType, Unit*, Unit*> > buffCtr;
     sol::userdata <Buff> buffUserData(// this is the actual user data.
             "Buff", buffCtr, //Unit's constructor, not really useful, but necessary.
             "getName", &Buff::getName,
             "setMovementSpeedPercentModifier", &Buff::setMovementSpeedPercentModifier
             );//"methodName", &Class::method);
     lua.set_userdata(buffUserData); //Add the userData to lua
+    
     //Setting lua values:
     lua.set("DAMAGE_TYPE_PHYSICAL", DAMAGE_TYPE_PHYSICAL);
     lua.set("DAMAGE_TYPE_MAGICAL", DAMAGE_TYPE_MAGICAL);
@@ -84,5 +87,7 @@ void LuaScript::addUnit() {
     lua.set("DAMAGE_SOURCE_SPELL", DAMAGE_SOURCE_SPELL);
     lua.set("DAMAGE_SOURCE_SUMMONER_SPELL", DAMAGE_SOURCE_SUMMONER_SPELL);
     lua.set("DAMAGE_SOURCE_PASSIVE", DAMAGE_SOURCE_PASSIVE);
+    lua.set("BUFFTYPE_ETERNAL", BUFFTYPE_ETERNAL);
+    lua.set("BUFFTYPE_TEMPORARY", BUFFTYPE_TEMPORARY);
 
 }

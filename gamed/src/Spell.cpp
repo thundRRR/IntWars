@@ -230,7 +230,7 @@ void Spell::loadLua(LuaScript& script){
    try{
       script.loadScript(scriptloc); //todo: abstract class that loads a lua file for any lua
      }catch(sol::error e){//lua error? don't crash the whole server
-       printf("%s", e.what());
+       printf("Error in spell script:\n%s \n", e.what());
    }
 }
 

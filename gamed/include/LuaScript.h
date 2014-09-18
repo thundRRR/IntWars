@@ -13,6 +13,7 @@ public:
     void loadScript(std::string location);
     sol::table getTable(std::string name);
     void setFunction();
+    void setLoaded(bool load){ loaded = load;}
     sol::state lua;
     
     void addChampion();

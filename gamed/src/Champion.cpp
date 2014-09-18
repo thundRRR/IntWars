@@ -58,12 +58,29 @@ Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id,
    autoAttackDelay = autoAttack.getFloatValue("SpellData", "castFrame")/30.f;
    autoAttackProjectileSpeed = autoAttack.getFloatValue("SpellData", "MissileSpeed");
    
-      std::string scriptloc = "../../lua/champions/" + this->getType() + "/Passive.lua";
+   std::string scriptloc = "../../lua/champions/" + this->getType() + "/Passive.lua";
 	printf("Loading %s\n", scriptloc.c_str());
    try{
+    unitScript = LuaScript(true);//fix
+    
+    unitScript.lua.set("me", this);
+
     unitScript.loadScript(scriptloc);
+    
+    unitScript.lua.set_function("dealMagicDamage", [this](Unit* target, float amount) { this->dealDamageTo(target,amount,DAMAGE_TYPE_MAGICAL,DAMAGE_SOURCE_SPELL); });
+    unitScript.lua.set_function("addBuff", [this](Unit* target, Buff b){
+      target->addBuff(new Buff(b));
+      return;
+   });
+   
+    unitScript.lua.set_function("addParticleTarget", [this](const std::string& particle, Target* u) { 
+      this->getMap()->getGame()->notifyParticleSpawn(this, u, particle);
+      return;
+   });
+
+   // unitScript.lua.set ("me", this);
    }catch(sol::error e){//lua error? don't crash the whole server
-      printf("%s", e.what());
+      printf("Champion passive load error: \n%s\n", e.what());
    }
 }
 

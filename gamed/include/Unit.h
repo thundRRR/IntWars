@@ -50,7 +50,7 @@ protected:
    
    bool targetable;
    
-      LuaScript unitScript = LuaScript(true);
+   LuaScript unitScript = LuaScript(true);
 public:
    Unit(Map* map, uint32 id, std::string model, Stats* stats, uint32 collisionRadius = 40, float x = 0, float y = 0, AI* ai = 0) : Object(map, id, x, y, collisionRadius), stats(stats), ai(ai),
                                                                                  statUpdateTimer(0), model(model), autoAttackDelay(0), autoAttackProjectileSpeed(0), isAttacking(false),
@@ -80,7 +80,16 @@ public:
    const std::string& getModel();
    bool isModelUpdated() { return modelUpdated; }
    void clearModelUpdated() { modelUpdated = false; }
-   void addBuff(Buff* b){buffs.push_back(b); getStats().addMovementSpeedPercentageModifier(b->getMovementSpeedPercentModifier()); } //todo: use statmods
+   void addBuff(Buff* b){
+   if(getBuff(b->getName()) == 0){
+   buffs.push_back(b);
+   getStats().addMovementSpeedPercentageModifier(b->getMovementSpeedPercentModifier()); 
+   }else{
+   getBuff(b->getName())->setTimeElapsed(0); // if buff already exists, just restart its timer
+   }
+   }
+   //todo: use statmods
+   Buff* getBuff(std::string name);
    void setMoveOrder(MoveOrder moveOrder) { this->moveOrder = moveOrder; }
    void setUnitTarget(Unit* target);
    void refreshWaypoints();
