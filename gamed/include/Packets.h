@@ -303,6 +303,19 @@ public:
    }
 };
 
+class AddGold : public BasePacket {
+public:
+   AddGold(Champion* richMan, Unit* died, float gold) : BasePacket(PKT_S2C_AddGold, richMan->getNetId()) {
+      buffer << richMan->getNetId();
+      if(died) {
+         buffer << died->getNetId();
+      } else {
+         buffer << (uint32)0;
+      }
+      buffer << gold;
+   }
+};
+
 struct MovementReq {
     PacketHeader header;
     MoveType type;
@@ -819,12 +832,11 @@ public:
 
 class AutoAttackMelee : public BasePacket {
 public:
-   AutoAttackMelee(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_Melee_AutoAttack, attacker->getNetId()) {
+   AutoAttackMelee(Unit* attacker, Unit* attacked, uint32 futureProjNetId) : BasePacket(PKT_S2C_Melee_AutoAttack, attacker->getNetId()) {
       buffer << attacked->getNetId();
-      buffer << (uint16)0; // unk
-      buffer << (uint16)1; // unk
-      buffer << (uint8)0x40; // unk
-      buffer << (uint8)0x40; // unk
+      buffer << (uint8)0; // unk
+      buffer << futureProjNetId; // this might not be "melee" auto attack after all..
+      buffer << (uint8)0x40; // unk -- seems to be flags related to things like critical strike (0x49)
    }
 };
 

@@ -39,6 +39,7 @@ enum PacketCmd : uint8
    PKT_S2C_AutoAttack = 0x1A,
    PKT_S2C_EditBuff = 0x1C,//unsure
    PKT_C2S_SwapItems = 0x20,
+   PKT_S2C_AddGold = 0x22,
    
    PKT_S2C_PlayerInfo = 0x2A,
 

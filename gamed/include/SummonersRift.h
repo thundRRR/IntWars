@@ -14,6 +14,7 @@ public:
    float getGoldPerSecond() override { return 1.9f; }
    
    const Target getRespawnLoc(int side) const override;
+   float getGoldFor(Unit* u) const override;
    
    bool spawn() override;
 

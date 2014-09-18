@@ -81,8 +81,8 @@ void Game::notifyAutoAttack(Unit* attacker, Unit* victim, uint32 futureProjNetId
    broadcastPacket(aa, CHL_S2C);
 }
 
-void Game::notifyAutoAttackMelee(Unit* attacker, Unit* target) {
-   AutoAttackMelee aa(attacker, target);
+void Game::notifyAutoAttackMelee(Unit* attacker, Unit* target, uint32 futureProjNetId) {
+   AutoAttackMelee aa(attacker, target, futureProjNetId);
    broadcastPacket(aa, CHL_S2C);
 }
 
@@ -154,4 +154,9 @@ void Game::notifyShowProjectile(Projectile* p) {
 void Game::notifyNpcDie(Unit* die, Unit* killer) {
    NpcDie nd(die, killer);
    broadcastPacket(nd, CHL_S2C);
+}
+
+void Game::notifyAddGold(Champion* c, Unit* died, float gold) {
+   AddGold ag(c, died, gold);
+   broadcastPacket(ag, CHL_S2C);
 }

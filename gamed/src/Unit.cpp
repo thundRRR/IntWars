@@ -53,11 +53,11 @@ void Unit::update(int64 diff) {
       if (autoAttackCurrentCooldown <= 0) {
          isAttacking = true;
          autoAttackCurrentDelay = 0;
+         autoAttackProjId = GetNewNetID();
          if(!isMelee()) {
-            autoAttackProjId = GetNewNetID();
             map->getGame()->notifyAutoAttack(this, unitTarget, autoAttackProjId);
          } else {
-            map->getGame()->notifyAutoAttackMelee(this, unitTarget);
+            map->getGame()->notifyAutoAttackMelee(this, unitTarget, autoAttackProjId);
          }
       }
    } else {
@@ -169,6 +169,20 @@ const std::string& Unit::getModel() {
 
 void Unit::die(Unit* killer) {
     map->getGame()->notifyNpcDie(this, killer);
+    Champion* c = dynamic_cast<Champion*>(killer);
+    
+    if(!c) {
+      return;
+    }
+    
+    float gold = map->getGoldFor(this);
+    
+    if(!gold) {
+      return;
+    }
+    
+    c->getStats().setGold(c->getStats().getGold()+gold);
+    map->getGame()->notifyAddGold(c, this, gold);
     // setToRemove() ; can't do it now because some projectiles might still be aimed at this unit, causing pointer dereference
 }
 

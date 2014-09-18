@@ -56,10 +56,10 @@ void Map::update(int64 diff) {
       ++kv;
    }
    
-   time += diff;
+   gameTime += diff;
    
    if(waveNumber) { 
-      if(time >= nextSpawnTime+waveNumber*8*100000) { // Spawn new wave every 0.8s
+      if(gameTime >= nextSpawnTime+waveNumber*8*100000) { // Spawn new wave every 0.8s
          if(spawn()) {
             waveNumber = 0;
             nextSpawnTime += spawnInterval;
@@ -67,7 +67,7 @@ void Map::update(int64 diff) {
             ++waveNumber;
          }
       }  
-   } else if(time >= nextSpawnTime) {
+   } else if(gameTime >= nextSpawnTime) {
       spawn();
       ++waveNumber;
    }

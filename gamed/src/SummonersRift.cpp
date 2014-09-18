@@ -161,3 +161,22 @@ const Target SummonersRift::getRespawnLoc(int side) const {
    
    return Target(25.90f, 280);
 }
+
+float SummonersRift::getGoldFor(Unit* u) const {
+   Minion* m = dynamic_cast<Minion*>(u);
+   
+   if(!m) {
+      return 0.f;
+   }
+   
+   switch(m->getType()) {
+      case MINION_TYPE_MELEE:
+         return 19.f;
+      case MINION_TYPE_CASTER:
+         return 14.f + (0.2f/90.f)*(gameTime/1000000.f);
+      case MINION_TYPE_CANNON:
+         return 40.f + (1.f/180.f)*(gameTime/1000000.f);
+   }
+   
+   return 0.f;
+}

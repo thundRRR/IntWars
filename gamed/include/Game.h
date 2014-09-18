@@ -91,9 +91,10 @@ class Game
       void notifyChampionRespawn(Champion* c);
       void notifyShowProjectile(Projectile* p);
       void notifyNpcDie(Unit* die, Unit* killer);
-      void notifyAutoAttackMelee(Unit* attacker, Unit* target);
+      void notifyAutoAttackMelee(Unit* attacker, Unit* target, uint32 futureProjNetId);
       void notifyAddBuff(Unit* u, std::string buffName);
       void notifyRemoveBuff(Unit* u, std::string buffName);
+      void notifyAddGold(Champion* c, Unit* died, float gold);
 
 		// Tools
 		static void printPacket(const uint8 *buf, uint32 len);
