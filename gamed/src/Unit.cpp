@@ -129,14 +129,23 @@ void Unit::dealDamageTo(Unit* target, float damage, DamageType type, DamageSourc
         case DAMAGE_TYPE_PHYSICAL:
             defense = target->getStats().getArmor();
             defense = ((1 - stats->getArmorPenPct()) * defense) - stats->getArmorPenFlat();
-            regain = stats->getLifeSteal();
+            
             break;
         case DAMAGE_TYPE_MAGICAL:
             defense = target->getStats().getMagicArmor();
             defense = ((1 - stats->getMagicPenPct()) * defense) - stats->getMagicPenFlat();
-            regain = stats->getSpellVamp();
             break;
     }
+    
+    switch(source) {
+        case DAMAGE_SOURCE_SPELL:
+            regain = stats->getSpellVamp();
+            break;
+        case DAMAGE_SOURCE_ATTACK:
+            regain = stats->getLifeSteal();
+            break;
+    }
+    
     //Damage dealing. (based on leagueoflegends' wikia)
     damage = defense >= 0 ? (100 / (100 + defense)) * damage : (2 - (100 / (100 - defense))) * damage;
 
@@ -145,7 +154,7 @@ void Unit::dealDamageTo(Unit* target, float damage, DamageType type, DamageSourc
         target->deathFlag = true;
         target->die(this);
     }
-    map->getGame()->notifyDamageDone(this, target, damage);
+    map->getGame()->notifyDamageDone(this, target, damage, type);
     
     //Get health from lifesteal/spellvamp
     if (regain != 0) {

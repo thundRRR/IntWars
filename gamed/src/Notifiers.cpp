@@ -71,8 +71,8 @@ void Game::notifyMovement(Object* o) {
    MovementAns::destroy(answer);
 }
 
-void Game::notifyDamageDone(Unit* source, Unit* target, float amount) {
-   DamageDone dd(source, target, amount);
+void Game::notifyDamageDone(Unit* source, Unit* target, float amount, DamageType type) {
+   DamageDone dd(source, target, amount, type);
    broadcastPacket(dd, CHL_S2C);
 }
 

@@ -7,10 +7,10 @@
 #include "Buff.h"
 #include "LuaScript.h"
 
-enum DamageType {
-   DAMAGE_TYPE_PHYSICAL,
-   DAMAGE_TYPE_MAGICAL,
-   DAMAGE_TYPE_TRUE
+enum DamageType : uint8 {
+   DAMAGE_TYPE_PHYSICAL = 0,
+   DAMAGE_TYPE_MAGICAL = 1,
+   DAMAGE_TYPE_TRUE = 2
 };
 
 enum DamageSource {

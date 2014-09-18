@@ -75,7 +75,7 @@ class Game
       void notifySetHealth(Unit* u);
       void notifyUpdatedStats(Unit* u);
       void notifyMovement(Object* o);
-      void notifyDamageDone(Unit* source, Unit* target, float amount);
+      void notifyDamageDone(Unit* source, Unit* target, float amount, DamageType type = DAMAGE_TYPE_PHYSICAL);
       void notifyAutoAttack(Unit* attacker, Unit* victim, uint32 futureProjNetId);
       void notifyTeleport(Unit* u, float _x, float _y);
       void notifyProjectileSpawn(Projectile* p);

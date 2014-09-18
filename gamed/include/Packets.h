@@ -711,8 +711,8 @@ public:
 
 class DamageDone : public BasePacket {
 public:
-   DamageDone(Unit* source, Unit* target, float amount) : BasePacket(PKT_S2C_DamageDone, target->getNetId()) {
-      buffer << (uint8)4; // damage type ? 4 = physical ?
+   DamageDone(Unit* source, Unit* target, float amount, DamageType type) : BasePacket(PKT_S2C_DamageDone, target->getNetId()) {
+      buffer << (uint8)((type << 4) | 0x04);
       buffer << target->getNetId();
       buffer << source->getNetId();
       buffer << amount;
