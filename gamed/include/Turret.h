@@ -12,6 +12,7 @@ public:
 
    const std::string& getName() const { return name; }
    virtual void update(int64 diff) override;
+   void refreshWaypoints() override {}
 
 };
 

@@ -840,6 +840,14 @@ public:
    }
 };
 
+class StopAutoAttack : public BasePacket {
+public:
+   StopAutoAttack(Unit* attacker) : BasePacket(PKT_S2C_StopAutoAttack, attacker->getNetId()) {
+      buffer << (uint32)0; // Unk. Rarely, this is a net ID. Dunno what for.
+      buffer << (uint8)3; // Unk. Sometimes "2", sometimes "11" when the above netId is not 0.
+   }
+};
+
 class SetTarget : public BasePacket {
 public:
    SetTarget(Unit* attacker, Unit* attacked) : BasePacket(PKT_S2C_SetTarget, attacker->getNetId()) {

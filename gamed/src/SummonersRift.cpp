@@ -73,15 +73,15 @@ const static vector<vector<MovementVector> > ConstWaypoints =
    },
 };
 
-SummonersRift::SummonersRift(Game* game) : Map(game, 5*1000000, 30*1000000) {
+SummonersRift::SummonersRift(Game* game) : Map(game, 90*1000000, 30*1000000) {
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_R_03_A", 10097.62f, 808.73f, 2550, 156, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_R_02_A", 6512.53f, 1262.62f, 2550, 170, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_07_A", 3747.26f, 1041.04f, 2550, 190, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T2_R_03_A", 13459.f, 4284.f, 2550, 156, 1));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T2_R_02_A", 12920.f, 8005.f, 2550, 170, 1));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T2_R_01_A", 13205.f, 10474.f, 2550, 190, 1));
-   addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_05_A", 5435.02f, 6179.10f, 2550, 156, 0));
-   addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_04_A", 4633.66f, 4591.91f, 2550, 170, 0));
+   addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_05_A", 5448.02f, 6169.10f, 2550, 156, 0));
+   addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_04_A", 4657.66f, 4591.91f, 2550, 170, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_03_A", 3233.99f, 3447.24f, 2550, 190, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_01_A", 1341.63f, 2029.98f, 2425, 180, 0));
    addObject(new Turret(this, GetNewNetID(), "@Turret_T1_C_02_A", 1768.19f, 1589.47f, 2425, 180, 0));

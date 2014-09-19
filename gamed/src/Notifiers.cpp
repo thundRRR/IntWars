@@ -160,3 +160,8 @@ void Game::notifyAddGold(Champion* c, Unit* died, float gold) {
    AddGold ag(c, died, gold);
    broadcastPacket(ag, CHL_S2C);
 }
+
+void Game::notifyStopAutoAttack(Unit* attacker) {
+   StopAutoAttack saa(attacker);
+   broadcastPacket(saa, CHL_S2C);
+}

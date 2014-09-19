@@ -54,6 +54,7 @@ void Unit::update(int64 diff) {
          isAttacking = true;
          autoAttackCurrentDelay = 0;
          autoAttackProjId = GetNewNetID();
+         autoAttackFlag = true;
          if(!isMelee()) {
             map->getGame()->notifyAutoAttack(this, unitTarget, autoAttackProjId);
          } else {
@@ -159,7 +160,6 @@ void Unit::dealDamageTo(Unit* target, float damage, DamageType type, DamageSourc
     //Get health from lifesteal/spellvamp
     if (regain != 0) {
         stats->setCurrentHealth (max (0.f, stats->getCurrentHealth() + (regain * damage)));
-        map->getGame()->notifyUpdatedStats(this);
     }
 }
 
@@ -201,15 +201,19 @@ void Unit::setUnitTarget(Unit* target) {
 }
 
 void Unit::refreshWaypoints() {
-    if (!unitTarget || waypoints.size() == 1) {
-        return;
-    }
+   if (!unitTarget || (distanceWith(unitTarget) <= stats->getRange() && waypoints.size() == 1)) {
+      return;
+   }
 
-    if (distanceWith(unitTarget) <= stats->getRange()) {
-        setWaypoints({MovementVector(x, y)});
-    } else {
-        setWaypoints({MovementVector(x, y), MovementVector(unitTarget->getX(), unitTarget->getY())});
-    }
+   if (distanceWith(unitTarget) <= stats->getRange()-2.f) {
+      setWaypoints({MovementVector(x, y)});
+   } else {
+      Target* t = waypoints[waypoints.size()-1].toTarget();
+      if(t->distanceWith(unitTarget) >= 25.f) {
+         setWaypoints({MovementVector(x, y), MovementVector(unitTarget->getX(), unitTarget->getY())});
+      }
+      delete t;
+   }
 }
 
 Buff* Unit::getBuff(std::string name){

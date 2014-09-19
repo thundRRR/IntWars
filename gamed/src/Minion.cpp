@@ -1,5 +1,7 @@
 #include "Minion.h"
 #include "MinionStats.h"
+#include "Map.h"
+#include "Game.h"
 
 using namespace std;
 
@@ -99,6 +101,11 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
 
 void Minion::update(int64 diff) {
    Unit::update(diff);
+   
+   if(autoAttackFlag && (!unitTarget || distanceWith(unitTarget) > stats->getRange())) {
+      map->getGame()->notifyStopAutoAttack(this);
+      autoAttackFlag = false;
+   }
    
    if(unitTarget) {
       return;

@@ -47,6 +47,7 @@ enum PacketCmd : uint8
    PKT_C2S_ViewReq = 0x2E,
    PKT_S2C_ChampionRespawn = 0x2F,
 
+   PKT_S2C_StopAutoAttack = 0x34,
    PKT_C2S_SkillUp = 0x39,
    PKT_S2C_SpawnProjectile = 0x3B,
    PKT_S2C_SwapItems = 0x3E,

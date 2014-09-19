@@ -95,6 +95,7 @@ class Game
       void notifyAddBuff(Unit* u, std::string buffName);
       void notifyRemoveBuff(Unit* u, std::string buffName);
       void notifyAddGold(Champion* c, Unit* died, float gold);
+      void notifyStopAutoAttack(Unit* attacker);
 
 		// Tools
 		static void printPacket(const uint8 *buf, uint32 len);

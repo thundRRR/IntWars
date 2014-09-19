@@ -248,6 +248,8 @@ bool Game::handleMove(ENetPeer *peer, ENetPacket *packet) {
       return true;
    }
    
+   // Sometimes the client will send a wrong position as the first one, override it with server data
+   vMoves[0] = MovementVector(peerInfo(peer)->getChampion()->getX(), peerInfo(peer)->getChampion()->getY());
    peerInfo(peer)->getChampion()->setWaypoints(vMoves);
    Unit* u = dynamic_cast<Unit*>(map->getObjectById(request->targetNetId));
    if(!u) {
