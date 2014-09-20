@@ -58,6 +58,7 @@ protected:
    unsigned int side;
    bool movementUpdated;
    bool toRemove;
+   uint32 attackerCount;
    
    uint32 collisionRadius;
       
@@ -94,7 +95,7 @@ public:
    bool isMovementUpdated() { return movementUpdated; }
    void clearMovementUpdated() { movementUpdated = false; }
    bool isToRemove() { return toRemove; }
-   void setToRemove() { toRemove = true; }
+   virtual void setToRemove() { toRemove = true; }
 
    uint32 getNetId() const { return id; }
    Map* getMap() const { return map; }
@@ -103,6 +104,10 @@ public:
 
    uint32 getCollisionRadius() const { return collisionRadius; }
    bool collide(Object* o);
+   
+   uint32 getAttackerCount() const { return attackerCount; }
+   void incrementAttackerCount() { ++attackerCount; }
+   void decrementAttackerCount() { --attackerCount; }
 };
 
 #endif /* OBJECT_H_ */

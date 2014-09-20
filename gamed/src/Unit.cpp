@@ -30,9 +30,14 @@ void Unit::update(int64 diff) {
    return;
    }
 
-   if (!isAttacking && unitTarget && unitTarget->isDead()) {
+   if (unitTarget && unitTarget->isDead()) {
       setUnitTarget(0);
+      isAttacking = false;
       map->getGame()->notifySetTarget(this, 0);
+   }
+   
+   if(!unitTarget && isAttacking) {
+      isAttacking = false;
    }
 
    if (isAttacking) {
@@ -192,12 +197,13 @@ void Unit::die(Unit* killer) {
     
     c->getStats().setGold(c->getStats().getGold()+gold);
     map->getGame()->notifyAddGold(c, this, gold);
-    // setToRemove() ; can't do it now because some projectiles might still be aimed at this unit, causing pointer dereference
+    setToRemove();
+    map->stopTargeting(this);
 }
 
 void Unit::setUnitTarget(Unit* target) {
-    unitTarget = target;
-    refreshWaypoints();
+   unitTarget = target;
+   refreshWaypoints();
 }
 
 void Unit::refreshWaypoints() {

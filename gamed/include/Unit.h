@@ -88,10 +88,12 @@ public:
          getBuff(b->getName())->setTimeElapsed(0); // if buff already exists, just restart its timer
       }
    }
+   
    //todo: use statmods
    Buff* getBuff(std::string name);
    void setMoveOrder(MoveOrder moveOrder) { this->moveOrder = moveOrder; }
    void setUnitTarget(Unit* target);
+   Unit* getUnitTarget() const { return unitTarget; }
    virtual void refreshWaypoints();
    bool isMelee() const { return melee; }
    void setMelee(bool melee) { this->melee = melee; }

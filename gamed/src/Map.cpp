@@ -3,7 +3,7 @@
 
 void Map::update(int64 diff) {
    for(auto kv = objects.begin(); kv != objects.end();) {
-      if(kv->second->isToRemove()) {
+      if(kv->second->isToRemove() && kv->second->getAttackerCount() == 0) {
          delete kv->second;
          kv = objects.erase(kv);
          continue;
@@ -83,4 +83,18 @@ Object* Map::getObjectById(uint32 id) {
 
 void Map::addObject(Object* o) {
    objects[o->getNetId()] = o;
+}
+
+void Map::stopTargeting(Unit* target) {
+   for(auto kv = objects.begin(); kv != objects.end(); ++kv) {
+      Unit* u = dynamic_cast<Unit*>(kv->second);
+
+      if(!u) {
+         continue;
+      }
+      
+      if(u->getUnitTarget() == target) {
+         u->setUnitTarget(0);
+      }
+   }
 }

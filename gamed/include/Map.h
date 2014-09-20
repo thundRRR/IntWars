@@ -39,6 +39,7 @@ public:
    Game* getGame() const { return game; }
    
    const std::map<uint32, Object*>& getObjects() { return objects; }
+   void stopTargeting(Unit* target);
    
 };
 
