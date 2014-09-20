@@ -33,7 +33,7 @@ public:
    const std::vector<Object*>& getObjectsHit() { return objectsHit; };
    
    virtual void setToRemove() {
-      if(!target->isSimpleTarget()) {
+      if(target && !target->isSimpleTarget()) {
          static_cast<Object*>(target)->decrementAttackerCount();
       }
       owner->decrementAttackerCount();
