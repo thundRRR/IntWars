@@ -4,6 +4,7 @@
 #include "Game.h"
 
 #include <algorithm>
+#include <cstdlib>
 
 #define DETECT_RANGE 400
 
@@ -55,15 +56,16 @@ void Unit::update(int64 diff) {
       }
    } else if (unitTarget && distanceWith(unitTarget) <= stats->getRange()) {
       refreshWaypoints();
+      nextAutoIsCrit = ((rand() % 100 + 1) <= stats->getCritChance() * 100) ? true : false;
       if (autoAttackCurrentCooldown <= 0) {
          isAttacking = true;
          autoAttackCurrentDelay = 0;
          autoAttackProjId = GetNewNetID();
          autoAttackFlag = true;
          if(!isMelee()) {
-            map->getGame()->notifyAutoAttack(this, unitTarget, autoAttackProjId);
+            map->getGame()->notifyAutoAttack(this, unitTarget, autoAttackProjId, nextAutoIsCrit);
          } else {
-            map->getGame()->notifyAutoAttackMelee(this, unitTarget, autoAttackProjId);
+            map->getGame()->notifyAutoAttackMelee(this, unitTarget, autoAttackProjId, nextAutoIsCrit);
          }
       }
    } else {
@@ -104,7 +106,8 @@ void Unit::update(int64 diff) {
 }
 
 void Unit::autoAttackHit(Unit* target) {
-    dealDamageTo(target, stats->getTotalAd(), DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_ATTACK);
+  float damage = (nextAutoIsCrit) ? stats->getCritDamagePct() * stats->getTotalAd() : stats->getTotalAd();
+    dealDamageTo(target, damage, DAMAGE_TYPE_PHYSICAL, DAMAGE_SOURCE_ATTACK);
        if(unitScript.isLoaded()){
       try{
          unitScript.lua.get <sol::function> ("onAutoAttack").call <void> (target);
@@ -165,6 +168,7 @@ void Unit::dealDamageTo(Unit* target, float damage, DamageType type, DamageSourc
     //Get health from lifesteal/spellvamp
     if (regain != 0) {
         stats->setCurrentHealth (max (0.f, stats->getCurrentHealth() + (regain * damage)));
+        map->getGame()->notifyUpdatedStats(this);
     }
 }
 

@@ -76,13 +76,13 @@ void Game::notifyDamageDone(Unit* source, Unit* target, float amount, DamageType
    broadcastPacket(dd, CHL_S2C);
 }
 
-void Game::notifyAutoAttack(Unit* attacker, Unit* victim, uint32 futureProjNetId) {
-   AutoAttack aa(attacker, victim, futureProjNetId);
+void Game::notifyAutoAttack(Unit* attacker, Unit* victim, uint32 futureProjNetId, bool isCritical) {
+   AutoAttack aa(attacker, victim, futureProjNetId, isCritical);
    broadcastPacket(aa, CHL_S2C);
 }
 
-void Game::notifyAutoAttackMelee(Unit* attacker, Unit* target, uint32 futureProjNetId) {
-   AutoAttackMelee aa(attacker, target, futureProjNetId);
+void Game::notifyAutoAttackMelee(Unit* attacker, Unit* target, uint32 futureProjNetId, bool isCritical) {
+   AutoAttackMelee aa(attacker, target, futureProjNetId, isCritical);
    broadcastPacket(aa, CHL_S2C);
 }
 
