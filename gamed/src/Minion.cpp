@@ -92,7 +92,7 @@ Minion::Minion(Map* map, uint32 id, MinionSpawnType type, MinionSpawnPosition po
    if(constWaypoints.size() > 0) {
       newWaypoints = { constWaypoints[0], constWaypoints[0] };
    } else {
-      newWaypoints = { MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)), MovementVector(MovementVector::targetXToNormalFormat(x), MovementVector::targetYToNormalFormat(y)) };
+      newWaypoints = { MovementVector(x, y), MovementVector(x, y) };
    }
    
    setWaypoints(newWaypoints);

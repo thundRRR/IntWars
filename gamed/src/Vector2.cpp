@@ -3,15 +3,6 @@
 #include "stdafx.h"
 #include "Vector2.h"
 
-Vector2::Vector2(void)
-{
-}
-
-Vector2::Vector2(float X, float Y){
-   this->X = X;
-   this->Y = Y;
-}
-
 // note: this function is not a member function!
  Vector2 operator-(const Vector2 &c1, const Vector2 &c2)
 {

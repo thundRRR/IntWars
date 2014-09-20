@@ -11,8 +11,9 @@
 class Vector2
 {
 public:
-   Vector2(void);
-   Vector2(float X, float Y);
+   Vector2() : Vector2(0, 0) { }
+   Vector2(float X, float Y) : X(X), Y(Y) { }
+   Vector2(const Vector2& v) : X(v.X), Y(v.Y) { }
    ~Vector2(void);
    float Length();
    Vector2 Normalize();

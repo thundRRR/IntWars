@@ -40,12 +40,11 @@ void Object::Move(int64 diff) {
 
 	if(!target)
 	  return;
-   Vector2 to = Vector2(target->getX(), target->getY());
-   Vector2 cur = Vector2(x, y);
+   Vector2 to(target->getX(), target->getY());
+   Vector2 cur(x, y);
    
-   Vector2 goingTo =  to - cur;
-
-	Vector2 norm = goingTo.Normalize();
+   Vector2 goingTo (to - cur);
+	Vector2 norm (goingTo.Normalize());
 
 	double deltaMovement = (double)(getMoveSpeed()) * 0.000001f*diff;
 
