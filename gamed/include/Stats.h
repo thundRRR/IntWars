@@ -4,6 +4,8 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include <cmath>
+#include <vector>
 
 #include "stdafx.h"
 #include "common.h"
