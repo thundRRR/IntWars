@@ -3,8 +3,10 @@
 #include "Inibin.h"
 #include "Map.h"
 #include "Game.h"
+#include "LuaScript.h"
+#include <sstream>
 
-Champion::Champion(const std::string& type, Map* map, uint32 id) : Unit(map, id, type, new Stats()), type(type), skillPoints(0), respawnTimer(0)  {
+Champion::Champion(const std::string& type, Map* map, uint32 id, uint32 playerId) : Unit(map, id, type, new Stats()), type(type), skillPoints(0), respawnTimer(0), playerId(playerId)  {
    stats->setGold(475.0f);
    stats->setAttackSpeedMultiplier(1.0f);
    stats->setGoldPerSecond(map->getGoldPerSecond());
@@ -119,34 +121,36 @@ Spell* Champion::levelUpSpell(uint8 slot) {
 
 void Champion::update(int64 diff) {
    Unit::update(diff);
-   
-   if(respawnTimer > 0) {
+
+   if (respawnTimer > 0) {
       respawnTimer -= diff;
-      if(respawnTimer <= 0) {
-         setPosition(map->getRespawnLoc(side).getX(), map->getRespawnLoc(side).getY());
+      if (respawnTimer <= 0) {
+         float respawnX, respawnY;
+         std::tie(respawnX, respawnY) = getRespawnPosition();
+         setPosition(respawnX, respawnY);
          map->getGame()->notifyChampionRespawn(this);
          getStats().setCurrentHealth(getStats().getMaxHealth());
          getStats().setCurrentMana(getStats().getMaxMana());
          deathFlag = false;
       }
    }
-   
+
    bool levelup = false;
-   
-   while(getStats().getLevel() < map->getExpToLevelUp().size() && getStats().getExp() >= map->getExpToLevelUp()[getStats().getLevel()]) {
+
+   while (getStats().getLevel() < map->getExpToLevelUp().size() && getStats().getExp() >= map->getExpToLevelUp()[getStats().getLevel()]) {
       levelUp();
       levelup = true;
    }
-   
-   if(levelup) {
+
+   if (levelup) {
       map->getGame()->notifyLevelUp(this);
    }
-   
-   for(Spell* s : spells) {
+
+   for (Spell* s : spells) {
       s->update(diff);
    }
 
-   
+
 }
 
 uint32 Champion::getChampionHash() {
@@ -171,8 +175,103 @@ void Champion::levelUp() {
    getStats().levelUp();
    ++skillPoints;
 }
+std::pair<float, float> Champion::getRespawnPosition() {
+   LuaScript configScript(false);
+   //get map ID
+   configScript.loadScript("../../lua/config.lua");
+   sol::table gameTable = configScript.getTable("game");
+   sol::table playersTable = configScript.getTable("players");
+   uint32 mapId = gameTable.get<int>("map");
+   //get player team
+   std::string playerTeam;
+   std::ostringstream playerTableName;
+   playerTableName << "player" << playerId;
+   printf(playerTableName.str().c_str());
+   sol::table playerTable = playersTable.get<sol::table>(playerTableName.str());
+   playerTeam = playerTable.get<std::string>("team");
+   int spawnNumber = 0;
+   //get player spawn position number
+   int playersBefore = 0;
+   for (int i = 1; i < 13; i++){
+      std::ostringstream iplayerTableName;
+      iplayerTableName << "player" << i;
+      sol::table iplayerTable = playersTable.get<sol::table>(iplayerTableName.str());
+      if (i == playerId) {
+         playersBefore++;
+         spawnNumber = playersBefore;
+         break;
+      }
+      if (iplayerTable.get<std::string>("team") == playerTeam){
+         playersBefore++;
+      }
 
+   }
+   printf("team: %s /n", playerTeam.c_str());
+   printf("players before %i \n", playersBefore);
+   //printf("player position in spawn list: %s", to_string(spawnNumber).c_str());
+   LuaScript mapScript(false);
+   std::ostringstream mapPath;
+   mapPath << "../../lua/maps/map" << mapId << ".lua";
+   mapScript.loadScript(mapPath.str());
+   //printf("Map script: %s \n", mapPath.str().c_str());
+   //printf(playerTeam.c_str());
+   sol::table teamSizeSpawners;
+   sol::table teamSpawners;
+   int teamSize = getTeamSize();
+   try {
+      sol::table spawnersTable = mapScript.getTable("spawnpoints");
+      teamSpawners = spawnersTable.get<sol::table>(playerTeam);
+
+   }
+   catch (sol::error e) {
+      printf("Error loading champion for \n%s\n", e.what());
+   }
+   printf("team sizse: %i ", teamSize);
+   teamSizeSpawners = teamSpawners.get<sol::table>(to_string(teamSize));
+   printf("%f", teamSizeSpawners.get<float>("player" + to_string(spawnNumber) + "X"));
+   return std::make_pair(teamSizeSpawners.get<float>("player" + to_string(spawnNumber) + "X"), teamSizeSpawners.get<float>("player" + to_string(spawnNumber) + "Y"));
+}
 void Champion::die(Unit* killer) {
    respawnTimer = 5000000 + getStats().getLevel()*2500000;
    map->getGame()->notifyChampionDie(this, killer);
+}
+int Champion::getTeamSize(){
+   LuaScript script(false);
+
+   script.loadScript("../../lua/config.lua");
+
+   //  sol::state lua;
+   //  lua.open_libraries(sol::lib::base, sol::lib::table);
+
+   //  lua.open_file("../../lua/config.lua");
+   sol::table playerList = script.getTable("players");
+   int blueTeamSize = 0;
+   int purpTeamSize = 0;
+   for (int i = 1; i<12; i++) {
+      try {
+         std::string playerIndex = "player" + to_string(i);
+         sol::table playerData = playerList.get<sol::table>(playerIndex);
+         std::string team = playerData.get<std::string>("team");
+         if (team == "BLUE"){
+            blueTeamSize++;
+         }
+         else {
+            purpTeamSize++;
+         }
+      }
+      catch (sol::error e) {
+         // printf("Error loading champion for %i: \n%s\n", i, e.what());
+         break;
+      }
+   }
+   std::string playerTeam;
+   std::ostringstream playerTableName;
+   playerTableName << "player" << playerId;
+   printf(playerTableName.str().c_str());
+   sol::table playerTable = playerList.get<sol::table>(playerTableName.str());
+   std::string team = playerTable.get<std::string>("team");
+   if (team == "BLUE") {
+      return blueTeamSize;
+   }
+   else { return purpTeamSize; }
 }

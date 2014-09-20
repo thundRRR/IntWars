@@ -10,8 +10,8 @@ public:
    /**
     * Todo : Code every champion and add em here..
     */
-   static Champion* getChampionFromType(const std::string& type, Map* map, uint32 id) {
-      return new Champion(type, map, id);
+   static Champion* getChampionFromType(const std::string& type, Map* map, uint32 id, uint32 playerId) {
+      return new Champion(type, map, id, playerId);
    }
 
 
