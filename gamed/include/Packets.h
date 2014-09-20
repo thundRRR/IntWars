@@ -821,22 +821,28 @@ public:
 
 class AutoAttack : public BasePacket {
 public:
-   AutoAttack(Unit* attacker, Unit* attacked, uint32 futureProjNetId) : BasePacket(PKT_S2C_AutoAttack, attacker->getNetId()) {
+   AutoAttack(Unit* attacker, Unit* attacked, uint32 futureProjNetId, bool isCritical) : BasePacket(PKT_S2C_AutoAttack, attacker->getNetId()) {
       buffer << attacked->getNetId();
       buffer << (uint8)0x80; // unk
       buffer << futureProjNetId; // Basic attack projectile ID, to be spawned later
-      buffer << (uint8)0x40; // unk -- seems to be flags related to things like critical strike (0x49)
+      if (isCritical)
+        buffer << (uint8)0x49;
+      else
+        buffer << (uint8)0x40; // unk -- seems to be flags related to things like critical strike (0x49)
       buffer << attacker->getX() << attacker->getY();
    }
 };
 
 class AutoAttackMelee : public BasePacket {
 public:
-   AutoAttackMelee(Unit* attacker, Unit* attacked, uint32 futureProjNetId) : BasePacket(PKT_S2C_Melee_AutoAttack, attacker->getNetId()) {
+   AutoAttackMelee(Unit* attacker, Unit* attacked, uint32 futureProjNetId, bool isCritical) : BasePacket(PKT_S2C_Melee_AutoAttack, attacker->getNetId()) {
       buffer << attacked->getNetId();
       buffer << (uint8)0; // unk
       buffer << futureProjNetId; // this might not be "melee" auto attack after all..
-      buffer << (uint8)0x40; // unk -- seems to be flags related to things like critical strike (0x49)
+      if (isCritical)
+        buffer << (uint8)0x49;
+      else
+        buffer << (uint8)0x40; // unk -- seems to be flags related to things like critical strike (0x49)
    }
 };
 

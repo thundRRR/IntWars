@@ -76,7 +76,7 @@ class Game
       void notifyUpdatedStats(Unit* u);
       void notifyMovement(Object* o);
       void notifyDamageDone(Unit* source, Unit* target, float amount, DamageType type = DAMAGE_TYPE_PHYSICAL);
-      void notifyAutoAttack(Unit* attacker, Unit* victim, uint32 futureProjNetId);
+      void notifyAutoAttack(Unit* attacker, Unit* victim, uint32 futureProjNetId, bool isCritical);
       void notifyTeleport(Unit* u, float _x, float _y);
       void notifyProjectileSpawn(Projectile* p);
       void notifyProjectileDestroy(Projectile* p);
@@ -91,7 +91,7 @@ class Game
       void notifyChampionRespawn(Champion* c);
       void notifyShowProjectile(Projectile* p);
       void notifyNpcDie(Unit* die, Unit* killer);
-      void notifyAutoAttackMelee(Unit* attacker, Unit* target, uint32 futureProjNetId);
+      void notifyAutoAttackMelee(Unit* attacker, Unit* target, uint32 futureProjNetId, bool isCritical);
       void notifyAddBuff(Unit* u, std::string buffName);
       void notifyRemoveBuff(Unit* u, std::string buffName);
       void notifyAddGold(Champion* c, Unit* died, float gold);

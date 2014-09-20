@@ -81,10 +81,11 @@ protected:
     float baseMovement, baseAttackSpeed;
     
     float spellCostReduction; //URF Buff/Lissandra's passive
+    float critDamagePct; //Default = 2... add with runes/items (change with yasuo's passive)
 public:
 
     Stats() : updatedHealth(false), goldPerSecond(0), healthPerLevel(0), manaPerLevel(0), adPerLevel(0), armorPerLevel(0), magicArmorPerLevel(0),
-              hp5RegenPerLevel(0), mp5RegenPerLevel(0), movementSpeedPercentageModifier(0), baseMovement(0), baseAttackSpeed(0.625f), spellCostReduction(0) {
+              hp5RegenPerLevel(0), mp5RegenPerLevel(0), movementSpeedPercentageModifier(0), baseMovement(0), baseAttackSpeed(0.625f), spellCostReduction(0), critDamagePct (2) {
     }
 
     float getStat(uint8 blockId, uint32 stat) const;
@@ -393,6 +394,14 @@ public:
     
     virtual void setSpellCostReduction (float scr) {
         spellCostReduction = scr;
+    }
+
+    virtual float getCritDamagePct () {
+        return critDamagePct;
+    }
+
+    virtual void setCritDamagePct (float critDmg) {
+        critDamagePct = critDmg;
     }
 
     /**
