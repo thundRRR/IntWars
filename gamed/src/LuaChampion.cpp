@@ -8,7 +8,7 @@
 #include "Spell.h"
 
 void LuaScript::addChampion() {
-    sol::constructors <sol::types < std::string, Map*, uint32>> championCtr;
+    sol::constructors <sol::types < std::string, Map*, uint32, uint32>> championCtr;
     sol::userdata <Champion> championUserData(
             "Champion", championCtr,
             "getSpell", &Champion::getSpell,

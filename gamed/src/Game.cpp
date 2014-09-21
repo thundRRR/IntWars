@@ -127,21 +127,23 @@ bool Game::initialize(ENetAddress *address, const char *baseKey){
            player->setName(name);
 
 
-
-           Champion* c = ChampionFactory::getChampionFromType(champion, map, GetNewNetID());
-
-           c->setPosition(35.90f, 273.55f);
+		   player->setSkinNo(skin);
+		   static int id = 1;
+		   player->userId = id; // same as StartClient.bat
+		   id++;
+		   player->setSummoners(strToId(summoner1), strToId(summoner2));
+           Champion* c = ChampionFactory::getChampionFromType(champion, map, GetNewNetID(), player->userId);
+		   float respawnX, respawnY;
+		   std::tie(respawnX, respawnY) = c->getRespawnPosition();
+           c->setPosition(respawnX, respawnY);
            c->setSide((team == "BLUE") ? 0 : 1);
            c->levelUp();
 
            map->addObject(c);
 
-           player->setSkinNo(skin);
+
            player->setChampion(c);
-           static int id = 1;
-           player->userId = id; // same as StartClient.bat
-           id++;
-           player->setSummoners(strToId(summoner1), strToId(summoner2));
+
 
 
 
@@ -152,7 +154,6 @@ bool Game::initialize(ENetAddress *address, const char *baseKey){
             break;  
         }
     }
-    
    
    // Uncomment the following to get 2-players
    /*ClientInfo* player2 = new ClientInfo("GOLD", TEAM_PURPLE);

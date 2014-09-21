@@ -35,3 +35,13 @@ players = {
 		["ribbon"] = 2
 	}--]]
 }
+game = {
+--[[
+1 	- 	Summoner's rift
+6 	- 	Crystal Scar
+8 	- 	Twisted TReeline
+12 	- 	Howling Abyss
+11 	- 	New Summoner's rift (only on the PBE client)
+--]]
+	["map"]=1
+}

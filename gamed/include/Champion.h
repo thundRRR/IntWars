@@ -18,12 +18,12 @@ protected:
 
    
 public:
-
    Spell* getSpell(int index){ return spells[index]; }
-
-   Champion(const std::string& type, Map* map, uint32 id);
+   Champion(const std::string& type, Map* map, uint32 id, uint32 playerId);
    const std::string& getType() { return type; }
-   
+   uint32 playerId;
+   int getTeamSize();
+   std::pair<float, float> getRespawnPosition();
    Spell* castSpell(uint8 slot, float x, float y, Unit* target, uint32 futureProjNetId);
    Spell* levelUpSpell(uint8 slot);
    
