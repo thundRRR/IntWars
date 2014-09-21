@@ -13,6 +13,28 @@ RAFFile::RAFFile(const std::string& filename) : filename(filename) {
    if(header.magicNumber != 0x18be0ef0) {
       return;
    }
+
+   vector<string> pathList;
+   uint32 pathListSize, pathCount;
+
+   rafHeaderFile.seek(header.pathListOffset);
+   rafHeaderFile >> pathListSize >> pathCount;
+
+   for(uint32 i = 0; i < pathCount; i++) {
+      uint32 offset, len;
+
+      rafHeaderFile >> offset >> len;
+
+      uint32 prevPos = rafHeaderFile.pos();
+
+      rafHeaderFile.seek(header.pathListOffset + offset);
+      vector<unsigned char> pathBuf;
+      rafHeaderFile.read(pathBuf, len);
+      string path(reinterpret_cast<char*>(pathBuf.data()), len);
+      pathList.push_back(path);
+
+      rafHeaderFile.seek(prevPos);
+   }
    
    uint32 fileCount;
    
@@ -20,13 +42,14 @@ RAFFile::RAFFile(const std::string& filename) : filename(filename) {
    rafHeaderFile >> fileCount;
    
    for(uint32 i = 0; i < fileCount; ++i) {
-      FileEntry entry;
-      uint32 hash;
-      
-      rafHeaderFile >> hash >> entry;
-      // printf("Hash : %08X ; Offset : %08X ; Size : %08X ; Index : %08x\n", hash, entry.offset, entry.size, entry.fileNameStringTableIndex);
-      fileEntries[hash] = entry;
-   }   
+      File entry;
+      uint32 pathId;
+
+      rafHeaderFile >> entry.hash >> entry.offset >> entry.size >> pathId;
+      entry.path = pathList[pathId];
+
+      fileEntries[entry.hash] = entry;
+   }
 }
 
 uint32 RAFFile::getHash(const std::string& path) {
@@ -45,7 +68,7 @@ bool RAFFile::readFile(const std::string& path, vector<unsigned char>& toFill) {
    uint32 hash = getHash(path);
    vector<unsigned char> compressedFile;
    
-   map<uint32, FileEntry>::iterator entry = fileEntries.find(hash);
+   auto entry = fileEntries.find(hash);
    
    if(entry == fileEntries.end()) {
       return false;

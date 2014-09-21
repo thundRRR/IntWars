@@ -121,3 +121,6 @@ win/NetBeans/IntWars/nbproject/project.xml
 win/NetBeans/IntWars/nbproject/private/private.xml
 win/NetBeans/IntWars/nbproject/private/configurations.xml
 win/NetBeans/IntWars/nbproject/project.xml
+
+# CLion project files
+.idea/
