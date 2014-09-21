@@ -31,6 +31,7 @@ public:
    
    Object* getObjectById(uint32 id);
    void addObject(Object* o);
+   void removeObject(Object* o);
    const std::vector<uint32>& getExpToLevelUp() { return expToLevelUp; }
    
    virtual const Target getRespawnLoc(int side) const = 0;

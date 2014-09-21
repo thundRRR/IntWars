@@ -306,7 +306,7 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
    ChatMessage *message = reinterpret_cast<ChatMessage *>(packet->data);
    //Lets do commands
    if(message->msg == '.') {
-      const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".junglespawn", ".skillpoints", ".level", ".tp", ".coords"};
+      const char *cmd[] = { ".set", ".gold", ".speed", ".health", ".xp", ".ap", ".ad", ".mana", ".model", ".help", ".spawn", ".size", ".junglespawn", ".skillpoints", ".level", ".tp", ".coords", ".ch"};
       
       // help command
       if (strncmp(message->getMessage(), cmd[9], strlen(cmd[9])) == 0) {
@@ -471,6 +471,23 @@ bool Game::handleChatBoxMessage(HANDLE_ARGS) {
        // coords
       if(strncmp(message->getMessage(), cmd[16], strlen(cmd[16])) == 0) {
          printf("At %f;%f\n", peerInfo(peer)->getChampion()->getX(), peerInfo(peer)->getChampion()->getY());
+         return true;
+      }
+      
+      // Ch(ampion)
+      if(strncmp(message->getMessage(), cmd[17], strlen(cmd[17])) == 0) {
+         std::string champ = (char *)&message->getMessage()[strlen(cmd[17]) + 1];
+         Champion* c = new Champion(champ, map, peerInfo(peer)->getChampion()->getNetId(), peerInfo(peer)->userId);
+      
+         c->setPosition(peerInfo(peer)->getChampion()->getX(), peerInfo(peer)->getChampion()->getY());
+         c->setModel(champ); // trigger the "modelUpdate" proc
+         
+         map->removeObject(peerInfo(peer)->getChampion());
+         delete peerInfo(peer)->getChampion();
+         map->addObject(c);
+         
+         peerInfo(peer)->setChampion(c);
+         
          return true;
       }
 

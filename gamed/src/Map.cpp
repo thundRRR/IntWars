@@ -85,6 +85,10 @@ void Map::addObject(Object* o) {
    objects[o->getNetId()] = o;
 }
 
+void Map::removeObject(Object* o) {
+   objects.erase(o->getNetId());
+}
+
 void Map::stopTargeting(Unit* target) {
    for(auto kv = objects.begin(); kv != objects.end(); ++kv) {
       Unit* u = dynamic_cast<Unit*>(kv->second);
