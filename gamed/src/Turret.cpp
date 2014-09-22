@@ -20,7 +20,7 @@ Turret::Turret(Map* map, uint32 id, const std::string& name, float x, float y, f
 void Turret::update(int64 diff)
 {
    // No target : try to find a new one
-   if(!isAttacking && !unitTarget) {
+   if(!isAttacking) {
       const std::map<uint32, Object*>& objects = map->getObjects();
       Unit* nextTarget = 0;
       unsigned int nextTargetPriority = 10;
@@ -30,46 +30,41 @@ void Turret::update(int64 diff)
          if(!u || u->isDead() || u->getSide() == getSide() || distanceWith(u) > TURRET_RANGE) {
             continue;
          }
-         auto priority = classifyTarget(u);
-         if (priority < nextTargetPriority) {
-            nextTarget = u;
-            nextTargetPriority = priority;
+         
+         if (!unitTarget) {
+            auto priority = classifyTarget(u);
+            if (priority < nextTargetPriority) {
+               nextTarget = u;
+               nextTargetPriority = priority;
+            }
+         } else {
+            Champion* currentTarget = dynamic_cast<Champion*>(unitTarget);
+            
+            // Is the current target a champion? If it isn't, don't do anything
+            if (!currentTarget) {
+               // Find the next champion in range targeting an enemy champion who is also in range
+               Champion* c = dynamic_cast<Champion*>(u);
+               if (c && c->getUnitTarget() != 0) {
+                  Champion* target = dynamic_cast<Champion*>(c->getUnitTarget());
+                  if (target && c->distanceWith(target) <= c->getStats().getRange() && distanceWith(target) <= TURRET_RANGE) {
+                     nextTarget = c; // No priority required
+                     break;
+                  }
+               }
+            }
          }
       }
       if (nextTarget) {
          unitTarget = nextTarget;
          map->getGame()->notifySetTarget(this, nextTarget);
       }
-   } else if(unitTarget && distanceWith(unitTarget) > TURRET_RANGE) {
+   }
+   
+   // Lose focus of the unit target if the target is out of range
+   if(unitTarget && distanceWith(unitTarget) > TURRET_RANGE) {
       setUnitTarget(0);
       map->getGame()->notifySetTarget(this, 0);
    }
 
    Unit::update(diff);
-}
-//Prioritize targets
-unsigned int Turret::classifyTarget(Unit* u) {
-   Minion* m = dynamic_cast<Minion*>(u);
-
-   if (m) {
-      switch (m->getType()) {
-         case MINION_TYPE_MELEE:
-            return 4;
-         case MINION_TYPE_CASTER:
-            return 5;
-         case MINION_TYPE_CANNON:
-         case MINION_TYPE_SUPER:
-            return 3;
-      }
-   }
-
-   Champion* c = dynamic_cast<Champion*>(u);
-   if (c) {
-      return 6;
-   }
-
-   //Trap (Shaco box) return 1
-   //Pet (Tibbers) return 2
-
-   return 10;
 }

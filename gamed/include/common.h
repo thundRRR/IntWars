@@ -55,6 +55,7 @@ enum PacketCmd : uint8
    PKT_S2C_AttentionPing = 0x40,
 
    PKT_S2C_Emotion = 0x42,
+   PKT_C2S_AutoAttackOption = 0x47,
    PKT_C2S_Emotion = 0x48,
    PKT_S2C_HeroSpawn = 0x4C,
    PKT_S2C_Announce = 0x4D,

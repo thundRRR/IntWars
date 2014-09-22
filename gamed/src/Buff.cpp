@@ -48,7 +48,7 @@ Buff::Buff(std::string buffName, float dur, BuffType type, Unit* u, Unit* uu)  :
    }
    
    
-      attachedTo->getMap()->getGame()->notifyAddBuff(attachedTo, name);
+      attachedTo->getMap()->getGame()->notifyAddBuff(attachedTo, attacker, name);
    }
 }
 

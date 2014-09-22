@@ -252,3 +252,37 @@ Buff* Unit::getBuff(std::string name){
    }
    return 0;
 }
+
+//Prioritize targets
+unsigned int Unit::classifyTarget(Unit* target) {
+   Turret* t = dynamic_cast<Turret*>(target);
+   
+   // Turrets before champions
+   if (t) {
+      return 6;
+   }
+   
+   Minion* m = dynamic_cast<Minion*>(target);
+
+   if (m) {
+      switch (m->getType()) {
+         case MINION_TYPE_MELEE:
+            return 4;
+         case MINION_TYPE_CASTER:
+            return 5;
+         case MINION_TYPE_CANNON:
+         case MINION_TYPE_SUPER:
+            return 3;
+      }
+   }
+
+   Champion* c = dynamic_cast<Champion*>(target);
+   if (c) {
+      return 7;
+   }
+
+   //Trap (Shaco box) return 1
+   //Pet (Tibbers) return 2
+
+   return 10;
+}

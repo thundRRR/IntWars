@@ -206,7 +206,7 @@ std::pair<float, float> Champion::getRespawnPosition() {
       }
 
    }
-   printf("team: %s /n", playerTeam.c_str());
+   printf("team: %s\n", playerTeam.c_str());
    printf("players before %i \n", playersBefore);
    //printf("player position in spawn list: %s", to_string(spawnNumber).c_str());
    LuaScript mapScript(false);
@@ -226,9 +226,9 @@ std::pair<float, float> Champion::getRespawnPosition() {
    catch (sol::error e) {
       printf("Error loading champion for \n%s\n", e.what());
    }
-   printf("team sizse: %i ", teamSize);
+   printf("team size: %i\n", teamSize);
    teamSizeSpawners = teamSpawners.get<sol::table>(to_string(teamSize));
-   printf("%f", teamSizeSpawners.get<float>("player" + to_string(spawnNumber) + "X"));
+   printf("%f\n", teamSizeSpawners.get<float>("player" + to_string(spawnNumber) + "X"));
    return std::make_pair(teamSizeSpawners.get<float>("player" + to_string(spawnNumber) + "X"), teamSizeSpawners.get<float>("player" + to_string(spawnNumber) + "Y"));
 }
 void Champion::die(Unit* killer) {
