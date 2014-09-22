@@ -165,7 +165,49 @@ const Target SummonersRift::getRespawnLoc(int side) const {
 float SummonersRift::getGoldFor(Unit* u) const {
    Minion* m = dynamic_cast<Minion*>(u);
    
-   if(!m) {
+  if(!m) {
+      Champion* c = dynamic_cast<Champion*>(u);
+      
+      if(!c){
+         return 0.f;
+      }
+      
+      float gold = 300.f; //normal gold for a kill
+      
+      if(c->getKillDeathCounter() < 5 && c->getKillDeathCounter() >= 0){
+         if(c->getKillDeathCounter() == 0){
+            return gold;
+         }
+         
+         for(int i = c->getKillDeathCounter(); i > 1; --i){
+            gold += gold*0.165f;
+         }
+         
+         return gold;
+      }
+      
+      if(c->getKillDeathCounter() >= 5){
+         return 500.f;
+      }
+      
+      if(c->getKillDeathCounter() < 0){
+         float firstDeathGold = gold-gold*0.085f;
+         
+         if(c->getKillDeathCounter() == -1){
+            return firstDeathGold;
+         }
+         
+         for(int i = c->getKillDeathCounter(); i < -1; ++i){
+            firstDeathGold -= firstDeathGold*0.2f;
+         }
+         
+         if(firstDeathGold < 50){
+            firstDeathGold = 50;
+         }
+         
+         return firstDeathGold;
+      }
+      
       return 0.f;
    }
    
