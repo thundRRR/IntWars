@@ -17,8 +17,9 @@ public:
       file.read(reinterpret_cast<char*>(&data), sizeof(U));
       return *this;
    }
-   
+
    void seek(uint32 offset);
+   uint32 pos();
    void read(std::vector<unsigned char>&, uint32 size);
 
 private:

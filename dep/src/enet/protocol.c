@@ -304,7 +304,7 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
     currentPeer -> state = ENET_PEER_STATE_ACKNOWLEDGING_CONNECT;
     currentPeer -> sessionID = command -> connect.sessionID;
     currentPeer -> address = host -> receivedAddress;
-    currentPeer -> outgoingPeerID = command -> connect.outgoingPeerID;
+    currentPeer -> outgoingPeerID = header -> peerID;
     currentPeer -> incomingBandwidth = ENET_NET_TO_HOST_32 (command -> connect.incomingBandwidth);
     currentPeer -> outgoingBandwidth = ENET_NET_TO_HOST_32 (command -> connect.outgoingBandwidth);
     currentPeer -> packetThrottleInterval = ENET_NET_TO_HOST_32 (command -> connect.packetThrottleInterval);
@@ -1412,7 +1412,7 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
         }
 
         //header.checksum = currentPeer -> sessionID;
-		header.peerID = currentPeer->outgoingPeerID + 0x29;
+		header.peerID = currentPeer->outgoingPeerID;
 		header.flag = host->headerFlags;
         
         host -> buffers -> data = & header;
