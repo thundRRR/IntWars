@@ -22,7 +22,7 @@ void Turret::update(int64 diff)
    // No target : try to find a new one
    if(!isAttacking && !unitTarget) {
       const std::map<uint32, Object*>& objects = map->getObjects();
-      Unit* nextTarget;
+      Unit* nextTarget = 0;
       unsigned int nextTargetPriority = 10;
       for(auto& it : objects) {
          Unit* u = dynamic_cast<Unit*>(it.second);
