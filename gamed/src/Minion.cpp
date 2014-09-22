@@ -108,6 +108,41 @@ void Minion::update(int64 diff) {
    }
    
    if(unitTarget) {
+      Champion* c = dynamic_cast<Champion*>(unitTarget);
+      
+      if (c && !autoAttackFlag) {
+         const std::map<uint32, Object*>& objects = map->getObjects();
+         Unit* nextTarget = 0;
+         unsigned int nextTargetPriority = 10;
+         for(auto& it : objects) {
+            Unit* u = dynamic_cast<Unit*>(it.second);
+
+            if(!u || u->isDead() || u->getSide() == getSide() || distanceWith(u) > stats->getRange()) {
+               continue;
+            }
+            
+            // Find the next champion in range targeting an enemy champion who is also in range
+            Champion* nextChampion = dynamic_cast<Champion*>(u);
+            if (nextChampion && c != nextChampion && nextChampion->getUnitTarget() != 0) {
+               Champion* target = dynamic_cast<Champion*>(nextChampion->getUnitTarget());
+               if (target && nextChampion->distanceWith(target) <= nextChampion->getStats().getRange() && distanceWith(target) <= stats->getRange()) {
+                  nextTarget = nextChampion; // No priority required
+                  break;
+               }
+            }
+            
+            auto priority = classifyTarget(u);
+            if (priority < nextTargetPriority) {
+               nextTarget = u;
+               nextTargetPriority = priority;
+            }
+         }
+         if (nextTarget) {
+            setUnitTarget(nextTarget); // Set the new target and refresh waypoints
+            map->getGame()->notifySetTarget(this, nextTarget);
+         }
+      }
+      
       return;
    }
    

@@ -92,7 +92,7 @@ class Game
       void notifyShowProjectile(Projectile* p);
       void notifyNpcDie(Unit* die, Unit* killer);
       void notifyAutoAttackMelee(Unit* attacker, Unit* target, uint32 futureProjNetId, bool isCritical);
-      void notifyAddBuff(Unit* u, std::string buffName);
+      void notifyAddBuff(Unit* u, Unit* source, std::string buffName);
       void notifyRemoveBuff(Unit* u, std::string buffName);
       void notifyAddGold(Champion* c, Unit* died, float gold);
       void notifyStopAutoAttack(Unit* attacker);

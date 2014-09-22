@@ -96,6 +96,7 @@ public:
    virtual void refreshWaypoints();
    bool isMelee() const { return melee; }
    void setMelee(bool melee) { this->melee = melee; }
+   unsigned int classifyTarget(Unit* target);
 };
 
 #endif

@@ -22,8 +22,8 @@ void Game::notifyUpdatedStats(Unit* u) {
    broadcastPacket(us, CHL_LOW_PRIORITY, 2);
 }
 
-void Game::notifyAddBuff(Unit* u, std::string buffName) {
-   AddBuff add(u, 1, buffName);
+void Game::notifyAddBuff(Unit* u, Unit* source, std::string buffName) {
+   AddBuff add(u, source, 1, buffName);
    broadcastPacket(add, CHL_S2C);
 }
 

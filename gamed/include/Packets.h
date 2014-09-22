@@ -674,13 +674,13 @@ typedef struct _EmotionResponse {
 
 class AddBuff : public Packet {
 public:
-   AddBuff(Unit* u, int stacks, std::string name) : Packet(PKT_S2C_AddBuff) {
+   AddBuff(Unit* u, Unit* source, int stacks, std::string name) : Packet(PKT_S2C_AddBuff) {
       buffer << u->getNetId();//target
       
       buffer << (uint8) 0x05; //maybe type?
       buffer << (uint8) 0x02;
       buffer << (uint8) 0x01; // stacks
-      buffer << (uint8) 0x00;
+      buffer << (uint8) 0x00; // bool value
       buffer << RAFFile::getHash(name);
       buffer << (uint8) 0xde;
       buffer << (uint8) 0x88;
@@ -695,7 +695,11 @@ public:
       buffer << (uint8) 0xc3;
       buffer << (uint8) 0x46;
      
-      buffer << u->getNetId();//source?
+      if (source != 0) {
+         buffer << source->getNetId(); //source
+      } else {
+         buffer << (uint32)0;
+      }
    }
 };
 
@@ -880,7 +884,7 @@ public:
 class ChampionRespawn : public BasePacket {
 public:
    ChampionRespawn(Champion* c) : BasePacket(PKT_S2C_ChampionRespawn, c->getNetId()) {
-      buffer << c->getX() << 230.f << c->getY();
+      buffer << c->getX() << c->getY() << 230.f;
    } 
 };
 
