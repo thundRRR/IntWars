@@ -58,7 +58,10 @@ void Turret::update(int64 diff)
          unitTarget = nextTarget;
          map->getGame()->notifySetTarget(this, nextTarget);
       }
-   } else if(unitTarget && distanceWith(unitTarget) > TURRET_RANGE) {
+   }
+   
+   // Lose focus of the unit target if the target is out of range
+   if(unitTarget && distanceWith(unitTarget) > TURRET_RANGE) {
       setUnitTarget(0);
       map->getGame()->notifySetTarget(this, 0);
    }
