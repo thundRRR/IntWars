@@ -67,9 +67,15 @@ bool Game::handleGameNumber(ENetPeer *peer, ENetPacket *packet) {
 }
 
 bool Game::handleSynch(ENetPeer *peer, ENetPacket *packet) {
-    SynchVersion *version = reinterpret_cast<SynchVersion *>(packet->data);
-    //Logging->writeLine("Client version: %s\n", version->version);
-    SynchVersionAns answer(players, "Version 4.13.0.262 [PUBLIC]", "CLASSIC");
+	SynchVersion *version = reinterpret_cast<SynchVersion *>(packet->data);
+	//Logging->writeLine("Client version: %s\n", version->version);
+	//Gets the map from the lua configurtation file.
+	LuaScript script(false);
+	script.loadScript("../../lua/config.lua");
+	sol::table config = script.getTable("game");
+	int mapId = config.get<int>("map");
+	printf("Current map: %i", mapId);
+	SynchVersionAns answer(players, "Version 4.13.0.262 [PUBLIC]", "CLASSIC", (uint32)mapId);
     printPacket(reinterpret_cast<uint8 *>(&answer), sizeof(answer));
     return sendPacket(peer, answer, 3);
 }
