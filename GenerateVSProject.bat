@@ -1,19 +1,19 @@
 @echo off
 set PATH=%PATH%;C:\MinGW\bin
-echo Generatw IntWars Makefiles
+echo Generate IntWars Makefiles
 echo ------------------------------
-IF EXIST build GOTO BUILDDIR
+IF EXIST vsbuild GOTO BUILDDIR
 ELSE GOTO MAIN 
 
 :BUILDDIR
 echo Build directory exists, removing...
-rmdir /s /q build
+rmdir /s /q vsbuild
 GOTO MAIN
 
 :MAIN
 echo Recreating build directory...
-mkdir build
-cd build
+mkdir vsbuild
+cd vsbuild
 echo Creating MinGW Makefiles...
 echo ------------------------------
 cmake .. -G "Visual Studio 12 2013"

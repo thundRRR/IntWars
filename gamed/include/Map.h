@@ -6,6 +6,7 @@
 
 #include "stdafx.h"
 #include "Object.h"
+#include "Champion.h"
 
 class Game;
 
@@ -36,11 +37,14 @@ public:
    
    virtual const Target getRespawnLoc(int side) const = 0;
    virtual float getGoldFor(Unit* u) const = 0;
+   virtual float getExpFor(Unit* u) const = 0 ;
    
    Game* getGame() const { return game; }
    
    const std::map<uint32, Object*>& getObjects() { return objects; }
    void stopTargeting(Unit* target);
+
+   std::vector<Champion*> getChampionsInRange(Target* t, float range);
    
 };
 

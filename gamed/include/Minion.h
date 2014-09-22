@@ -15,7 +15,8 @@ enum MinionSpawnPosition : uint32 {
 enum MinionSpawnType : uint8 {
    MINION_TYPE_MELEE = 0x00,
    MINION_TYPE_CASTER = 0x01,
-   MINION_TYPE_CANNON = 0x02
+   MINION_TYPE_CANNON = 0x02,
+   MINION_TYPE_SUPER = 0x03
 };
 
 class Minion : public Unit {

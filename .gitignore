@@ -99,6 +99,7 @@ cmake_install.cmake
 *.lnk
 
 build/
+vsbuild/
 win/NetBeans/IntWars/nbproject/*
 win/NetBeans/IntWars/nbproject/private/* 
 # Backup & report files from converting an old project file to a newer Visual Studio version
