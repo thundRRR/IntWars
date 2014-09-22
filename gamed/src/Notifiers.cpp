@@ -97,7 +97,7 @@ void Game::notifyProjectileDestroy(Projectile* p) {
 }
 
 void Game::notifyParticleSpawn(Champion* source, Target* target, const std::string& particleName) {
-   SpawnParticle sp(source, target, particleName);
+   SpawnParticle sp(source, target, particleName, GetNewNetID());
    broadcastPacket(sp, CHL_S2C);
 }
 

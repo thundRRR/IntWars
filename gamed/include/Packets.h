@@ -1036,7 +1036,7 @@ public:
 
 class SpawnParticle : public BasePacket {
 public:
-   SpawnParticle(Champion* owner, Target* t, const std::string& particle) : BasePacket(PKT_S2C_SpawnParticle, owner->getNetId()) {
+   SpawnParticle(Champion* owner, Target* t, const std::string& particle, uint32 netId) : BasePacket(PKT_S2C_SpawnParticle, owner->getNetId()) {
       buffer << (uint8)1; // number of particles
       buffer << owner->getChampionHash();
       buffer << RAFFile::getHash(particle);
@@ -1045,7 +1045,7 @@ public:
       buffer << (uint16)0; // unk
       buffer << (uint8)1; // number of targets ?
       buffer << owner->getNetId();
-      buffer << (uint32)0xff000040; // Particle net id ?
+      buffer << netId; // Particle net id ?
       buffer << owner->getNetId();
       
       if(t->isSimpleTarget()) {
