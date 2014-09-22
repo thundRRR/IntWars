@@ -15,6 +15,7 @@ public:
    
    const Target getRespawnLoc(int side) const override;
    float getGoldFor(Unit* u) const override;
+   float getExpFor(Unit* u) const override;
    
    bool spawn() override;
 

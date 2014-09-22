@@ -171,7 +171,7 @@ float SummonersRift::getGoldFor(Unit* u) const {
    
    switch(m->getType()) {
       case MINION_TYPE_MELEE:
-         return 19.f;
+		  return 19.f + (0.5f / 180.f)*(gameTime / 1000000.f);
       case MINION_TYPE_CASTER:
          return 14.f + (0.2f/90.f)*(gameTime/1000000.f);
       case MINION_TYPE_CANNON:
@@ -179,4 +179,23 @@ float SummonersRift::getGoldFor(Unit* u) const {
    }
    
    return 0.f;
+}
+
+float SummonersRift::getExpFor(Unit* u) const {
+	Minion* m = dynamic_cast<Minion*>(u);
+
+	if (!m) {
+		return 0.f;
+	}
+
+	switch (m->getType()) {
+	case MINION_TYPE_MELEE:
+		return 58.88f;
+	case MINION_TYPE_CASTER:
+		return 	29.44f;
+	case MINION_TYPE_CANNON:
+		return 92.f;
+	}
+
+	return 0.f;
 }

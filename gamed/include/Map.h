@@ -36,6 +36,7 @@ public:
    
    virtual const Target getRespawnLoc(int side) const = 0;
    virtual float getGoldFor(Unit* u) const = 0;
+   virtual float getExpFor(Unit* u) const = 0 ;
    
    Game* getGame() const { return game; }
    

@@ -201,6 +201,10 @@ void Unit::die(Unit* killer) {
     
     c->getStats().setGold(c->getStats().getGold()+gold);
     map->getGame()->notifyAddGold(c, this, gold);
+
+	float exp = map->getExpFor(this);
+	c->getStats().setExp(c->getStats().getExp() + exp);
+
     setToRemove();
     map->stopTargeting(this);
 }
