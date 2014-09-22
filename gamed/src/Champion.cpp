@@ -232,8 +232,49 @@ std::pair<float, float> Champion::getRespawnPosition() {
    return std::make_pair(teamSizeSpawners.get<float>("player" + to_string(spawnNumber) + "X"), teamSizeSpawners.get<float>("player" + to_string(spawnNumber) + "Y"));
 }
 void Champion::die(Unit* killer) {
-   respawnTimer = 5000000 + getStats().getLevel()*2500000;
+  respawnTimer = 5000000 + getStats().getLevel()*2500000;
    map->getGame()->notifyChampionDie(this, killer);
+   
+   Champion* cKiller = dynamic_cast<Champion*>(killer);
+   
+	if (!cKiller) {
+      return;
+   }
+   
+   float gold = map->getGoldFor(this);
+   printf("Before: getGoldFromChamp: %f\n Killdc: %i\n Killnc33q4t3246t4 %i\n", gold, cKiller->killDeathCounter,this->killDeathCounter);
+   
+   if(cKiller->killDeathCounter < 0){
+      cKiller->killDeathCounter = 0;
+   }
+   
+   if(cKiller->killDeathCounter >= 0){
+      cKiller->killDeathCounter += 1;
+   }
+   
+   if(this->killDeathCounter > 0){
+      this->killDeathCounter = 0;
+   }
+   
+   if(this->killDeathCounter <= 0){
+      this->killDeathCounter -= 1;
+   }
+    
+    if(!gold) {
+      return;
+    }
+    
+   if(map->getFirstBlood()){
+      gold += 100;
+      map->setFirstBlood(false);
+   }
+   
+	cKiller->getStats().setGold(cKiller->getStats().getGold() + gold);
+	map->getGame()->notifyAddGold(cKiller, this, gold);
+   
+   printf("After: getGoldFromChamp: %f\n Killdc: %i\n Killnc33q4t3246t4 %i\n", gold, cKiller->killDeathCounter,this->killDeathCounter);
+   
+   map->stopTargeting(this);
 }
 int Champion::getTeamSize(){
    LuaScript script(false);
