@@ -6,6 +6,7 @@
 
 #include "stdafx.h"
 #include "Object.h"
+#include "Champion.h"
 
 class Game;
 
@@ -42,6 +43,8 @@ public:
    
    const std::map<uint32, Object*>& getObjects() { return objects; }
    void stopTargeting(Unit* target);
+
+   std::vector<Champion*> getChampionsInRange(Target* t, float range);
    
 };
 

@@ -7,6 +7,7 @@
 #include <cstdlib>
 
 #define DETECT_RANGE 400
+#define EXP_RANGE 1400
 
 using namespace std;
 
@@ -187,9 +188,25 @@ const std::string& Unit::getModel() {
 
 void Unit::die(Unit* killer) {
     map->getGame()->notifyNpcDie(this, killer);
-    Champion* c = dynamic_cast<Champion*>(killer);
+
+	float exp = map->getExpFor(this);
+	auto champs = map->getChampionsInRange(this, EXP_RANGE);
+	//Cull allied champions
+	champs.erase(std::remove_if(champs.begin(), 
+								champs.end(), 
+								[this](Champion * l) { return l->getSide() == getSide(); }),
+				champs.end());
+	if (champs.size() > 0) {
+		float expPerChamp = exp / champs.size();
+		for (auto c = champs.begin(); c != champs.end(); ++c) {
+			(*c)->getStats().setExp((*c)->getStats().getExp() + expPerChamp);
+		}
+	}
+
+
+    Champion* cKiller = dynamic_cast<Champion*>(killer);
     
-    if(!c) {
+	if (!cKiller) {
       return;
     }
     
@@ -199,11 +216,8 @@ void Unit::die(Unit* killer) {
       return;
     }
     
-    c->getStats().setGold(c->getStats().getGold()+gold);
-    map->getGame()->notifyAddGold(c, this, gold);
-
-	float exp = map->getExpFor(this);
-	c->getStats().setExp(c->getStats().getExp() + exp);
+	cKiller->getStats().setGold(cKiller->getStats().getGold() + gold);
+	map->getGame()->notifyAddGold(cKiller, this, gold);
 
     setToRemove();
     map->stopTargeting(this);

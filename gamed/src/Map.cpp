@@ -102,3 +102,19 @@ void Map::stopTargeting(Unit* target) {
       }
    }
 }
+
+std::vector<Champion*> Map::getChampionsInRange(Target* t, float range) {
+	std::vector<Champion*> champs;
+	for (auto kv = objects.begin(); kv != objects.end(); ++kv) {
+		Champion* u = dynamic_cast<Champion*>(kv->second);
+
+		if (!u) {
+			continue;
+		}
+
+		if (t->distanceWith(u)<=range) {
+			champs.push_back(u);
+		}
+	}
+	return champs;
+}
