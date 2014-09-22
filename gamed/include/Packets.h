@@ -111,9 +111,9 @@ struct ClientReady {
 class SynchVersionAns : public BasePacket {
 public:
 
-   SynchVersionAns(const std::vector<ClientInfo*>& players, const std::string& version, const std::string& gameMode) : BasePacket(PKT_S2C_SynchVersion) {
+   SynchVersionAns(const std::vector<ClientInfo*>& players, const std::string& version, const std::string& gameMode, const uint32 map) : BasePacket(PKT_S2C_SynchVersion) {
       buffer << (uint8)9; // unk
-      buffer << (uint32)1; // mapId
+      buffer << (uint32)map; // mapId
       for(auto p : players) {
          buffer << p->userId;
          buffer << (uint16)0x1E; // unk
